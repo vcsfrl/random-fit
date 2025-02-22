@@ -8,8 +8,16 @@ import (
 type Element struct {
 	ID    int
 	Name  string
-	Value fmt.Stringer
+	Value ElementValue[any]
 	Date  time.Time
+}
+
+type ElementValue[T comparable] struct {
+	Value T
+}
+
+func (e *ElementValue[T]) String() string {
+	return fmt.Sprintf("%v", e.Value)
 }
 
 func (e Element) String() string {
@@ -26,11 +34,11 @@ type ElementDefinition[T any] struct {
 	GlobalPicks bool
 }
 
-type ElementOptionsInterval struct {
-	Min int
-	Max int
+type ElementOptionsInterval[T comparable] struct {
+	Min T
+	Max T
 }
 
 type ElementOptionsValues struct {
-	Values []fmt.Stringer
+	Values []ElementValue[any]
 }
