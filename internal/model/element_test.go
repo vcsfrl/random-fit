@@ -5,6 +5,16 @@ import (
 	"testing"
 )
 
+func TestElement_String(t *testing.T) {
+	intElement := Element[int]{
+		ID:    1,
+		Name:  "Test",
+		Value: ElementValue[int]{Value: 1},
+	}
+
+	assert.Equal(t, "1", intElement.String())
+}
+
 func TestElementValue_String(t *testing.T) {
 	intValue := ElementValue[int]{Value: 1}
 	assert.Equal(t, "1", intValue.String())

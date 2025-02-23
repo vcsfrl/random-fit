@@ -17,7 +17,7 @@ func TestElementDefinition(t *testing.T) {
 	}
 
 	definitionIntervalString := ElementDefinition[ElementOptionsInterval[string]]{
-		ID:          1,
+		ID:          2,
 		Name:        "Test",
 		Description: "Test description",
 		Options:     ElementOptionsInterval[string]{Min: ElementValue[string]{Value: "A"}, Max: ElementValue[string]{Value: "Z"}},
@@ -27,7 +27,7 @@ func TestElementDefinition(t *testing.T) {
 	}
 
 	definitionValues := ElementDefinition[ElementOptionsValues]{
-		ID:          2,
+		ID:          3,
 		Name:        "Test",
 		Description: "Test description",
 		Options:     ElementOptionsValues{Values: []ElementValue[any]{{Value: 1}, {Value: "Test"}}},
