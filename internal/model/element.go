@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Element is a generic type for an element.
 type Element struct {
 	ID    int
 	Name  string
@@ -12,33 +13,15 @@ type Element struct {
 	Date  time.Time
 }
 
+func (e Element) String() string {
+	return e.Value.String()
+}
+
+// ElementValue is a generic type for the value of an element.
 type ElementValue[T comparable] struct {
 	Value T
 }
 
 func (e *ElementValue[T]) String() string {
 	return fmt.Sprintf("%v", e.Value)
-}
-
-func (e Element) String() string {
-	return e.Value.String()
-}
-
-type ElementDefinition[T any] struct {
-	ID          int
-	Name        string
-	Description string
-	Options     T
-	NrOfPicks   int
-	UniquePicks bool
-	GlobalPicks bool
-}
-
-type ElementOptionsInterval[T comparable] struct {
-	Min T
-	Max T
-}
-
-type ElementOptionsValues struct {
-	Values []ElementValue[any]
 }
