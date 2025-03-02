@@ -7,9 +7,9 @@ import (
 
 // Element is a generic type for an element.
 type Element struct {
-	ID    int
+	ID    string
 	Name  string
-	Value ElementValue[any]
+	Value fmt.Stringer
 	Date  time.Time
 }
 
