@@ -2,8 +2,8 @@ package internal
 
 import "random-fit/internal/model"
 
-func Generate[T any](definition model.ElementDefinition[T]) model.Element[T] {
-	return model.Element[T]{
+func Generate(definition model.ElementDefinition) model.Element {
+	return model.Element{
 		ID:   0,
 		Name: "",
 	}

@@ -6,14 +6,14 @@ import (
 )
 
 // Element is a generic type for an element.
-type Element[T any] struct {
+type Element struct {
 	ID    int
 	Name  string
-	Value ElementValue[T]
+	Value ElementValue[any]
 	Date  time.Time
 }
 
-func (e Element[T]) String() string {
+func (e Element) String() string {
 	return e.Value.String()
 }
 

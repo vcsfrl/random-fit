@@ -6,10 +6,10 @@ import (
 )
 
 func TestElement_String(t *testing.T) {
-	intElement := Element[int]{
+	intElement := Element{
 		ID:    1,
 		Name:  "Test",
-		Value: ElementValue[int]{Value: 1},
+		Value: ElementValue[any]{Value: 1},
 	}
 
 	assert.Equal(t, "1", intElement.String())
