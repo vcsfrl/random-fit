@@ -7,14 +7,14 @@ import (
 
 // Element is a generic type for an element.
 type Element struct {
-	ID    string
-	Name  string
-	Value fmt.Stringer
-	Date  time.Time
+	ID     string
+	Name   string
+	Values []fmt.Stringer
+	Date   time.Time
 }
 
 func (e Element) String() string {
-	return e.Value.String()
+	return ""
 }
 
 // ElementValue is a generic type for the value of an element.

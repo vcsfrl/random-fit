@@ -1,18 +1,22 @@
 package model
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestElement_String(t *testing.T) {
 	intElement := Element{
-		ID:    "element-1",
-		Name:  "Test",
-		Value: &ElementValue[any]{Value: 1},
+		ID:   "element-1",
+		Name: "Test",
+		Values: []fmt.Stringer{
+			&ElementValue[string]{Value: "Test"},
+			&ElementValue[int]{Value: 2},
+		},
 	}
 
-	assert.Equal(t, "1", intElement.String())
+	assert.Equal(t, "Test 2", intElement.String())
 }
 
 func TestElementValue_String(t *testing.T) {

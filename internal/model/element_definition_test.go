@@ -6,12 +6,13 @@ import (
 )
 
 func TestElementDefinition(t *testing.T) {
-	definitionIntervalInt := ElementDefinition{
-		ID:          "test-definition-1",
-		Name:        "Test",
-		Description: "Test description",
-		NrOfPicks:   1,
-		UniquePicks: true,
+	definitionIntervalString := ElementDefinition{
+		ID:           "test-definition-1",
+		Name:         "Test",
+		Description:  "Test description",
+		NrOfPicks:    1,
+		PickStrategy: PickStrategyRandom,
+		UniquePicks:  true,
 		Options: &ElementDefinitionOptions{
 			Interval: &ElementDefinitionOptionInterval[any]{
 				MinValue: 0,
@@ -22,7 +23,5 @@ func TestElementDefinition(t *testing.T) {
 	}
 
 	// Dummy test to avoid compilation error
-	assert.NotNil(t, definitionIntervalInt)
-	//assert.NotEqual(t, definitionIntervalInt, definitionIntervalString)
-	//assert.NotEqual(t, definitionIntervalInt, definitionValues)
+	assert.NotNil(t, definitionIntervalString)
 }
