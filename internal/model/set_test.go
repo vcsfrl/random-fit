@@ -12,7 +12,7 @@ func TestSet_String(t *testing.T) {
 		ID:          "Set 1",
 		Name:        "Test",
 		Description: "Description of the set",
-		Elements: []*Element{
+		Elements: []Element{
 			{
 				ID:     "element-1",
 				Name:   "Element 1",

@@ -12,11 +12,12 @@ func TestElement_String(t *testing.T) {
 		Name: "Test",
 		Values: []fmt.Stringer{
 			&ElementValue[string]{Value: "Test"},
-			&ElementValue[int]{Value: 2},
+			&ElementValue[int]{Value: 12},
 		},
+		ValueSeparator: "-",
 	}
 
-	assert.Equal(t, "Test 2", intElement.String())
+	assert.Equal(t, "Test-12", intElement.String())
 }
 
 func TestElementValue_String(t *testing.T) {
