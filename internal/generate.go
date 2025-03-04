@@ -7,10 +7,15 @@ import (
 
 func Generate(definition model.ElementDefinition) model.Element {
 	return model.Element{
-		ID:             definition.ID,
-		Name:           definition.Name,
-		Values:         nil,
-		Date:           time.Time{},
+		Identity: model.Identity{
+			ID:           "element-1",
+			DefinitionID: definition.Identity.ID,
+			Name:         definition.Identity.Name,
+			Description:  definition.Identity.Description,
+			Date:         time.Time{},
+		},
+		Values: nil,
+
 		ValueSeparator: " ",
 	}
 }

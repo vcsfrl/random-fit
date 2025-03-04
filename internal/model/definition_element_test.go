@@ -7,14 +7,16 @@ import (
 
 func TestElementDefinition(t *testing.T) {
 	definitionIntervalString := ElementDefinition{
-		ID:           "test-definition-1",
-		Name:         "Test",
-		Description:  "Test description",
+		Identity: DefinitionIdentity{
+			ID:          "test-definition-1",
+			Name:        "Test",
+			Description: "Test description",
+		},
 		NrOfPicks:    1,
 		PickStrategy: PickStrategyRandom,
 		UniquePicks:  true,
-		Options: &ElementDefinitionOptions{
-			Interval: &ElementDefinitionOptionInterval[any]{
+		Options: ElementDefinitionOptions{
+			Interval: ElementDefinitionOptionInterval[any]{
 				MinValue: 0,
 				MaxValue: 10,
 			},

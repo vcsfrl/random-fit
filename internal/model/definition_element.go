@@ -2,18 +2,16 @@ package model
 
 // ElementDefinition is a generic type for the definition of an element.
 type ElementDefinition struct {
-	ID           string
-	Name         string
-	Description  string
+	Identity     DefinitionIdentity
 	UniquePicks  bool
 	NrOfPicks    int
 	PickStrategy PickStrategy
-	Options      *ElementDefinitionOptions
+	Options      ElementDefinitionOptions
 }
 
 // ElementDefinitionOptions is a generic type for the options of an element definition.
 type ElementDefinitionOptions struct {
-	Interval *ElementDefinitionOptionInterval[any]
+	Interval ElementDefinitionOptionInterval[any]
 	Values   []any
 }
 

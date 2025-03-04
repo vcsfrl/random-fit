@@ -2,16 +2,12 @@ package model
 
 import (
 	"fmt"
-	"time"
 )
 
 // Element is a generic type for an element.
 type Element struct {
-	ID             string
-	DefinitionId   string
-	Name           string
+	Identity
 	Values         []fmt.Stringer
-	Date           time.Time
 	ValueSeparator string
 }
 

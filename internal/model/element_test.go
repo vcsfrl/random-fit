@@ -4,13 +4,18 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestElement_String(t *testing.T) {
 	intElement := Element{
-		ID:           "element-1",
-		DefinitionId: "definition-1",
-		Name:         "Test",
+		Identity: Identity{
+			ID:           "element-1",
+			DefinitionID: "definition-1",
+			Name:         "Element 1",
+			Description:  "Description of the element",
+			Date:         time.Now(),
+		},
 		Values: []fmt.Stringer{
 			&ElementValue[string]{Value: "Test"},
 			&ElementValue[int]{Value: 12},
