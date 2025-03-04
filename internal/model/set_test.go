@@ -14,16 +14,18 @@ func TestSet_String(t *testing.T) {
 		Description: "Description of the set",
 		Elements: []Element{
 			{
-				ID:     "element-1",
-				Name:   "Element 1",
-				Values: []fmt.Stringer{&ElementValue[string]{Value: "Test"}, &ElementValue[int]{Value: 1}},
-				Date:   time.Now(),
+				ID:           "element-1",
+				DefinitionId: "definition-1",
+				Name:         "Element 1",
+				Values:       []fmt.Stringer{&ElementValue[string]{Value: "Test"}, &ElementValue[int]{Value: 1}},
+				Date:         time.Now(),
 			},
 			{
-				ID:     "element-2",
-				Name:   "Element 2",
-				Values: []fmt.Stringer{&ElementValue[string]{Value: "Test"}, &ElementValue[int]{Value: 1}},
-				Date:   time.Now(),
+				ID:           "element-2",
+				DefinitionId: "definition-2",
+				Name:         "Element 2",
+				Values:       []fmt.Stringer{&ElementValue[string]{Value: "Test"}, &ElementValue[int]{Value: 1}},
+				Date:         time.Now(),
 			},
 		},
 	}

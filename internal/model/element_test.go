@@ -8,8 +8,9 @@ import (
 
 func TestElement_String(t *testing.T) {
 	intElement := Element{
-		ID:   "element-1",
-		Name: "Test",
+		ID:           "element-1",
+		DefinitionId: "definition-1",
+		Name:         "Test",
 		Values: []fmt.Stringer{
 			&ElementValue[string]{Value: "Test"},
 			&ElementValue[int]{Value: 12},
