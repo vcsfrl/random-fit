@@ -5,5 +5,5 @@ import (
 )
 
 func Test_Generate(t *testing.T) {
-	//element := Generate(model.ElementDefinition[int]{})
+	//element := Generate(core.ElementDefinition[int]{})
 }

@@ -1,13 +1,13 @@
 package internal
 
 import (
-	"random-fit/internal/model"
+	"random-fit/internal/core"
 	"time"
 )
 
-func Generate(definition model.ElementDefinition) model.Element {
-	return model.Element{
-		Identity: model.Identity{
+func Generate(definition core.ElementDefinition) core.Element {
+	return core.Element{
+		Identity: core.Identity{
 			ID:           "element-1",
 			DefinitionID: definition.Identity.ID,
 			Name:         definition.Identity.Name,

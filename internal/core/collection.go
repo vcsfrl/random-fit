@@ -1,4 +1,4 @@
-package model
+package core
 
 type Collection struct {
 	Identity

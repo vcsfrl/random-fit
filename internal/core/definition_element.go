@@ -1,4 +1,4 @@
-package model
+package core
 
 // ElementDefinition is a generic type for the definition of an element.
 type ElementDefinition struct {
