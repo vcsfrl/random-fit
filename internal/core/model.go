@@ -2,7 +2,7 @@ package core
 
 import "time"
 
-type Identity struct {
+type Metadata struct {
 	ID           string
 	DefinitionID string
 	Name         string
@@ -10,7 +10,7 @@ type Identity struct {
 	Date         time.Time
 }
 
-type DefinitionIdentity struct {
+type DefinitionMetadata struct {
 	ID          string
 	Name        string
 	Description string

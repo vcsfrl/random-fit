@@ -9,7 +9,7 @@ import (
 
 func TestElement_String(t *testing.T) {
 	intElement := Element{
-		Identity: Identity{
+		Metadata: Metadata{
 			ID:           "element-1",
 			DefinitionID: "definition-1",
 			Name:         "Element 1",

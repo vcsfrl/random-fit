@@ -1,7 +1,7 @@
 package core
 
 type CollectionDefinition struct {
-	Identity DefinitionIdentity
+	Metadata DefinitionMetadata
 
 	Sets []SetDefinition
 }

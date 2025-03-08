@@ -8,7 +8,7 @@ import (
 
 func TestCollection(t *testing.T) {
 	collection := Collection{
-		Identity: Identity{
+		Metadata: Metadata{
 			ID:           "collection-1",
 			DefinitionID: "definition-1",
 			Name:         "Test",
@@ -17,7 +17,7 @@ func TestCollection(t *testing.T) {
 		},
 		Sets: []Set{
 			{
-				Identity: Identity{
+				Metadata: Metadata{
 					ID:          "Set 1",
 					Name:        "Test",
 					Description: "Description of the set",
@@ -25,7 +25,7 @@ func TestCollection(t *testing.T) {
 				},
 				Elements: []Element{
 					{
-						Identity: Identity{
+						Metadata: Metadata{
 							ID:           "element-1",
 							DefinitionID: "definition-1",
 							Name:         "Element 1",

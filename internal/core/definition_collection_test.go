@@ -7,21 +7,21 @@ import (
 
 func TestCollectionDefinition(t *testing.T) {
 	collectionDefinition := CollectionDefinition{
-		Identity: DefinitionIdentity{
+		Metadata: DefinitionMetadata{
 			ID:          "collection-definition-1",
 			Name:        "Test",
 			Description: "Test description",
 		},
 		Sets: []SetDefinition{
 			{
-				Identity: DefinitionIdentity{
+				Metadata: DefinitionMetadata{
 					ID:          "set-definition-1",
 					Name:        "Test",
 					Description: "Test description",
 				},
 				Elements: []ElementDefinition{
 					{
-						Identity: DefinitionIdentity{
+						Metadata: DefinitionMetadata{
 							ID:          "element-definition-1",
 							Name:        "Element 1",
 							Description: "Description of the element",

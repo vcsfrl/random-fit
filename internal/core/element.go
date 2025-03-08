@@ -6,7 +6,7 @@ import (
 
 // Element is a generic type for an element.
 type Element struct {
-	Identity
+	Metadata       Metadata
 	Values         []fmt.Stringer
 	ValueSeparator string
 }

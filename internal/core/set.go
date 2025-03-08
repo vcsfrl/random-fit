@@ -1,7 +1,7 @@
 package core
 
 type Set struct {
-	Identity
+	Metadata Metadata
 
 	Elements []Element
 }

@@ -7,7 +7,7 @@ import (
 
 func TestElementDefinition(t *testing.T) {
 	definitionIntervalString := ElementDefinition{
-		Identity: DefinitionIdentity{
+		Metadata: DefinitionMetadata{
 			ID:          "test-definition-1",
 			Name:        "Test",
 			Description: "Test description",

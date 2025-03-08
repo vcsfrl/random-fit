@@ -7,14 +7,14 @@ import (
 
 func TestSetDefinition(t *testing.T) {
 	setDefinition := SetDefinition{
-		Identity: DefinitionIdentity{
+		Metadata: DefinitionMetadata{
 			ID:          "test-definition-1",
 			Name:        "Test",
 			Description: "Test description",
 		},
 		Elements: []ElementDefinition{
 			{
-				Identity: DefinitionIdentity{
+				Metadata: DefinitionMetadata{
 					ID:          "element-1",
 					Name:        "Element 1",
 					Description: "Description of the element",

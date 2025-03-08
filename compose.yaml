@@ -1,0 +1,19 @@
+services:
+  random-fit_app:
+    build:
+      dockerfile: docker/Dockerfile
+      context: .
+      args:
+        - username=${CONTAINER_USERNAME}
+        - exec_user_id=${CONTAINER_EXEC_USER_ID}
+    container_name: random-fit_app
+    image: random-fit_app
+    restart: "unless-stopped"
+    volumes:
+      - .:/srv/random-fit:shared
+      - /etc/localtime:/etc/localtime:ro
+    user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
+#    ports:
+#      - ${TRAINER_DEBUG_PORT}:${TRAINER_DEBUG_PORT}
+    env_file:
+      - .env

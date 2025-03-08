@@ -1,7 +1,7 @@
 package core
 
 type Collection struct {
-	Identity
+	Metadata Metadata
 
 	Sets []Set
 }

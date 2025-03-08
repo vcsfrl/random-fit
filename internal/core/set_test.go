@@ -9,7 +9,7 @@ import (
 
 func TestSet_String(t *testing.T) {
 	set := Set{
-		Identity: Identity{
+		Metadata: Metadata{
 			ID:          "Set 1",
 			Name:        "Test",
 			Description: "Description of the set",
@@ -17,7 +17,7 @@ func TestSet_String(t *testing.T) {
 		},
 		Elements: []Element{
 			{
-				Identity: Identity{
+				Metadata: Metadata{
 					ID:           "element-1",
 					DefinitionID: "definition-1",
 					Name:         "Element 1",
@@ -27,7 +27,7 @@ func TestSet_String(t *testing.T) {
 				Values: []fmt.Stringer{&ElementValue[string]{Value: "Test"}, &ElementValue[int]{Value: 1}},
 			},
 			{
-				Identity: Identity{
+				Metadata: Metadata{
 					ID:           "element-2",
 					DefinitionID: "definition-2",
 					Name:         "Element 2",

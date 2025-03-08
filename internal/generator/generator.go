@@ -18,11 +18,11 @@ func (g *Generator) Set(definition core.SetDefinition) core.Set {
 
 func (g *Generator) Element(definition core.ElementDefinition) core.Element {
 	return core.Element{
-		Identity: core.Identity{
+		Metadata: core.Metadata{
 			ID:           "element-1",
-			DefinitionID: definition.Identity.ID,
-			Name:         definition.Identity.Name,
-			Description:  definition.Identity.Description,
+			DefinitionID: definition.Metadata.ID,
+			Name:         definition.Metadata.Name,
+			Description:  definition.Metadata.Description,
 			Date:         time.Time{},
 		},
 		Values: nil,
