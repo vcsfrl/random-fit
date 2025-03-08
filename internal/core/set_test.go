@@ -15,7 +15,7 @@ func TestSet_String(t *testing.T) {
 			Description: "Description of the set",
 			Date:        time.Now(),
 		},
-		Elements: []Element{
+		Elements: []*Element{
 			{
 				Metadata: Metadata{
 					ID:           "element-1",

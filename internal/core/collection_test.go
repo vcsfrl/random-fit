@@ -15,7 +15,7 @@ func TestCollection(t *testing.T) {
 			Description:  "Description of the collection",
 			Date:         time.Time{},
 		},
-		Sets: []Set{
+		Sets: []*Set{
 			{
 				Metadata: Metadata{
 					ID:          "Set 1",
@@ -23,7 +23,7 @@ func TestCollection(t *testing.T) {
 					Description: "Description of the set",
 					Date:        time.Time{},
 				},
-				Elements: []Element{
+				Elements: []*Element{
 					{
 						Metadata: Metadata{
 							ID:           "element-1",
