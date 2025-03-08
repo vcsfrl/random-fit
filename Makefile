@@ -14,3 +14,7 @@ shell: ## APP Bash.
 
 test: ## APP Test
 	go test -v -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
+
+test-name: ##  Run test by name.
+	go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$;
+

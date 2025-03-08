@@ -1,4 +1,4 @@
-module random-fit
+module github.com/vcsfrl/random-fit
 
 go 1.24
 

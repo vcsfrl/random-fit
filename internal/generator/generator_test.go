@@ -2,6 +2,7 @@ package generator
 
 import (
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/core"
 	"testing"
 )
 
@@ -20,5 +21,25 @@ func (suite *GenerateSuite) SetupTest() {
 }
 
 func (suite *GenerateSuite) TestGenerateElement() {
-	suite.NotNil(12)
+
+	// Given
+	definition := core.ElementDefinition{
+		Metadata: core.DefinitionMetadata{
+			ID:          "element-1",
+			Name:        "Element 1",
+			Description: "Element 1 description",
+		},
+		UniquePicks:  true,
+		NrOfPicks:    1,
+		PickStrategy: core.PickStrategyRandom,
+		Options: core.ElementDefinitionOptions{
+			Values: []any{"value-1", "value-2", "value-3", "value-4"},
+		},
+	}
+
+	// When
+	element := suite.generator.Element(definition)
+
+	// Then
+	suite.NotNil(element)
 }

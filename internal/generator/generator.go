@@ -1,7 +1,7 @@
 package generator
 
 import (
-	"random-fit/internal/core"
+	"github.com/vcsfrl/random-fit/internal/core"
 	"time"
 )
 
