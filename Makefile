@@ -9,7 +9,8 @@ install: ## APP Build.
 	if [ ! -f .env ]; then cp -n .env.dist .env; echo "CONTAINER_EXEC_USER_ID=`id -u`" >> .env; echo "CONTAINER_USERNAME=${USER}" >> .env; fi
 	docker compose build;
 
-
+shell: ## APP Bash.
+	docker compose run --remove-orphans random-fit_app bash
 
 test: ## APP Test
-	docker compose run random-fit_app go test -v -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
+	go test -v -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
