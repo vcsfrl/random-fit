@@ -1,0 +1,75 @@
+{
+  "collections": [
+    {
+      "title": "Lotto numbers for user 'Username'",
+      "details": "Date: '2024-12-11T11:27:44+02:00'",
+      "sets": [
+        {
+          "title": "6/49",
+          "elements": [
+            {
+              "title": "Numbers",
+              "values": [1, 2, 3, 4, 5, 6]
+            },
+            {
+                "title": "Lucky number",
+                "values": [23400]
+            }
+          ]
+        },
+        {
+          "title": "6/49",
+          "elements": [
+            {
+              "title": "Numbers",
+              "values": [7, 8, 9, 10, 11, 12]
+            },
+            {
+              "title": "Lucky number",
+              "values": [27601]
+            }
+          ]
+        },
+        {
+          "title": "6/49",
+          "elements": [
+            {
+              "title": "Numbers",
+              "values": [13, 14, 15, 16, 17, 18]
+            },
+            {
+              "title": "Lucky number",
+              "values": [31602]
+            }
+          ]
+        },
+        {
+          "title": "Joker",
+          "elements": [
+            {
+              "title": "Numbers",
+              "values": [1,2,3,4,5]
+            },
+            {
+              "title": "Joker number",
+              "values": [6]
+            }
+          ]
+        },
+        {
+          "title": "Joker",
+          "elements": [
+            {
+              "title": "Numbers",
+              "values": [7,8,9,10,11]
+            },
+            {
+              "title": "Joker number",
+              "values": [12]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
