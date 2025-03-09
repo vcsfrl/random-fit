@@ -1,0 +1,20 @@
+{
+  "kind": "element",
+  "metadata": {
+    "id": "element-1",
+    "name": "Element 1",
+    "description": "Element 1 description"
+  },
+  "specs": {
+    "uniquePick": true,
+    "nrOfPicks": 2,
+    "pickStrategy": "random",
+    "options": {
+      "values": [
+        "test-value-1",
+        "test-value-2",
+        "test-value-3"
+      ]
+    }
+  }
+}
