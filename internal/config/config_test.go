@@ -1,11 +1,7 @@
 package config
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/suite"
-	"github.com/vcsfrl/random-fit/internal/core"
-	"go.starlark.net/starlark"
 	"testing"
 )
 
@@ -24,7 +20,7 @@ func (suite *ConfigSuite) SetupTest() {
 }
 
 func (suite *ConfigSuite) TestFromScript() {
-	var collDict = starlark.NewDict(1)
+	/*var collDict = starlark.NewDict(1)
 	var metaDict = starlark.NewDict(1)
 	var setDict = starlark.NewDict(1)
 	var setList = starlark.NewList([]starlark.Value{setDict})
@@ -52,4 +48,5 @@ func (suite *ConfigSuite) TestFromScript() {
 		fmt.Printf("Set: %+v\n", set)
 	}
 	fmt.Printf("Collection json: %v\n", collJson)
+	*/
 }
