@@ -1,0 +1,9 @@
+Training program for 'Username'
+Date: '2024-12-11T11:27:44+02:00'
+
+GTG: [  KB Goblet Squat ] [ 3x5 ] [ 16kg ]
+Morning: [
+    Strength: [ Swing ] [ 10x10 ] [ 24kg ]
+    Strength: [ TGU ] [ 3x1 ] [ 16kg ]
+    Mobility: [  KB Windmill ] [ 3x5 ] [ 16kg ]
+]
