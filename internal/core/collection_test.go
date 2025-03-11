@@ -9,61 +9,52 @@ import (
 func TestCollection(t *testing.T) {
 	collection := Collection{
 		Metadata: Metadata{
-			ID:          "collection-1",
-			Name:        "Test Collection 1",
-			Description: "Description of the collection",
-			Date:        time.Time{},
-		},
-		Sets: []*Set{
-			{
-				Metadata: Metadata{
-					ID:          "Set 1",
-					Name:        "Test Set 1",
-					Description: "Description of the Set 1",
-					Date:        time.Time{},
-				},
-				Elements: []*Element{
-					{
-						Metadata: Metadata{
-							ID:          "element-1",
-							Name:        "Element 1",
-							Description: "Description of the element",
-							Date:        time.Time{},
-						},
-						Values: []*ElementValue[any]{
-							&ElementValue[any]{Value: "Test"},
-							&ElementValue[any]{Value: 1},
-						},
-					},
-				},
-			},
+			ID:          "coll-pick-1",
+			Name:        "Lotto number picks",
+			Description: "Users monthly Lotto Number picks",
+			Date:        time.Now(),
 		},
 		Collections: []*Collection{
 			{
 				Metadata: Metadata{
-					ID:          "collection-2",
-					Name:        "Test Collection 2",
-					Description: "Description of the collection 2",
-					Date:        time.Time{},
+					ID:          "coll-pick-1-u1",
+					Name:        "User Lotto Numbers",
+					Description: "User Lotto Number picks",
+					Date:        time.Now(),
 				},
 				Sets: []*Set{
 					{
 						Metadata: Metadata{
-							ID:          "Set 2",
-							Name:        "Test Set 2",
-							Description: "Description of the set 2",
-							Date:        time.Time{},
+							ID:          "set-pick-u1-1",
+							Name:        "6/49",
+							Description: "User Lotto Number picks for 6/49",
+							Date:        time.Now(),
 						},
 						Elements: []*Element{
 							{
 								Metadata: Metadata{
-									ID:          "element-2",
-									Name:        "Element 2",
-									Description: "Description of the element",
-									Date:        time.Time{},
+									ID:          "element-pick-u1-1",
+									Name:        "Numbers",
+									Description: "6 numbers out of 49",
 								},
 								Values: []*ElementValue[any]{
-									&ElementValue[any]{Value: 1},
+									{Value: 1},
+									{Value: 2},
+									{Value: 3},
+									{Value: 4},
+									{Value: 5},
+									{Value: 6},
+								},
+							},
+							{
+								Metadata: Metadata{
+									ID:          "element-pick-u1-2",
+									Name:        "Lucky Number",
+									Description: "Lucky Number for 6/49 draw",
+									Date:        time.Now(),
+								},
+								Values: []*ElementValue[any]{
+									{Value: 25600},
 								},
 							},
 						},
