@@ -18,7 +18,6 @@ func TestElement_String(t *testing.T) {
 			&ElementValue[any]{Value: "Test"},
 			&ElementValue[any]{Value: 12},
 		},
-		ValueSeparator: "-",
 	}
 
 	assert.NotNil(t, element)
