@@ -14,7 +14,7 @@ func TestSet_String(t *testing.T) {
 			Description: "Description of the set",
 			Date:        time.Now(),
 		},
-		Elements: []*Element{
+		Elements: []*Element[any]{
 			{
 				Metadata: Metadata{
 					ID:          "element-1",
@@ -22,7 +22,9 @@ func TestSet_String(t *testing.T) {
 					Description: "Description of the element",
 					Date:        time.Now(),
 				},
-				Values: []*ElementValue[any]{&ElementValue[any]{Value: "Test"}, &ElementValue[any]{Value: 1}},
+				Values: []any{
+					"Test", 1,
+				},
 			},
 			{
 				Metadata: Metadata{
@@ -31,7 +33,9 @@ func TestSet_String(t *testing.T) {
 					Description: "Description of the element",
 					Date:        time.Now(),
 				},
-				Values: []*ElementValue[any]{&ElementValue[any]{Value: "Test"}, &ElementValue[any]{Value: 1}},
+				Values: []any{
+					"Test", 2,
+				},
 			},
 		},
 	}

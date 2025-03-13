@@ -3,5 +3,5 @@ package core
 type Set struct {
 	Metadata Metadata
 
-	Elements []*Element
+	Elements []*Element[any]
 }
