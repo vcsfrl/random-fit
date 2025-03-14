@@ -17,23 +17,23 @@ def build_collection(users):
         ]
     }
 
-    for user in users:
+    for i in range(len(users)):
         inner_collection = {
             "Metadata": {
-                "ID":          "coll-pick-1-" + user["ID"],
-                "Name":        "Lotto Numbers fot " + user["Name"],
-                "Description": user["Name"] +" monthly Lotto Number picks",
+                "ID":          "coll-pick-" + str(i+1) + "-" + users[i]["ID"],
+                "Name":        "Lotto Numbers fot " + users[i]["Name"],
+                "Description": users[i]["Name"] +" monthly Lotto Number picks",
                 "Date":        "2025-03-12T09:24:17.884610034+02:00",
             },
             "Sets": [],
         }
 
-        for i in range(3):
+        for j in range(3):
             sixfortynine = {
                 "Metadata": {
-                    "ID":          "set-pick-1-" + user["ID"] + "-" + str(i),
-                    "Name":        "Lotto Numbers fot " + user["Name"],
-                    "Description": user["Name"] +" monthly Lotto Number picks",
+                    "ID":          "set-pick-1-" + users[i]["ID"] + "-" + str(j),
+                    "Name":        "Lotto Numbers fot " + users[i]["Name"],
+                    "Description": users[i]["Name"] +" monthly Lotto Number picks",
                     "Date":        "2025-03-12T09:24:17.884610034+02:00",
                 },
                 "Values": [1, 2, 3, 4, 5, 6],
