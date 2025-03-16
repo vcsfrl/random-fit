@@ -60,7 +60,7 @@ def build_collection():
                             "ID": "element-" + uuid(),
                             "Name": "Lucky Number",
                             "Description": "Lucky Number for 6/49 draw",
-                            "Date": "2025-03-12T09:24:17.884610034+02:00"
+                            "Date": current_time
                         },
                         "Values": [
                             24500

@@ -29,6 +29,20 @@ func NewStartCollectionBuilder(starFile string) (*StartCollectionBuilder, error)
 	return builder, nil
 }
 
+func (s *StartCollectionBuilder) Build() (*core.Collection, error) {
+	v, err := starlark.Call(s.thread, s.builderFunc, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("building collection from Starlark: %w", err)
+	}
+
+	collection := &core.Collection{}
+	if err := json.Unmarshal([]byte(v.String()), collection); err != nil {
+		return nil, fmt.Errorf("parsing collection from Starlark: %w", err)
+	}
+
+	return collection, nil
+}
+
 func (s *StartCollectionBuilder) start() error {
 
 	// The Thread defines the behavior of the built-in 'print' function.
@@ -73,7 +87,7 @@ func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 	// now() is a Go function called from Starlark.
 	// It returns the current time in RFC3339 format.
 	now := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		now := time.Now()
+		now := s.getNowFunc()()
 
 		return starlark.String(time.Time.Format(now, time.RFC3339)), nil
 	}
@@ -100,7 +114,7 @@ func (s *StartCollectionBuilder) getUuidFunc() func() (string, error) {
 		return id.String(), nil
 	}
 
-	return s.getUuidFunc()
+	return s.uuidFunc
 }
 
 func (s *StartCollectionBuilder) getNowFunc() func() time.Time {
@@ -112,19 +126,5 @@ func (s *StartCollectionBuilder) getNowFunc() func() time.Time {
 		return time.Now()
 	}
 
-	return s.getNowFunc()
-}
-
-func (s *StartCollectionBuilder) Build() (*core.Collection, error) {
-	v, err := starlark.Call(s.thread, s.builderFunc, nil, nil)
-	if err != nil {
-		return nil, fmt.Errorf("building collection from Starlark: %w", err)
-	}
-
-	collection := &core.Collection{}
-	if err := json.Unmarshal([]byte(v.String()), collection); err != nil {
-		return nil, fmt.Errorf("parsing collection from Starlark: %w", err)
-	}
-
-	return collection, nil
+	return s.nowFunc
 }
