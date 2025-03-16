@@ -1,12 +1,16 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/core"
 	"go.starlark.net/starlark"
 	"log"
-	"strings"
 	"testing"
+	"time"
 )
 
 func TestConfigSuite(t *testing.T) {
@@ -24,31 +28,53 @@ func (suite *ConfigSuite) SetupTest() {
 }
 
 func (suite *ConfigSuite) TestFromScript() {
-	// repeat(str, n=1) is a Go function called from Starlark.
-	// It behaves like the 'string * int' operation.
-	repeat := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var s string
-		var n int = 1
-		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "s", &s, "n?", &n); err != nil {
+
+	builder := &StartCollectionBuilder{}
+	builder.Start()
+	collection := builder.Build()
+
+	spew.Dump(collection)
+}
+
+type StartCollectionBuilder struct {
+	thread      *starlark.Thread
+	builderFunc starlark.Value
+}
+
+func (s *StartCollectionBuilder) Start() {
+	// uuid() is a Go function called from Starlark.
+	// It returns a new UUID version 7.
+	uuid := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		id, err := uuid.NewV7()
+		if err != nil {
 			return nil, err
+
 		}
-		return starlark.String(strings.Repeat(s, n)), nil
+
+		return starlark.String(id.String()), nil
 	}
 
+	// now() is a Go function called from Starlark.
+	// It returns the current time in RFC3339 format.
+	now := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		now := time.Now()
+
+		return starlark.String(time.Time.Format(now, time.RFC3339)), nil
+	}
 	// The Thread defines the behavior of the built-in 'print' function.
-	thread := &starlark.Thread{
-		Name:  "example",
+	s.thread = &starlark.Thread{
+		Name:  "collection-builder",
 		Print: func(_ *starlark.Thread, msg string) { fmt.Println(msg) },
 	}
 
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		"greeting": starlark.String("hello"),
-		"repeat":   starlark.NewBuiltin("repeat", repeat),
+		"uuid": starlark.NewBuiltin("uuid", uuid),
+		"now":  starlark.NewBuiltin("now", now),
 	}
 
 	// Execute a program.
-	globals, err := starlark.ExecFile(thread, "testdata/collection.star", nil, predeclared)
+	globals, err := starlark.ExecFile(s.thread, "testdata/collection.star", nil, predeclared)
 	if err != nil {
 		if evalErr, ok := err.(*starlark.EvalError); ok {
 			log.Fatal(evalErr.Backtrace())
@@ -57,13 +83,25 @@ func (suite *ConfigSuite) TestFromScript() {
 	}
 
 	// Retrieve a module global.
-	buildCollection := globals["build_collection"]
+	buildCollection, ok := globals["build_collection"]
+	if !ok {
+		log.Fatal("build_collection not found")
+	}
 
-	v, err := starlark.Call(thread, buildCollection, nil, nil)
+	s.builderFunc = buildCollection
+}
+
+func (s *StartCollectionBuilder) Build() core.Collection {
+	v, err := starlark.Call(s.thread, s.builderFunc, nil, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Collection:", v)
+	collection := core.Collection{}
 
+	if err := json.Unmarshal([]byte(v.String()), &collection); err != nil {
+		log.Fatal(err)
+	}
+
+	return collection
 }

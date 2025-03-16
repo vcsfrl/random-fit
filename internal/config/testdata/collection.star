@@ -4,12 +4,14 @@ def build_collection():
         {"ID": "u2", "Name": "User 2"},
     ]
 
+    current_time = now()
+
     collection = {
         "Metadata": {
-            "ID": "coll-fam",
+            "ID": "collection-" + uuid(),
             "Name": "Lotto number picks",
             "Description": "Users monthly Lotto Number picks",
-            "Date": "2025-03-12T09:24:17.884610034+02:00"
+            "Date": current_time
         },
         "Sets": [],
         "Collections": [
@@ -20,10 +22,10 @@ def build_collection():
     for i in range(len(users)):
         inner_collection = {
             "Metadata": {
-                "ID": "coll-fam-user-" + str(i + 1) + "-" + users[i]["ID"],
+                "ID": "collection-" + uuid(),
                 "Name": "Lotto Numbers fot " + users[i]["Name"],
                 "Description": users[i]["Name"] + " monthly Lotto Number picks",
-                "Date": "2025-03-12T09:24:17.884610034+02:00",
+                "Date": current_time,
             },
             "Sets": [],
         }
@@ -31,18 +33,18 @@ def build_collection():
         for j in range(3):
             sixfortynine = {
                 "Metadata": {
-                    "ID": "coll-fam-user-set-pick-" + users[i]["ID"] + "-" + str(j),
+                    "ID": "set-" + uuid(),
                     "Name": "Lotto Numbers fot " + users[i]["Name"],
                     "Description": users[i]["Name"] + " monthly Lotto Number picks",
-                    "Date": "2025-03-12T09:24:17.884610034+02:00",
+                    "Date": current_time,
                 },
                 "Elements": [
                     {
                         "Metadata": {
-                            "ID": "coll-fam-user-set-element-pick-" + users[i]["ID"] + "-" + str(j) + "-1",
+                            "ID": "element-" + uuid(),
                             "Name": "Numbers",
                             "Description": "6 numbers out of 49",
-                            "Date": "0001-01-01T00:00:00Z"
+                            "Date": current_time
                         },
                         "Values": [
                             1,
@@ -55,7 +57,7 @@ def build_collection():
                     },
                     {
                         "Metadata": {
-                            "ID": "coll-fam-user-set-element-pick-" + users[i]["ID"] + "-" + str(j) + "-2",
+                            "ID": "element-" + uuid(),
                             "Name": "Lucky Number",
                             "Description": "Lucky Number for 6/49 draw",
                             "Date": "2025-03-12T09:24:17.884610034+02:00"

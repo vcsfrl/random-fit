@@ -3,6 +3,7 @@ module github.com/vcsfrl/random-fit
 go 1.24
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/stretchr/testify v1.10.0
 	go.starlark.net v0.0.0-20250225190231-0d3f41d403af
 )
