@@ -14,6 +14,9 @@ type StartCollectionBuilder struct {
 	thread      *starlark.Thread
 	builderFunc starlark.Value
 	starFile    string
+
+	uuidFunc func() (string, error)
+	nowFunc  func() time.Time
 }
 
 func NewStartCollectionBuilder(starFile string) (*StartCollectionBuilder, error) {
@@ -55,15 +58,16 @@ func (s *StartCollectionBuilder) start() error {
 
 func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 	// uuid() is a Go function called from Starlark.
-	// It returns a new UUID version 7.
+	// It returns a new UUID.
 	uuid := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		id, err := uuid.NewV7()
+		uuidFunc := s.getUuidFunc()
+		id, err := uuidFunc()
 		if err != nil {
 			return nil, err
 
 		}
 
-		return starlark.String(id.String()), nil
+		return starlark.String(id), nil
 	}
 
 	// now() is a Go function called from Starlark.
@@ -81,6 +85,34 @@ func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 	}
 
 	return predeclared
+}
+
+func (s *StartCollectionBuilder) getUuidFunc() func() (string, error) {
+	if s.uuidFunc != nil {
+		return s.uuidFunc
+	}
+
+	s.uuidFunc = func() (string, error) {
+		id, err := uuid.NewV7()
+		if err != nil {
+			return "", err
+		}
+		return id.String(), nil
+	}
+
+	return s.getUuidFunc()
+}
+
+func (s *StartCollectionBuilder) getNowFunc() func() time.Time {
+	if s.nowFunc != nil {
+		return s.nowFunc
+	}
+
+	s.nowFunc = func() time.Time {
+		return time.Now()
+	}
+
+	return s.getNowFunc()
 }
 
 func (s *StartCollectionBuilder) Build() (*core.Collection, error) {
