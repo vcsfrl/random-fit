@@ -92,10 +92,33 @@ func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 		return starlark.String(time.Time.Format(now, time.RFC3339)), nil
 	}
 
+	// randomInt() is a Go function called from Starlark.
+	// It returns multiple random values from an interval.
+	randomInt := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		var min int
+		var max int
+		var nr int
+		var allowDuplicates bool = false
+
+		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &min, "max", &max, "nr", &nr, "allow_duplicates?", &allowDuplicates); err != nil {
+			return nil, err
+		}
+
+		return starlark.NewList([]starlark.Value{
+			starlark.MakeInt(1),
+			starlark.MakeInt(2),
+			starlark.MakeInt(3),
+			starlark.MakeInt(4),
+			starlark.MakeInt(5),
+			starlark.MakeInt(6),
+		}), nil
+	}
+
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		"uuid": starlark.NewBuiltin("uuid", uuid),
-		"now":  starlark.NewBuiltin("now", now),
+		"uuid":       starlark.NewBuiltin("uuid", uuid),
+		"now":        starlark.NewBuiltin("now", now),
+		"random_int": starlark.NewBuiltin("random_int", randomInt),
 	}
 
 	return predeclared

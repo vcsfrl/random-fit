@@ -46,14 +46,7 @@ def build_collection():
                             "Description": "6 numbers out of 49",
                             "Date": current_time
                         },
-                        "Values": [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6
-                        ]
+                        "Values": random_int(1, 49, 6, False)
                     },
                     {
                         "Metadata": {

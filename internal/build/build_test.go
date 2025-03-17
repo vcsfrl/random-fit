@@ -15,14 +15,11 @@ func TestBuildSuite(t *testing.T) {
 type BuildSuite struct {
 	suite.Suite
 
-	testFolder string
-	builder    *StartCollectionBuilder
-	id         int
+	builder *StartCollectionBuilder
+	id      int
 }
 
 func (suite *BuildSuite) SetupTest() {
-	suite.testFolder = "testdata/"
-
 	var err error
 	suite.builder, err = NewStartCollectionBuilder("testdata/collection.star")
 	suite.NoError(err)
@@ -47,12 +44,12 @@ func (suite *BuildSuite) TestFromScript() {
 	jsonData, err := json.MarshalIndent(collection, "", "  ")
 	suite.NoError(err)
 
-	suite.Equal(string(jsonData), buildFromScriptResult1)
+	suite.Equal(buildFromScriptResult1, string(jsonData))
 
 	collection, err = suite.builder.Build()
 	suite.NoError(err)
 	jsonData, err = json.MarshalIndent(collection, "", "  ")
 	suite.NoError(err)
 
-	suite.Equal(string(jsonData), buildFromScriptResult2)
+	suite.Equal(buildFromScriptResult2, string(jsonData))
 }
