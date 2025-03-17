@@ -17,20 +17,20 @@ type BuildSuite struct {
 
 	testFolder string
 	builder    *StartCollectionBuilder
+	id         int
 }
 
 func (suite *BuildSuite) SetupTest() {
 	suite.testFolder = "testdata/"
-	id := 0
 
 	var err error
-
 	suite.builder, err = NewStartCollectionBuilder("testdata/collection.star")
 	suite.NoError(err)
 
+	suite.id = 0
 	suite.builder.uuidFunc = func() (string, error) {
-		id++
-		return fmt.Sprintf("00000000-0000-0000-0000-%012d", id), nil
+		suite.id++
+		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	}
 
 	suite.builder.nowFunc = func() time.Time {
