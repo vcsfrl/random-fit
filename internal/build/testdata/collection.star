@@ -23,7 +23,7 @@ def build_collection():
         inner_collection = {
             "Metadata": {
                 "ID": "collection-" + uuid(),
-                "Name": "Lotto Numbers fot " + users[i]["Name"],
+                "Name": "Lotto Numbers for " + users[i]["Name"],
                 "Description": users[i]["Name"] + " monthly Lotto Number picks",
                 "Date": current_time,
             },
@@ -34,7 +34,7 @@ def build_collection():
             sixfortynine = {
                 "Metadata": {
                     "ID": "set-" + uuid(),
-                    "Name": "Lotto Numbers fot " + users[i]["Name"],
+                    "Name": "Lotto Numbers for " + users[i]["Name"],
                     "Description": users[i]["Name"] + " monthly Lotto Number picks",
                     "Date": current_time,
                 },

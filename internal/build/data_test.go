@@ -12,7 +12,7 @@ const buildFromScriptResult1 = `{
     {
       "Metadata": {
         "ID": "collection-00000000-0000-0000-0000-000000000002",
-        "Name": "Lotto Numbers fot User 1",
+        "Name": "Lotto Numbers for User 1",
         "Description": "User 1 monthly Lotto Number picks",
         "Date": "2021-01-01T00:00:00Z"
       },
@@ -20,7 +20,7 @@ const buildFromScriptResult1 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000003",
-            "Name": "Lotto Numbers fot User 1",
+            "Name": "Lotto Numbers for User 1",
             "Description": "User 1 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -57,7 +57,7 @@ const buildFromScriptResult1 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000006",
-            "Name": "Lotto Numbers fot User 1",
+            "Name": "Lotto Numbers for User 1",
             "Description": "User 1 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -94,7 +94,7 @@ const buildFromScriptResult1 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000009",
-            "Name": "Lotto Numbers fot User 1",
+            "Name": "Lotto Numbers for User 1",
             "Description": "User 1 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -134,7 +134,7 @@ const buildFromScriptResult1 = `{
     {
       "Metadata": {
         "ID": "collection-00000000-0000-0000-0000-000000000012",
-        "Name": "Lotto Numbers fot User 2",
+        "Name": "Lotto Numbers for User 2",
         "Description": "User 2 monthly Lotto Number picks",
         "Date": "2021-01-01T00:00:00Z"
       },
@@ -142,7 +142,7 @@ const buildFromScriptResult1 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000013",
-            "Name": "Lotto Numbers fot User 2",
+            "Name": "Lotto Numbers for User 2",
             "Description": "User 2 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -179,7 +179,7 @@ const buildFromScriptResult1 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000016",
-            "Name": "Lotto Numbers fot User 2",
+            "Name": "Lotto Numbers for User 2",
             "Description": "User 2 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -216,7 +216,7 @@ const buildFromScriptResult1 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000019",
-            "Name": "Lotto Numbers fot User 2",
+            "Name": "Lotto Numbers for User 2",
             "Description": "User 2 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -268,7 +268,7 @@ const buildFromScriptResult2 = `{
     {
       "Metadata": {
         "ID": "collection-00000000-0000-0000-0000-000000000023",
-        "Name": "Lotto Numbers fot User 1",
+        "Name": "Lotto Numbers for User 1",
         "Description": "User 1 monthly Lotto Number picks",
         "Date": "2021-01-01T00:00:00Z"
       },
@@ -276,7 +276,7 @@ const buildFromScriptResult2 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000024",
-            "Name": "Lotto Numbers fot User 1",
+            "Name": "Lotto Numbers for User 1",
             "Description": "User 1 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -313,7 +313,7 @@ const buildFromScriptResult2 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000027",
-            "Name": "Lotto Numbers fot User 1",
+            "Name": "Lotto Numbers for User 1",
             "Description": "User 1 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -350,7 +350,7 @@ const buildFromScriptResult2 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000030",
-            "Name": "Lotto Numbers fot User 1",
+            "Name": "Lotto Numbers for User 1",
             "Description": "User 1 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -390,7 +390,7 @@ const buildFromScriptResult2 = `{
     {
       "Metadata": {
         "ID": "collection-00000000-0000-0000-0000-000000000033",
-        "Name": "Lotto Numbers fot User 2",
+        "Name": "Lotto Numbers for User 2",
         "Description": "User 2 monthly Lotto Number picks",
         "Date": "2021-01-01T00:00:00Z"
       },
@@ -398,7 +398,7 @@ const buildFromScriptResult2 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000034",
-            "Name": "Lotto Numbers fot User 2",
+            "Name": "Lotto Numbers for User 2",
             "Description": "User 2 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -435,7 +435,7 @@ const buildFromScriptResult2 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000037",
-            "Name": "Lotto Numbers fot User 2",
+            "Name": "Lotto Numbers for User 2",
             "Description": "User 2 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
@@ -472,7 +472,7 @@ const buildFromScriptResult2 = `{
         {
           "Metadata": {
             "ID": "set-00000000-0000-0000-0000-000000000040",
-            "Name": "Lotto Numbers fot User 2",
+            "Name": "Lotto Numbers for User 2",
             "Description": "User 2 monthly Lotto Number picks",
             "Date": "2021-01-01T00:00:00Z"
           },
