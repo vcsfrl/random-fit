@@ -39,14 +39,8 @@ func (df *DiceFixture) TestDiceErr() {
 
 	df.Equal(pick, uint(0))
 	df.True(errors.Is(err, ErrDice))
-	df.Equal(err.Error(), "dice error | Sides must be greater than 0 and multiplier of 2")
+	df.Equal(err.Error(), "dice error | must have at least one side")
 
-	df.dice.Sides = 1
-	pick, err = df.dice.Roll()
-
-	df.Equal(pick, uint(0))
-	df.True(errors.Is(err, ErrDice))
-	df.Equal(err.Error(), "dice error | Sides must be greater than 0 and multiplier of 2")
 }
 
 type MockGenerator struct {

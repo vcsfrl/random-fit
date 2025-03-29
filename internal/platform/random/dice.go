@@ -8,8 +8,8 @@ import (
 var ErrDice = errors.New("dice error")
 
 func (d Dice) Roll() (uint, error) {
-	if d.Sides == 0 || d.Sides%2 != 0 {
-		return 0, fmt.Errorf("%w | Sides must be greater than 0 and multiplier of 2", ErrDice)
+	if d.Sides == 0 {
+		return 0, fmt.Errorf("%w | must have at least one side", ErrDice)
 	}
 
 	return d.generator.Uint(1, d.Sides)
