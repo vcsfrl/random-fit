@@ -15,8 +15,9 @@ type StartCollectionBuilder struct {
 	builderFunc starlark.Value
 	starFile    string
 
-	uuidFunc func() (string, error)
-	nowFunc  func() time.Time
+	uuidFunc      func() (string, error)
+	nowFunc       func() time.Time
+	randomIntFunc func(min int, max int) int
 }
 
 func NewStartCollectionBuilder(starFile string) (*StartCollectionBuilder, error) {
@@ -104,14 +105,16 @@ func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 			return nil, err
 		}
 
-		return starlark.NewList([]starlark.Value{
-			starlark.MakeInt(1),
-			starlark.MakeInt(2),
-			starlark.MakeInt(3),
-			starlark.MakeInt(4),
-			starlark.MakeInt(5),
-			starlark.MakeInt(6),
-		}), nil
+		result := starlark.NewList([]starlark.Value{})
+
+		for i := 0; i < nr; i++ {
+			err := result.Append(starlark.MakeInt(s.randomIntFunc(min, max)))
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		return result, nil
 	}
 
 	// This dictionary defines the pre-declared environment.

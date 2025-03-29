@@ -14,9 +14,7 @@ def build_collection():
             "Date": current_time
         },
         "Sets": [],
-        "Collections": [
-
-        ]
+        "Collections": []
     }
 
     for i in range(len(users)):
