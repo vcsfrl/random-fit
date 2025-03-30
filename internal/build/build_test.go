@@ -17,7 +17,7 @@ type BuildSuite struct {
 
 	builder  *StartCollectionBuilder
 	id       int
-	testRand int
+	testRand uint
 }
 
 func (suite *BuildSuite) SetupTest() {
@@ -35,9 +35,9 @@ func (suite *BuildSuite) SetupTest() {
 		return time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 	}
 
-	suite.builder.randomIntFunc = func(min int, max int) int {
+	suite.builder.randomUintFunc = func(min uint, max uint) (uint, error) {
 		suite.testRand++
-		return suite.testRand
+		return suite.testRand, nil
 	}
 
 	suite.NoError(err)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/core"
+	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 	"time"
@@ -15,9 +16,9 @@ type StartCollectionBuilder struct {
 	builderFunc starlark.Value
 	starFile    string
 
-	uuidFunc      func() (string, error)
-	nowFunc       func() time.Time
-	randomIntFunc func(min int, max int) int
+	uuidFunc       func() (string, error)
+	nowFunc        func() time.Time
+	randomUintFunc func(min uint, max uint) (uint, error)
 }
 
 func NewStartCollectionBuilder(starFile string) (*StartCollectionBuilder, error) {
@@ -96,8 +97,8 @@ func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 	// randomInt() is a Go function called from Starlark.
 	// It returns multiple random values from an interval.
 	randomInt := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var min int
-		var max int
+		var min uint
+		var max uint
 		var nr int
 		var allowDuplicates bool = false
 
@@ -108,7 +109,11 @@ func (s *StartCollectionBuilder) predeclared() starlark.StringDict {
 		result := starlark.NewList([]starlark.Value{})
 
 		for i := 0; i < nr; i++ {
-			err := result.Append(starlark.MakeInt(s.randomIntFunc(min, max)))
+			uintFunc, err := s.randomUintFunc(min, max)
+			if err != nil {
+				return nil, err
+			}
+			err = result.Append(starlark.MakeUint(uintFunc))
 			if err != nil {
 				return nil, err
 			}
@@ -153,4 +158,14 @@ func (s *StartCollectionBuilder) getNowFunc() func() time.Time {
 	}
 
 	return s.nowFunc
+}
+
+func (s *StartCollectionBuilder) getRandomIntFunc() func(min uint, max uint) (uint, error) {
+	if s.randomUintFunc != nil {
+		return s.randomUintFunc
+	}
+
+	s.randomUintFunc = random.NewCrypto().Uint
+
+	return s.randomUintFunc
 }

@@ -40,7 +40,6 @@ func (df *DiceFixture) TestDiceErr() {
 	df.Equal(pick, uint(0))
 	df.True(errors.Is(err, ErrDice))
 	df.Equal(err.Error(), "dice error | must have at least one side")
-
 }
 
 type MockGenerator struct {
