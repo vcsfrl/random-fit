@@ -18,3 +18,5 @@ test: ## APP Test
 test-name: ##  Run test by name.
 	go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$;
 
+lint: ## Run linter.
+	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.0.2 golangci-lint run
