@@ -9,14 +9,14 @@ install: ## APP Build.
 	if [ ! -f .env ]; then cp -n .env.dist .env; echo "CONTAINER_EXEC_USER_ID=`id -u`" >> .env; echo "CONTAINER_USERNAME=${USER}" >> .env; fi
 	docker compose build;
 
-shell: ## APP Bash.
+bash: ## APP Bash.
 	docker compose run --remove-orphans random-fit_app bash
 
 test: ## APP Test
-	go test -v -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
+	docker compose run --remove-orphans random-fit_app go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./internal/...;
 
 test-name: ##  Run test by name.
-	go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$;
+	docker compose run --remove-orphans random-fit_app go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$;
 
 lint: ## Run linter.
 	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.0.2 golangci-lint run

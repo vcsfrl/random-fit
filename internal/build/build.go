@@ -101,7 +101,7 @@ func (bd *Builder) predeclared() starlark.StringDict {
 		var min uint
 		var max uint
 		var nr int
-		var allowDuplicates bool = false
+		var allowDuplicates = false
 
 		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &min, "max", &max, "nr", &nr, "allow_duplicates?", &allowDuplicates); err != nil {
 			return nil, err

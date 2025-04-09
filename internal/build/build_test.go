@@ -12,13 +12,12 @@ func TestBuildSuite(t *testing.T) {
 
 type BuildSuite struct {
 	suite.Suite
-	builder *Builder
 }
 
 func (suite *BuildSuite) TestBuild() {
 	definition := &model.Definition{
 		ID:         "test",
-		StarScript: "testdata/star_script.star",
+		StarScript: "./testdata/star_script.star",
 		GoTemplate: "./testdata/go_template.tmpl",
 	}
 
