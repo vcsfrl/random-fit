@@ -1,12 +1,15 @@
 package build
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/model"
 	"github.com/vcsfrl/random-fit/internal/tmp/platform/random"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
+	"html/template"
+	"path/filepath"
 	"time"
 )
 
@@ -36,18 +39,26 @@ func NewBuilder(definition *model.Definition) (*Builder, error) {
 
 func (bd *Builder) Build() (*model.Combination, error) {
 	// Run the Starlark script from the definition to create a new combination.
-	v, err := starlark.Call(bd.thread, bd.builderFunc, nil, nil)
+	combinationData, err := starlark.Call(bd.thread, bd.builderFunc, nil, nil)
 	if err != nil {
 		return nil, ErrBuildingScript
 	}
 
 	// Build the template from the definition.
+	base := filepath.Base(bd.definition.GoTemplate)
+	templateData := template.Must(template.New(base).ParseFiles(bd.definition.GoTemplate))
+
+	output := new(bytes.Buffer)
+	if err := templateData.Execute(output, combinationData); err != nil {
+		return nil, err
+	}
 
 	// Build the combination from the template and the data from the Starlark script.
 	combination := &model.Combination{
-		UUID:         uuid.New(),
-		DefinitionId: bd.definition.ID,
-		Data:         v,
+		UUID:       uuid.New(),
+		Definition: bd.definition,
+		Data:       combinationData,
+		Output:     output,
 	}
 
 	return combination, nil

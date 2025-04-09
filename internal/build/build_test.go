@@ -16,9 +16,11 @@ type BuildSuite struct {
 
 func (suite *BuildSuite) TestBuild() {
 	definition := &model.Definition{
-		ID:         "test",
-		StarScript: "./testdata/star_script.star",
-		GoTemplate: "./testdata/go_template.tmpl",
+		ID:              "test",
+		StarScript:      "./testdata/star_script.star",
+		GoTemplate:      "./testdata/go_template.gohtml",
+		OutputExtension: "md",
+		OutputMimeType:  "text/markdown",
 	}
 
 	builder, err := NewBuilder(definition)
@@ -28,7 +30,7 @@ func (suite *BuildSuite) TestBuild() {
 
 	suite.NoError(err)
 	suite.NotNil(combination)
-	suite.Equal(definition.ID, combination.DefinitionId)
+	suite.Equal(definition, combination.Definition)
 	suite.NotEmpty(combination.UUID)
 	suite.NotNil(combination.Data)
 }
