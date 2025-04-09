@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+var ErrBuilding = fmt.Errorf("error building combination")
+var ErrBuildingScript = fmt.Errorf("%w: error starlark script", ErrBuilding)
+
 type Builder struct {
 	thread      *starlark.Thread
 	builderFunc starlark.Value
@@ -31,21 +34,26 @@ func NewBuilder(definition *model.Definition) (*Builder, error) {
 
 }
 
-func (bd *Builder) Build() *model.Combination {
+func (bd *Builder) Build() (*model.Combination, error) {
 	// Run the Starlark script from the definition to create a new combination.
+	v, err := starlark.Call(bd.thread, bd.builderFunc, nil, nil)
+	if err != nil {
+		return nil, ErrBuildingScript
+	}
 
 	// Build the template from the definition.
 
 	// Build the combination from the template and the data from the Starlark script.
-	return &model.Combination{
+	combination := &model.Combination{
 		UUID:         uuid.New(),
 		DefinitionId: bd.definition.ID,
-		Data:         nil,
+		Data:         v,
 	}
+
+	return combination, nil
 }
 
 func (bd *Builder) start() error {
-
 	// The Thread defines the behavior of the built-in 'print' function.
 	bd.thread = &starlark.Thread{
 		Name:  "combination-builder",
@@ -61,20 +69,20 @@ func (bd *Builder) start() error {
 	}
 
 	// Retrieve a module global.
-	buildCollection, ok := globals["build_combination"]
+	buildCombination, ok := globals["build_combination"]
 	if !ok {
 		return fmt.Errorf("missing 'build_combination' function definition in %s", bd.definition.StarScript)
 	}
 
-	bd.builderFunc = buildCollection
+	bd.builderFunc = buildCombination
 
 	return nil
 }
 
 func (bd *Builder) predeclared() starlark.StringDict {
-	// uuid() is a Go function called from Starlark.
+	// uuidF() is a Go function called from Starlark.
 	// It returns a new UUID.
-	uuid := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+	uuidF := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 		uuidFunc := bd.getUuidFunc()
 		id, err := uuidFunc()
 		if err != nil {
@@ -84,8 +92,6 @@ func (bd *Builder) predeclared() starlark.StringDict {
 
 		return starlark.String(id), nil
 	}
-
-	bd.getNowFunc()
 
 	// now() is a Go function called from Starlark.
 	// It returns the current time in RFC3339 format.
@@ -108,12 +114,12 @@ func (bd *Builder) predeclared() starlark.StringDict {
 		}
 
 		result := starlark.NewList([]starlark.Value{})
+		uintFunc, err := bd.getRandomIntFunc()(min, max)
+		if err != nil {
+			return nil, err
+		}
 
 		for i := 0; i < nr; i++ {
-			uintFunc, err := bd.randomUintFunc(min, max)
-			if err != nil {
-				return nil, err
-			}
 			err = result.Append(starlark.MakeUint(uintFunc))
 			if err != nil {
 				return nil, err
@@ -125,7 +131,7 @@ func (bd *Builder) predeclared() starlark.StringDict {
 
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		"uuid":       starlark.NewBuiltin("uuid", uuid),
+		"uuid":       starlark.NewBuiltin("uuid", uuidF),
 		"now":        starlark.NewBuiltin("now", now),
 		"random_int": starlark.NewBuiltin("random_int", randomInt),
 	}

@@ -24,10 +24,11 @@ func (suite *BuildSuite) TestBuild() {
 	builder, err := NewBuilder(definition)
 	suite.NoError(err)
 
-	combination := builder.Build()
+	combination, err := builder.Build()
 
+	suite.NoError(err)
 	suite.NotNil(combination)
 	suite.Equal(definition.ID, combination.DefinitionId)
 	suite.NotEmpty(combination.UUID)
-	suite.Nil(combination.Data)
+	suite.NotNil(combination.Data)
 }
