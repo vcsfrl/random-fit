@@ -6,7 +6,7 @@ definition = {
         "Extension": "md",
         "MimeType": "text/markdown",
     },
-    "BuildFunction": build_combination,
+    "BuildFunction": lambda :build_combination,
     "GoTemplate": """
 {{- /*gotype: go.starlark.net/starlark.Dict*/ -}}
 {{ .Len }}

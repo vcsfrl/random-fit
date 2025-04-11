@@ -1,10 +1,10 @@
 package service
 
-import "github.com/vcsfrl/random-fit/internal/model"
+import "github.com/vcsfrl/random-fit/internal/combination"
 
 type Combination struct {
 }
 
-func (c *Combination) Save(combination *model.Combination) error {
+func (c *Combination) Save(combination *combination.Combination) error {
 	return nil
 }

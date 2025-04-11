@@ -1,4 +1,4 @@
-package model
+package combination
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 
 type Combination struct {
 	UUID            uuid.UUID
-	Definition      *CombinationDefinition
+	Definition      *StarlarkDefinition
 	Data            starlark.Value
 	Output          *bytes.Buffer
 	OutputExtension string
