@@ -1,6 +1,6 @@
 package model
 
-type Definition struct {
+type CombinationDefinition struct {
 	ID              string
 	StarScript      string
 	GoTemplate      string

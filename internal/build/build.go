@@ -19,14 +19,14 @@ var ErrBuildingScript = fmt.Errorf("%w: error starlark script", ErrBuilding)
 type Builder struct {
 	thread      *starlark.Thread
 	builderFunc starlark.Value
-	definition  *model.Definition
+	definition  *model.CombinationDefinition
 
 	uuidFunc       func() (string, error)
 	nowFunc        func() time.Time
 	randomUintFunc func(min uint, max uint) (uint, error)
 }
 
-func NewBuilder(definition *model.Definition) (*Builder, error) {
+func NewBuilder(definition *model.CombinationDefinition) (*Builder, error) {
 	builder := &Builder{definition: definition}
 	err := builder.start()
 	if err != nil {

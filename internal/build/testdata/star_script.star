@@ -1,3 +1,16 @@
+config = {
+    "ID": "lotto-test",
+    "Name": "Lotto Number Picks",
+    "Output": {
+        "Type": "Markdown",
+        "Extension": "md",
+        "MimeType": "text/markdown",
+    },
+    "BuildTemplate" : "go_template.gohtml",
+    "BuildFunctionName": "build_combination",
+}
+
+
 def build_combination():
     users = [
         {"ID": "u1", "Name": "User 1"},

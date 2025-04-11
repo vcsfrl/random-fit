@@ -15,7 +15,7 @@ type BuildSuite struct {
 }
 
 func (suite *BuildSuite) TestBuild() {
-	definition := &model.Definition{
+	definition := &model.CombinationDefinition{
 		ID:              "test",
 		StarScript:      "./testdata/star_script.star",
 		GoTemplate:      "./testdata/go_template.gohtml",

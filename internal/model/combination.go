@@ -8,7 +8,7 @@ import (
 
 type Combination struct {
 	UUID            uuid.UUID
-	Definition      *Definition
+	Definition      *CombinationDefinition
 	Data            starlark.Value
 	Output          *bytes.Buffer
 	OutputExtension string
