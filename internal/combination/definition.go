@@ -12,7 +12,7 @@ import (
 var ErrCombinationDefinition = fmt.Errorf("error combination definition")
 
 type Definition interface {
-	CombinationBuilder() (func() (any, error), error)
+	CombinationBuilder() (func() (*Combination, error), error)
 }
 
 type StarlarkDefinition struct {
@@ -41,19 +41,27 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 	return definition, nil
 }
 
-func (cd *StarlarkDefinition) CombinationBuilder() (func() (any, error), error) {
+func (cd *StarlarkDefinition) CombinationBuilder() (func() (*Combination, error), error) {
 	buildLambda, err := starlark.Call(cd.thread, cd.BuildFunction, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
-	return func() (any, error) {
-		buildData, err := starlark.Call(cd.thread, buildLambda, nil, nil)
+	return func() (*Combination, error) {
+		_, err := starlark.Call(cd.thread, buildLambda, nil, nil)
 		if err != nil {
 			return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 		}
 
-		return buildData, nil
+		uuid, err := uuid.NewV7()
+		if err != nil {
+			return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
+		}
+		return &Combination{
+			UUID:       uuid,
+			Definition: cd,
+			Data:       nil,
+		}, nil
 	}, nil
 }
 

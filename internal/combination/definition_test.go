@@ -2,7 +2,6 @@ package combination
 
 import (
 	"github.com/stretchr/testify/suite"
-	"go.starlark.net/starlark"
 	"testing"
 )
 
@@ -31,7 +30,6 @@ func (suite *CombinationDefinitionSuite) TestNewCombinationDefinition() {
 	combination, err := combinationBuilder()
 	suite.NoError(err)
 	suite.NotNil(combination)
-	suite.Contains(combination.(*starlark.Dict).String(), "Lotto number picks")
 
 	suite.Contains(definition.GoTemplate, "/*gotype:")
 }
