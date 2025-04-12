@@ -11,18 +11,14 @@ import (
 
 var ErrCombinationDefinition = fmt.Errorf("error combination definition")
 
-type Definition interface {
-	CombinationBuilder() (func() (*Combination, error), error)
-}
-
 type StarlarkDefinition struct {
-	ID            string
-	Name          string
-	StarScript    string
-	BuildFunction *starlark.Function
-	GoTemplate    starlark.String
+	ID         string
+	Name       string
+	StarScript string
+	GoTemplate string
+	thread     *starlark.Thread
 
-	thread         *starlark.Thread
+	buildFunction  *starlark.Function
 	uuidFunc       func() (string, error)
 	nowFunc        func() time.Time
 	randomUintFunc func(min uint, max uint) (uint, error)
@@ -41,8 +37,8 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 	return definition, nil
 }
 
-func (cd *StarlarkDefinition) CombinationBuilder() (func() (*Combination, error), error) {
-	buildLambda, err := starlark.Call(cd.thread, cd.BuildFunction, nil, nil)
+func (cd *StarlarkDefinition) Generator() (func() (*Combination, error), error) {
+	buildLambda, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
@@ -58,9 +54,11 @@ func (cd *StarlarkDefinition) CombinationBuilder() (func() (*Combination, error)
 			return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
 		}
 		return &Combination{
-			UUID:       uuid,
-			Definition: cd,
-			Data:       nil,
+			UUID:         uuid,
+			DefinitionID: cd.ID,
+			Name:         cd.Name,
+			Template:     cd.GoTemplate,
+			Data:         nil,
 		}, nil
 	}, nil
 }
@@ -109,7 +107,7 @@ func (cd *StarlarkDefinition) init() error {
 	if !ok {
 		return fmt.Errorf("%w 'definition' build function field must be a function %s", ErrCombinationDefinition, cd.StarScript)
 	}
-	cd.BuildFunction = buildFunction
+	cd.buildFunction = buildFunction
 
 	sGoTemplate, ok, err := dictDefinition.Get(starlark.String("GoTemplate"))
 	if err != nil || !ok {
@@ -119,7 +117,7 @@ func (cd *StarlarkDefinition) init() error {
 	if !ok {
 		return fmt.Errorf("%w 'definition' go template field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
-	cd.GoTemplate = goTemplate
+	cd.GoTemplate = goTemplate.String()
 
 	return nil
 }

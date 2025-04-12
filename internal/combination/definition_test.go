@@ -23,8 +23,8 @@ func (suite *CombinationDefinitionSuite) TestNewCombinationDefinition() {
 	suite.Equal(script, definition.StarScript)
 	suite.Equal("Lotto Number Picks", definition.Name)
 
-	suite.NotNil(definition.BuildFunction)
-	combinationBuilder, err := definition.CombinationBuilder()
+	suite.NotNil(definition.buildFunction)
+	combinationBuilder, err := definition.Generator()
 	suite.NoError(err)
 
 	combination, err := combinationBuilder()

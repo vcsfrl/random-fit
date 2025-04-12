@@ -5,7 +5,9 @@ import (
 )
 
 type Combination struct {
-	UUID       uuid.UUID
-	Definition Definition
-	Data       map[string]any
+	UUID         uuid.UUID
+	DefinitionID string
+	Name         string
+	Data         map[string]any
+	Template     string
 }
