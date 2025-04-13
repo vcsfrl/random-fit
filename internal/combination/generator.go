@@ -1,12 +1,12 @@
 package combination
 
-type Generator interface {
-	Generate() *Combination
+type Builder interface {
+	Build() *Combination
 }
 
-type StarlarkGenerator struct {
+type StarlarkBuilder struct {
 }
 
-func (s *StarlarkGenerator) Generate() *Combination {
+func (s *StarlarkBuilder) Build() *Combination {
 	return nil
 }

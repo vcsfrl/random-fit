@@ -3,7 +3,7 @@ package combination
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/vcsfrl/random-fit/internal/tmp/platform/random"
+	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 	"time"

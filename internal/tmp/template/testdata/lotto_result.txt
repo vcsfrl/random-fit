@@ -1,9 +1,0 @@
-Lotto numbers for user 'Username'
-Date: '2024-12-11T11:27:44+02:00'
-
-6/49 Numbers: [  1,  2,  3,  4,  5,  6] Lucky number: [23400]
-6/49 Numbers: [  7,  8,  9, 10, 11, 12] Lucky number: [27601]
-6/49 Numbers: [ 13, 14, 15, 16, 17, 18] Lucky number: [31602]
-Joker Numbers: [  1,  2,  3,  4,  5] Joker Number: [  6]
-Joker Numbers: [  7,  8,  9, 10, 11] Joker Number: [ 12]
-
