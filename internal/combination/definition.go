@@ -16,8 +16,8 @@ type StarlarkDefinition struct {
 	Name       string
 	StarScript string
 	GoTemplate string
-	thread     *starlark.Thread
 
+	thread         *starlark.Thread
 	buildFunction  *starlark.Function
 	uuidFunc       func() (string, error)
 	nowFunc        func() time.Time
@@ -88,6 +88,19 @@ func (cd *StarlarkDefinition) init() error {
 	if !ok {
 		return fmt.Errorf("%w 'definition' must be a Dict %s", ErrCombinationDefinition, cd.StarScript)
 	}
+
+	// Retrieve the ID field from the dict.
+	sID, ok, err := dictDefinition.Get(starlark.String("ID"))
+	if err != nil || !ok {
+		return fmt.Errorf("%w 'definition' getting ID field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
+	}
+	id, ok := sID.(starlark.String)
+	if !ok {
+		return fmt.Errorf("%w 'definition' ID field must be a string %s", ErrCombinationDefinition, cd.StarScript)
+	}
+	cd.ID = string(id)
+
+	// Retrieve the Name field from the dict.
 	sName, ok, err := dictDefinition.Get(starlark.String("Name"))
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
@@ -96,19 +109,9 @@ func (cd *StarlarkDefinition) init() error {
 	if !ok {
 		return fmt.Errorf("%w 'definition' name field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
-
 	cd.Name = string(name)
 
-	sBuildFunction, ok, err := dictDefinition.Get(starlark.String("BuildFunction"))
-	if err != nil || !ok {
-		return fmt.Errorf("%w 'definition' getting build function field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
-	}
-	buildFunction, ok := sBuildFunction.(*starlark.Function)
-	if !ok {
-		return fmt.Errorf("%w 'definition' build function field must be a function %s", ErrCombinationDefinition, cd.StarScript)
-	}
-	cd.buildFunction = buildFunction
-
+	// Retrieve the GoTemplate field from the dict.
 	sGoTemplate, ok, err := dictDefinition.Get(starlark.String("GoTemplate"))
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting go template field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
@@ -118,6 +121,17 @@ func (cd *StarlarkDefinition) init() error {
 		return fmt.Errorf("%w 'definition' go template field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
 	cd.GoTemplate = goTemplate.String()
+
+	// Retrieve the BuildFunction field from the dict.
+	sBuildFunction, ok, err := dictDefinition.Get(starlark.String("BuildFunction"))
+	if err != nil || !ok {
+		return fmt.Errorf("%w 'definition' getting build function field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
+	}
+	buildFunction, ok := sBuildFunction.(*starlark.Function)
+	if !ok {
+		return fmt.Errorf("%w 'definition' build function field must be a function %s", ErrCombinationDefinition, cd.StarScript)
+	}
+	cd.buildFunction = buildFunction
 
 	return nil
 }

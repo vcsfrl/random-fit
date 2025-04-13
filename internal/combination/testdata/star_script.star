@@ -1,11 +1,6 @@
 definition = {
     "ID": "lotto-test",
     "Name": "Lotto Number Picks",
-    "Output": {
-        "Type": "Markdown",
-        "Extension": "md",
-        "MimeType": "text/markdown",
-    },
     "BuildFunction": lambda :build_combination,
     "GoTemplate": """
 {{- /*gotype: go.starlark.net/starlark.Dict*/ -}}

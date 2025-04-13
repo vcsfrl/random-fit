@@ -20,16 +20,16 @@ func (suite *CombinationDefinitionSuite) TestNewCombinationDefinition() {
 	suite.NoError(err)
 	suite.NotNil(definition)
 
-	suite.Equal(script, definition.StarScript)
+	suite.NotEmpty(definition.ID)
 	suite.Equal("Lotto Number Picks", definition.Name)
+	suite.Equal(script, definition.StarScript)
+	suite.Contains(definition.GoTemplate, "/*gotype:")
 
 	suite.NotNil(definition.buildFunction)
-	combinationBuilder, err := definition.Generator()
+	combinationGenerator, err := definition.Generator()
 	suite.NoError(err)
 
-	combination, err := combinationBuilder()
+	combination, err := combinationGenerator()
 	suite.NoError(err)
 	suite.NotNil(combination)
-
-	suite.Contains(definition.GoTemplate, "/*gotype:")
 }
