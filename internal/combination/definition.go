@@ -49,15 +49,15 @@ func (cd *StarlarkDefinition) Generator() (func() (*Combination, error), error) 
 			return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 		}
 
-		uuid, err := uuid.NewV7()
+		uuidV7, err := uuid.NewV7()
 		if err != nil {
 			return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
 		}
 		return &Combination{
-			UUID:         uuid,
+			UUID:         uuidV7,
 			DefinitionID: cd.ID,
 			Name:         cd.Name,
-			Template:     cd.GoTemplate,
+			GoTemplate:   cd.GoTemplate,
 			Data:         nil,
 		}, nil
 	}, nil

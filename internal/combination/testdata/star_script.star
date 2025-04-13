@@ -1,23 +1,3 @@
-definition = {
-    "ID": "lotto-test",
-    "Name": "Lotto Number Picks",
-    "BuildFunction": lambda :build_combination,
-    "GoTemplate": """
-{{- /*gotype: go.starlark.net/starlark.Dict*/ -}}
-{{ .Len }}
-    # {{- range $i, $c := .Collections }}
-    #     {{- range $j, $s := $c.Sets }}
-    #         {{- range $k, $e := $s.Elements }}
-    #             {{- range $l, $v := $e.Values }}
-    #                 {{$v}} 
-    #             {{- end }}
-    #         {{- end }}
-    #     {{- end }}
-    # {{- end }}
-    """,
-}
-
-
 def build_combination():
     users = [
         {"ID": "u1", "Name": "User 1"},
@@ -85,3 +65,15 @@ def build_combination():
         collection["Collections"].append(inner_collection)
 
     return collection
+
+
+definition = {
+    "ID": "lotto-test",
+    "Name": "Lotto Number Picks",
+    "BuildFunction": lambda :build_combination,
+    "GoTemplate": """
+{{- /*gotype: go.starlark.net/starlark.Dict*/ -}}
+{{ .Len }}
+    """,
+}
+
