@@ -78,10 +78,10 @@ func (cd *StarlarkDefinition) init() error {
 		return fmt.Errorf("execution error: %w", err)
 	}
 
-	// Retrieve a module global.
+	// Retrieve the definition from the globals.
 	definition, ok := globals["definition"]
 	if !ok {
-		return fmt.Errorf("%w missing 'definition' dict %s", ErrCombinationDefinition, cd.StarScript)
+		return fmt.Errorf("%w missing 'definition' Dict %s", ErrCombinationDefinition, cd.StarScript)
 	}
 
 	dictDefinition, ok := definition.(*starlark.Dict)
