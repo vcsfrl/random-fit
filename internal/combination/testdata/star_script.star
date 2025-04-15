@@ -70,7 +70,7 @@ def build_combination():
 definition = {
     "ID": "lotto-test",
     "Name": "Lotto Number Picks",
-    "BuildFunction": lambda :build_combination,
+    "BuildFunction": build_combination,
     "GoTemplate": """
 {{- /*gotype: go.starlark.net/starlark.Dict*/ -}}
 {{ .Len }}

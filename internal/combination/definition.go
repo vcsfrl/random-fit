@@ -38,16 +38,14 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 }
 
 func (cd *StarlarkDefinition) Generator() (func() (*Combination, error), error) {
-	buildLambda, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
-	if err != nil {
-		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
-	}
-
 	return func() (*Combination, error) {
-		_, err := starlark.Call(cd.thread, buildLambda, nil, nil)
+
+		combinationData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
 		if err != nil {
 			return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 		}
+
+		fmt.Println(combinationData)
 
 		uuidV7, err := uuid.NewV7()
 		if err != nil {
