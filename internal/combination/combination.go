@@ -2,7 +2,6 @@ package combination
 
 import (
 	"github.com/google/uuid"
-	"go.starlark.net/starlark"
 )
 
 type Combination struct {
@@ -11,6 +10,4 @@ type Combination struct {
 	Name         string
 	Data         map[string]any
 	GoTemplate   string
-
-	s starlark.Dict
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
+	"slices"
 	"time"
 )
 
@@ -163,19 +164,35 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 		var max uint
 		var nr int
 		var allowDuplicates = false
+		var sort = false
 
-		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &min, "max", &max, "nr", &nr, "allow_duplicates?", &allowDuplicates); err != nil {
+		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &min, "max", &max, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
 			return nil, err
+		}
+
+		sliceResult := make([]uint, 0)
+
+		for i := 0; i < nr; i++ {
+			randUint, err := cd.getRandomIntFunc()(min, max)
+			if err != nil {
+				return nil, err
+			}
+
+			if !allowDuplicates && slices.Contains(sliceResult, randUint) {
+				i--
+				continue
+			}
+
+			sliceResult = append(sliceResult, randUint)
+		}
+
+		if sort {
+			slices.Sort(sliceResult)
 		}
 
 		result := starlark.NewList([]starlark.Value{})
-		uintFunc, err := cd.getRandomIntFunc()(min, max)
-		if err != nil {
-			return nil, err
-		}
-
-		for i := 0; i < nr; i++ {
-			err = result.Append(starlark.MakeUint(uintFunc))
+		for _, randUint := range sliceResult {
+			err := result.Append(starlark.MakeUint(randUint))
 			if err != nil {
 				return nil, err
 			}
