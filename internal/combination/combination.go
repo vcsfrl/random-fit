@@ -8,6 +8,6 @@ type Combination struct {
 	UUID         uuid.UUID
 	DefinitionID string
 	Name         string
-	Data         map[string]any
+	Data         any
 	GoTemplate   string
 }

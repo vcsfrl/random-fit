@@ -1,6 +1,7 @@
 package combination
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
@@ -41,12 +42,20 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 func (cd *StarlarkDefinition) Generator() (func() (*Combination, error), error) {
 	return func() (*Combination, error) {
 
-		combinationData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
+		combinationStarlarkData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
 		if err != nil {
 			return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 		}
 
-		fmt.Println(combinationData)
+		combinationDict, ok := combinationStarlarkData.(*starlark.Dict)
+		if !ok {
+			return nil, fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
+		}
+
+		var combinationData any
+		if err := json.Unmarshal([]byte(combinationDict.String()), &combinationData); err != nil {
+			return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
+		}
 
 		uuidV7, err := uuid.NewV7()
 		if err != nil {
@@ -57,7 +66,7 @@ func (cd *StarlarkDefinition) Generator() (func() (*Combination, error), error) 
 			DefinitionID: cd.ID,
 			Name:         cd.Name,
 			GoTemplate:   cd.GoTemplate,
-			Data:         nil,
+			Data:         combinationData,
 		}, nil
 	}, nil
 }

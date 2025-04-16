@@ -32,4 +32,14 @@ func (suite *CombinationDefinitionSuite) TestNewCombinationDefinition() {
 	combination, err := combinationGenerator()
 	suite.NoError(err)
 	suite.NotNil(combination)
+
+	suite.NotEmpty(combination.UUID)
+	suite.Equal(definition.ID, combination.DefinitionID)
+	suite.Equal(definition.Name, combination.Name)
+	suite.Equal(definition.GoTemplate, combination.GoTemplate)
+	suite.NotEmpty(combination.Data)
+	suite.NotEmpty(
+		"User 1 Monthly Lotto Number picks",
+		combination.Data.(map[string]any)["Collections"].([]any)[0].(map[string]any)["Metadata"].(map[string]any)["Description"],
+	)
 }
