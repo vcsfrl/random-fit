@@ -169,20 +169,20 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	// randomInt() is a Go function called from Starlark.
 	// It returns multiple random values from an interval.
 	randomInt := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var min uint
-		var max uint
+		var minVal uint
+		var maxVal uint
 		var nr int
 		var allowDuplicates = false
 		var sort = false
 
-		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &min, "max", &max, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
+		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
 			return nil, err
 		}
 
 		sliceResult := make([]uint, 0)
 
 		for i := 0; i < nr; i++ {
-			randUint, err := cd.getRandomIntFunc()(min, max)
+			randUint, err := cd.getRandomIntFunc()(minVal, maxVal)
 			if err != nil {
 				return nil, err
 			}
