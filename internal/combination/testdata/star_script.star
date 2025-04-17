@@ -75,7 +75,12 @@ definition = {
     "Name": "Lotto Number Picks",
     "BuildFunction": build_combination,
     "Template": """{{- /*Generate lotto numbers*/ -}}
-{{ .Len }}
+`{{ .Data.Metadata.ID }}
+{{ .Data.Metadata.Name }}
+{{ .Data.Metadata.Description }}
+{{range .Data.Collections}}
+  {{ .Metadata.Name }}
+{{end}}`
 """,
 }
 

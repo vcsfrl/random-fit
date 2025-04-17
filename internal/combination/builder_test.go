@@ -1,9 +1,11 @@
 package combination
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/stretchr/testify/suite"
 	"testing"
+	"text/template"
 	"time"
 )
 
@@ -119,4 +121,23 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(goData, "Lucky Number")
 	suite.Contains(goData, "Values:8400")
 	suite.Equal(4214, len(goData))
+}
+
+func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build_View() {
+
+	builder := NewStarlarkBuilder(suite.definition)
+	suite.NotNil(builder)
+
+	// Build first combination
+	combination, err := builder.Build()
+
+	tmpl, err := template.New(combination.DefinitionID).Parse(combination.Template)
+	suite.NoError(err)
+
+	buffer := &bytes.Buffer{}
+	//buffer, err := os.OpenFile("testdata/lotto_test.md", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	suite.NoError(err)
+	err = tmpl.Execute(buffer, combination)
+	suite.NoError(err)
+
 }
