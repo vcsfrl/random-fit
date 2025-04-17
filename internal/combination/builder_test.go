@@ -59,7 +59,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
 	suite.Equal("Lotto Number Picks", combination.Name)
-	suite.Contains(combination.GoTemplate, "{{- /*Generate lotto numbers*/ -}}")
+	suite.Contains(combination.Template, "{{- /*Generate lotto numbers*/ -}}")
 	suite.NotNil(combination.JSONData)
 
 	suite.Contains(combination.JSONData, "6/49 and Lucky Number")
@@ -73,7 +73,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.JSONData, "4200")
 	suite.Equal(4834, len(combination.JSONData))
 
-	goData := fmt.Sprintf("%+v", combination.GoData)
+	goData := fmt.Sprintf("%+v", combination.Data)
 	suite.Contains(goData, "Name:6/49 and Lucky Number")
 	suite.Contains(goData, "User 1 Monthly Lotto Number picks")
 	suite.Contains(goData, "User 2 Monthly Lotto Number picks")
@@ -94,7 +94,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
 	suite.Equal("Lotto Number Picks", combination.Name)
-	suite.Contains(combination.GoTemplate, "{{- /*Generate lotto numbers*/ -}}")
+	suite.Contains(combination.Template, "{{- /*Generate lotto numbers*/ -}}")
 	suite.NotNil(combination.JSONData)
 
 	suite.Contains(combination.JSONData, "6/49 and Lucky Number")
@@ -108,7 +108,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.JSONData, "8400")
 	suite.Equal(4843, len(combination.JSONData))
 
-	goData = fmt.Sprintf("%+v", combination.GoData)
+	goData = fmt.Sprintf("%+v", combination.Data)
 	suite.Contains(goData, "Name:6/49 and Lucky Number")
 	suite.Contains(goData, "User 1 Monthly Lotto Number picks")
 	suite.Contains(goData, "User 2 Monthly Lotto Number picks")

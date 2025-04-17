@@ -40,8 +40,8 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		CreatedAt:    time.Now(),
 		DefinitionID: s.definition.ID,
 		Name:         s.definition.Name,
-		GoTemplate:   s.definition.GoTemplate,
+		Template:     s.definition.GoTemplate,
 		JSONData:     combinationData,
-		GoData:       goData,
+		Data:         goData,
 	}, nil
 }

@@ -100,8 +100,8 @@ func (cd *StarlarkDefinition) init() error {
 	}
 	cd.Name = string(name)
 
-	// Retrieve the GoTemplate field from the dict.
-	sGoTemplate, ok, err := dictDefinition.Get(starlark.String("GoTemplate"))
+	// Retrieve the Template field from the dict.
+	sGoTemplate, ok, err := dictDefinition.Get(starlark.String("Template"))
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting go template field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}

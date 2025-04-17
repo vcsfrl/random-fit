@@ -10,7 +10,8 @@ type Combination struct {
 	CreatedAt    time.Time
 	DefinitionID string
 	Name         string
-	GoTemplate   string
 	JSONData     string
-	GoData       any
+
+	Template string
+	Data     any
 }

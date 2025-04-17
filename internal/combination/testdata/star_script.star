@@ -74,8 +74,8 @@ definition = {
     "ID": "lotto-test",
     "Name": "Lotto Number Picks",
     "BuildFunction": build_combination,
-    "GoTemplate": """{{- /*Generate lotto numbers*/ -}}
+    "Template": """{{- /*Generate lotto numbers*/ -}}
 {{ .Len }}
-    """,
+""",
 }
 
