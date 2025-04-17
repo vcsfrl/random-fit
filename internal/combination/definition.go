@@ -39,7 +39,7 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 	return definition, nil
 }
 
-func (cd *StarlarkDefinition) CallScriptBuild() (any, error) {
+func (cd *StarlarkDefinition) CallScriptBuildFunction() (any, error) {
 	combinationStarlarkData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
@@ -56,19 +56,6 @@ func (cd *StarlarkDefinition) CallScriptBuild() (any, error) {
 	}
 
 	return combinationData, nil
-
-	//uuidV7, err := uuid.NewV7()
-	//if err != nil {
-	//	return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
-	//}
-	//return &Combination{
-	//	UUID:         uuidV7,
-	//	DefinitionID: cd.ID,
-	//	Name:         cd.Name,
-	//	GoTemplate:   cd.GoTemplate,
-	//	Data:         combinationData,
-	//}, nil
-
 }
 
 func (cd *StarlarkDefinition) init() error {

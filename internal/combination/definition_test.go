@@ -47,7 +47,7 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 }
 
 func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBuild() {
-	combinationData, err := suite.definition.CallScriptBuild()
+	combinationData, err := suite.definition.CallScriptBuildFunction()
 	suite.NoError(err)
 
 	suite.Equal("lotto-test", suite.definition.ID)
