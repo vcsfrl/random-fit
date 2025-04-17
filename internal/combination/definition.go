@@ -19,8 +19,8 @@ type StarlarkDefinition struct {
 	StarScript string
 	GoTemplate string
 
-	thread         *starlark.Thread
 	buildFunction  *starlark.Function
+	thread         *starlark.Thread
 	uuidFunc       func() (string, error)
 	nowFunc        func() time.Time
 	randomUintFunc func(min uint, max uint) (uint, error)
@@ -39,36 +39,36 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 	return definition, nil
 }
 
-func (cd *StarlarkDefinition) Generator() (func() (*Combination, error), error) {
-	return func() (*Combination, error) {
+func (cd *StarlarkDefinition) CallScriptBuild() (any, error) {
+	combinationStarlarkData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
+	if err != nil {
+		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
+	}
 
-		combinationStarlarkData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
-		if err != nil {
-			return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
-		}
+	combinationDict, ok := combinationStarlarkData.(*starlark.Dict)
+	if !ok {
+		return nil, fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
+	}
 
-		combinationDict, ok := combinationStarlarkData.(*starlark.Dict)
-		if !ok {
-			return nil, fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
-		}
+	var combinationData any
+	if err := json.Unmarshal([]byte(combinationDict.String()), &combinationData); err != nil {
+		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
+	}
 
-		var combinationData any
-		if err := json.Unmarshal([]byte(combinationDict.String()), &combinationData); err != nil {
-			return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
-		}
+	return combinationData, nil
 
-		uuidV7, err := uuid.NewV7()
-		if err != nil {
-			return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
-		}
-		return &Combination{
-			UUID:         uuidV7,
-			DefinitionID: cd.ID,
-			Name:         cd.Name,
-			GoTemplate:   cd.GoTemplate,
-			Data:         combinationData,
-		}, nil
-	}, nil
+	//uuidV7, err := uuid.NewV7()
+	//if err != nil {
+	//	return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
+	//}
+	//return &Combination{
+	//	UUID:         uuidV7,
+	//	DefinitionID: cd.ID,
+	//	Name:         cd.Name,
+	//	GoTemplate:   cd.GoTemplate,
+	//	Data:         combinationData,
+	//}, nil
+
 }
 
 func (cd *StarlarkDefinition) init() error {

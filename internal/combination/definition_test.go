@@ -46,27 +46,16 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 	suite.NoError(err)
 }
 
-func (suite *CombinationDefinitionSuite) TestCombinationDefinition_Generator() {
-	suite.NotEmpty(suite.definition.ID)
+func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBuild() {
+	combinationData, err := suite.definition.CallScriptBuild()
+	suite.NoError(err)
+
+	suite.Equal("lotto-test", suite.definition.ID)
 	suite.Equal("Lotto Number Picks", suite.definition.Name)
-	suite.Equal(suite.scriptFile, suite.definition.StarScript)
-	suite.Contains(suite.definition.GoTemplate, "/*gotype:")
+	suite.Contains(suite.definition.GoTemplate, "{{- /*Generate lotto numbers*/ -}}")
+	suite.Equal(suite.definition.StarScript, suite.scriptFile)
 
-	suite.NotNil(suite.definition.buildFunction)
-	combinationGenerator, err := suite.definition.Generator()
-	suite.NoError(err)
-
-	combination, err := combinationGenerator()
-	suite.NoError(err)
-	suite.NotNil(combination)
-
-	suite.NotEmpty(combination.UUID)
-	suite.Equal(suite.definition.ID, combination.DefinitionID)
-	suite.Equal(suite.definition.Name, combination.Name)
-	suite.Equal(suite.definition.GoTemplate, combination.GoTemplate)
-	suite.NotEmpty(combination.Data)
-
-	stringData := fmt.Sprintf("%+v", combination.Data)
+	stringData := fmt.Sprintf("%+v", combinationData)
 
 	suite.Contains(stringData, "Name:6/49 and Lucky Number")
 	suite.Contains(stringData, "User 1 Monthly Lotto Number picks")
