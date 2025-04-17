@@ -1,8 +1,10 @@
 package combination
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"time"
 )
 
 type Builder interface {
@@ -28,11 +30,18 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
+	var goData any
+	if err := json.Unmarshal([]byte(combinationData), &goData); err != nil {
+		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
+	}
+
 	return &Combination{
 		UUID:         uuidV7,
+		CreatedAt:    time.Now(),
 		DefinitionID: s.definition.ID,
 		Name:         s.definition.Name,
 		GoTemplate:   s.definition.GoTemplate,
 		JSONData:     combinationData,
+		GoData:       goData,
 	}, nil
 }

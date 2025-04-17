@@ -56,6 +56,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.NotNil(combination)
 
 	suite.Equal(36, len(combination.UUID.String()))
+	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
 	suite.Equal("Lotto Number Picks", combination.Name)
 	suite.Contains(combination.GoTemplate, "{{- /*Generate lotto numbers*/ -}}")
@@ -72,12 +73,25 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.JSONData, "4200")
 	suite.Equal(4834, len(combination.JSONData))
 
+	goData := fmt.Sprintf("%+v", combination.GoData)
+	suite.Contains(goData, "Name:6/49 and Lucky Number")
+	suite.Contains(goData, "User 1 Monthly Lotto Number picks")
+	suite.Contains(goData, "User 2 Monthly Lotto Number picks")
+	suite.Contains(goData, "[1 2 3 4 5 6]")
+	suite.Contains(goData, "[36 37 38 39 40 41]")
+	suite.Contains(goData, "collection_00000000-0000-0000-0000-000000000001")
+	suite.Contains(goData, "element_00000000-0000-0000-0000-000000000021")
+	suite.Contains(goData, "Lucky Number")
+	suite.Contains(goData, "Values:4200")
+	suite.Equal(4205, len(goData))
+
 	// Build first combination
 	combination, err = builder.Build()
 	suite.NoError(err)
 	suite.NotNil(combination)
 
 	suite.Equal(36, len(combination.UUID.String()))
+	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
 	suite.Equal("Lotto Number Picks", combination.Name)
 	suite.Contains(combination.GoTemplate, "{{- /*Generate lotto numbers*/ -}}")
@@ -93,4 +107,16 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.JSONData, "Lucky Number")
 	suite.Contains(combination.JSONData, "8400")
 	suite.Equal(4843, len(combination.JSONData))
+
+	goData = fmt.Sprintf("%+v", combination.GoData)
+	suite.Contains(goData, "Name:6/49 and Lucky Number")
+	suite.Contains(goData, "User 1 Monthly Lotto Number picks")
+	suite.Contains(goData, "User 2 Monthly Lotto Number picks")
+	suite.Contains(goData, "[43 44 45 46 47 48]")
+	suite.Contains(goData, "[78 79 80 81 82 83]")
+	suite.Contains(goData, "collection_00000000-0000-0000-0000-000000000022")
+	suite.Contains(goData, "set_00000000-0000-0000-0000-000000000040")
+	suite.Contains(goData, "Lucky Number")
+	suite.Contains(goData, "Values:8400")
+	suite.Equal(4214, len(goData))
 }
