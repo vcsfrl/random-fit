@@ -57,15 +57,15 @@ func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBui
 
 	stringData := fmt.Sprintf("%+v", combinationData)
 
-	suite.Contains(stringData, "Name:6/49 and Lucky Number")
+	suite.Contains(stringData, "6/49 and Lucky Number")
 	suite.Contains(stringData, "User 1 Monthly Lotto Number picks")
 	suite.Contains(stringData, "User 2 Monthly Lotto Number picks")
-	suite.Contains(stringData, "[1 2 3 4 5 6]")
-	suite.Contains(stringData, "[36 37 38 39 40 41]")
+	suite.Contains(stringData, "[1, 2, 3, 4, 5, 6]")
+	suite.Contains(stringData, "[36, 37, 38, 39, 40, 41]")
 	suite.Contains(stringData, "collection_00000000-0000-0000-0000-000000000001")
 	suite.Contains(stringData, "element_00000000-0000-0000-0000-000000000021")
 	suite.Contains(stringData, "Lucky Number")
-	suite.Contains(stringData, "Values:4200")
+	suite.Contains(stringData, "4200")
 
-	suite.Equal(4205, len(stringData))
+	suite.Equal(4834, len(stringData))
 }

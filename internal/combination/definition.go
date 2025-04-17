@@ -1,7 +1,6 @@
 package combination
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
@@ -39,23 +38,18 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 	return definition, nil
 }
 
-func (cd *StarlarkDefinition) CallScriptBuildFunction() (any, error) {
+func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 	combinationStarlarkData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
 	if err != nil {
-		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
+		return "", fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
 	combinationDict, ok := combinationStarlarkData.(*starlark.Dict)
 	if !ok {
-		return nil, fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
+		return "", fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
 	}
 
-	var combinationData any
-	if err := json.Unmarshal([]byte(combinationDict.String()), &combinationData); err != nil {
-		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
-	}
-
-	return combinationData, nil
+	return combinationDict.String(), nil
 }
 
 func (cd *StarlarkDefinition) init() error {

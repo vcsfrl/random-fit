@@ -9,5 +9,5 @@ type Combination struct {
 	DefinitionID string
 	Name         string
 	GoTemplate   string
-	Data         any
+	JSONData     string
 }

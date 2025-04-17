@@ -33,6 +33,6 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		DefinitionID: s.definition.ID,
 		Name:         s.definition.Name,
 		GoTemplate:   s.definition.GoTemplate,
-		Data:         combinationData,
+		JSONData:     combinationData,
 	}, nil
 }
