@@ -56,8 +56,8 @@ func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBui
 	suite.Equal(suite.definition.StarScript, suite.scriptFile)
 
 	suite.Contains(JSONData, "6/49 and Lucky Number")
-	suite.Contains(JSONData, "User 1 Monthly Lotto Number picks")
-	suite.Contains(JSONData, "User 2 Monthly Lotto Number picks")
+	suite.Contains(JSONData, "Lotto Numbers for User 1")
+	suite.Contains(JSONData, "Lotto Numbers for User 2")
 	suite.Contains(JSONData, "[1, 2, 3, 4, 5, 6]")
 	suite.Contains(JSONData, "[36, 37, 38, 39, 40, 41]")
 	suite.Contains(JSONData, "collection_00000000-0000-0000-0000-000000000001")
@@ -65,5 +65,5 @@ func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBui
 	suite.Contains(JSONData, "Lucky Number")
 	suite.Contains(JSONData, "4200")
 
-	suite.Equal(4834, len(JSONData))
+	suite.Equal(4354, len(JSONData))
 }

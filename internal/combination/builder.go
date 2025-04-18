@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/vcsfrl/random-fit/internal/core"
 	"time"
 )
 
@@ -30,8 +31,8 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
-	var goData any
-	if err := json.Unmarshal([]byte(combinationData), &goData); err != nil {
+	var data = &core.Collection{}
+	if err := json.Unmarshal([]byte(combinationData), data); err != nil {
 		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
 	}
 
@@ -42,6 +43,6 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		Name:         s.definition.Name,
 		Template:     s.definition.GoTemplate,
 		JSONData:     combinationData,
-		Data:         goData,
+		Data:         data,
 	}, nil
 }

@@ -2,6 +2,7 @@ package combination
 
 import (
 	"github.com/google/uuid"
+	"github.com/vcsfrl/random-fit/internal/core"
 	"time"
 )
 
@@ -13,5 +14,5 @@ type Combination struct {
 	JSONData     string
 
 	Template string
-	Data     any
+	Data     *core.Collection
 }

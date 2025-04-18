@@ -10,8 +10,7 @@ def build_combination():
     collection = {
         "Metadata": {
             "ID": root_uuid ,
-            "Name": "Users Lotto Number Picks",
-            "Description": "Monthly Users Lotto Number Picks",
+            "Details": "Monthly Users Lotto Number Picks",
             "Date": current_time
         },
         "Collections": []
@@ -23,8 +22,7 @@ def build_combination():
             "Metadata": {
                 "ID": user_collection_id,
                 "ParentID": root_uuid,
-                "Name": "Lotto Numbers for " + users[i]["Name"],
-                "Description": users[i]["Name"] + " Monthly Lotto Number picks",
+                "Details": "Lotto Numbers for " + users[i]["Name"],
                 "Date": current_time,
             },
             "Sets": [],
@@ -36,8 +34,7 @@ def build_combination():
                 "Metadata": {
                     "ID": user_set_id,
                     "ParentID": user_collection_id,
-                    "Name": "6/49 and Lucky Number",
-                    "Description": users[i]["Name"] + " Lotto Number Picks for 6/49",
+                    "Details": "6/49 and Lucky Number" ,
                     "Date": current_time,
                 },
                 "Elements": [
@@ -45,8 +42,7 @@ def build_combination():
                         "Metadata": {
                             "ID": "element_" + uuid(),
                             "ParentID": user_set_id,
-                            "Name": "Numbers",
-                            "Description": "6/49",
+                            "Details": "6/49",
                             "Date": current_time
                         },
                         "Values": random_int(1, 49, 6, False, True)
@@ -54,12 +50,11 @@ def build_combination():
                     {
                         "Metadata": {
                             "ID": "element_" + uuid(),
-                            "Name": "Lucky Number",
-                            "Description": "Lucky Number for 6/49 draw",
+                            "ParentID": user_set_id,
+                            "Details": "Lucky Number",
                             "Date": current_time
                         },
-                        "Values": random_int(240, 530, 1, False, True)[0]*100
-
+                        "Values": [random_int(240, 530, 1, False, True)[0]*100]
                     }
                 ]
             }
