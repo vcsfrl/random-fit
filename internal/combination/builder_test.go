@@ -64,13 +64,13 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data.String(), "6/49 and Lucky Number")
 	suite.Contains(combination.Data.String(), "Lotto Numbers for User 1")
 	suite.Contains(combination.Data.String(), "Lotto Numbers for User 2")
-	suite.Contains(combination.Data.String(), "[1, 2, 3, 4, 5, 6]")
-	suite.Contains(combination.Data.String(), "[36, 37, 38, 39, 40, 41]")
+	suite.Contains(combination.Data.String(), "[1,2,3,4,5,6]")
+	suite.Contains(combination.Data.String(), "[36,37,38,39,40,41]")
 	suite.Contains(combination.Data.String(), "collection_00000000-0000-0000-0000-000000000001")
 	suite.Contains(combination.Data.String(), "element_00000000-0000-0000-0000-000000000021")
 	suite.Contains(combination.Data.String(), "Lucky Number")
 	suite.Contains(combination.Data.String(), "4200")
-	suite.Equal(4354, len(combination.Data.String()))
+	suite.Equal(4523, len(combination.Data.String()))
 
 	// Build first combination
 	combination, err = builder.Build()
@@ -86,12 +86,12 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data.String(), "6/49 and Lucky Number")
 	suite.Contains(combination.Data.String(), "Lotto Numbers for User 1")
 	suite.Contains(combination.Data.String(), "Lotto Numbers for User 2")
-	suite.Contains(combination.Data.String(), "[43, 44, 45, 46, 47, 48]")
-	suite.Contains(combination.Data.String(), "[78, 79, 80, 81, 82, 83]")
+	suite.Contains(combination.Data.String(), "[43,44,45,46,47,48]")
+	suite.Contains(combination.Data.String(), "[78,79,80,81,82,83]")
 	suite.Contains(combination.Data.String(), "collection_00000000-0000-0000-0000-000000000022")
 	suite.Contains(combination.Data.String(), "set_00000000-0000-0000-0000-000000000040")
 	suite.Contains(combination.Data.String(), "Lucky Number")
 	suite.Contains(combination.Data.String(), "8400")
-	suite.Equal(4363, len(combination.Data.String()))
+	suite.Equal(4532, len(combination.Data.String()))
 
 }

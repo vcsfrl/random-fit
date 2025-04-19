@@ -64,10 +64,17 @@ def build_combination():
 
     return collection
 
+def build():
+    combination = build_combination()
+
+    json_combination = json.encode(combination)
+
+    return json_combination
+
 
 definition = {
     "ID": "lotto-test",
     "Name": "Lotto Number Picks",
-    "BuildFunction": build_combination,
+    "BuildFunction": build,
 }
 

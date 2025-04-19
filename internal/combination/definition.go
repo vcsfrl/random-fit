@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
+	"go.starlark.net/lib/json"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 	"slices"
@@ -43,12 +44,12 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 		return "", fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
-	combinationDict, ok := combinationStarlarkData.(*starlark.Dict)
+	combinationString, ok := combinationStarlarkData.(starlark.String)
 	if !ok {
-		return "", fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
+		return "", fmt.Errorf("%w: combination data is not a string", ErrCombinationDefinition)
 	}
 
-	return combinationDict.String(), nil
+	return combinationString.String(), nil
 }
 
 func (cd *StarlarkDefinition) init() error {
@@ -88,7 +89,7 @@ func (cd *StarlarkDefinition) init() error {
 	}
 	cd.ID = string(id)
 
-	// Retrieve the Name field from the dict.
+	// Retrieve the Name field fro	m the dict.
 	sName, ok, err := dictDefinition.Get(starlark.String("Name"))
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
@@ -184,6 +185,7 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 		"uuid":       starlark.NewBuiltin("uuid", uuidF),
 		"now":        starlark.NewBuiltin("now", now),
 		"random_int": starlark.NewBuiltin("random_int", randomInt),
+		"json":       json.Module,
 	}
 
 	return predeclared

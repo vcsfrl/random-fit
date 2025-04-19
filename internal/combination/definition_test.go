@@ -57,12 +57,12 @@ func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBui
 	suite.Contains(JSONData, "6/49 and Lucky Number")
 	suite.Contains(JSONData, "Lotto Numbers for User 1")
 	suite.Contains(JSONData, "Lotto Numbers for User 2")
-	suite.Contains(JSONData, "[1, 2, 3, 4, 5, 6]")
-	suite.Contains(JSONData, "[36, 37, 38, 39, 40, 41]")
+	suite.Contains(JSONData, "[1,2,3,4,5,6]")
+	suite.Contains(JSONData, "[36,37,38,39,40,41]")
 	suite.Contains(JSONData, "collection_00000000-0000-0000-0000-000000000001")
 	suite.Contains(JSONData, "element_00000000-0000-0000-0000-000000000021")
 	suite.Contains(JSONData, "Lucky Number")
 	suite.Contains(JSONData, "4200")
 
-	suite.Equal(4354, len(JSONData))
+	suite.Equal(4523, len(JSONData))
 }
