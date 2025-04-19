@@ -47,22 +47,22 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 }
 
 func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBuild() {
-	JSONData, err := suite.definition.CallScriptBuildFunction()
+	buildData, err := suite.definition.CallScriptBuildFunction()
 	suite.NoError(err)
 
 	suite.Equal("lotto-test", suite.definition.ID)
 	suite.Equal("Lotto Number Picks", suite.definition.Name)
 	suite.Equal(suite.definition.StarScript, suite.scriptFile)
 
-	suite.Contains(JSONData, "6/49 and Lucky Number")
-	suite.Contains(JSONData, "Lotto Numbers for User 1")
-	suite.Contains(JSONData, "Lotto Numbers for User 2")
-	suite.Contains(JSONData, "[1,2,3,4,5,6]")
-	suite.Contains(JSONData, "[36,37,38,39,40,41]")
-	suite.Contains(JSONData, "collection_00000000-0000-0000-0000-000000000001")
-	suite.Contains(JSONData, "element_00000000-0000-0000-0000-000000000021")
-	suite.Contains(JSONData, "Lucky Number")
-	suite.Contains(JSONData, "4200")
-
-	//suite.Equal(4523, len(JSONData))
+	suite.Contains(buildData, "6/49 and Lucky Number")
+	suite.Contains(buildData, "Lotto Numbers for User 1")
+	suite.Contains(buildData, "Lotto Numbers for User 2")
+	suite.Contains(buildData, "[1,2,3,4,5,6]")
+	suite.Contains(buildData, "[ 1 2 3 4 5 6 ]")
+	suite.Contains(buildData, "[36,37,38,39,40,41]")
+	suite.Contains(buildData, "[ 36 37 38 39 40 41 ]")
+	suite.Contains(buildData, "collection_00000000-0000-0000-0000-000000000001")
+	suite.Contains(buildData, "element_00000000-0000-0000-0000-000000000021")
+	suite.Contains(buildData, "Lucky Number")
+	suite.Contains(buildData, "4200")
 }

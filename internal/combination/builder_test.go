@@ -22,9 +22,11 @@ type StarlarkBuilderSuite struct {
 
 func (suite *StarlarkBuilderSuite) SetupTest() {
 	suite.scriptFile = "./testdata/star_script.star"
+}
 
+func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 	var err error
-	suite.definition, err = NewCombinationDefinition(suite.scriptFile)
+	suite.definition, err = NewCombinationDefinition(scriptFile)
 	suite.NoError(err)
 	suite.NotNil(suite.definition)
 
@@ -47,6 +49,7 @@ func (suite *StarlarkBuilderSuite) SetupTest() {
 }
 
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
+	suite.initDefinition(suite.scriptFile)
 	builder := NewStarlarkBuilder(suite.definition)
 	suite.NotNil(builder)
 
@@ -111,5 +114,15 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data[DataTypeMd].Data.String(), "[ 78 79 80 81 82 83 ]")
 	suite.Contains(combination.Data[DataTypeMd].Data.String(), "Lucky Number")
 	suite.Contains(combination.Data[DataTypeMd].Data.String(), "8400")
+}
 
+func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
+	suite.initDefinition("./testdata/star_script_no_json.star")
+	builder := NewStarlarkBuilder(suite.definition)
+	suite.NotNil(builder)
+
+	// Build first combination
+	combination, err := builder.Build()
+	suite.Error(err, "combination data does not contain json key")
+	suite.Nil(combination)
 }

@@ -48,7 +48,6 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 	}
 
 	// Check if the Data map has a json key
-	// TODO: Test error
 	if _, ok := result.Data[DataTypeJson]; !ok {
 		return nil, fmt.Errorf("%w: combination data does not contain json key", ErrCombinationDefinition)
 	}
