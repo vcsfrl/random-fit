@@ -44,12 +44,12 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 		return "", fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
-	combinationString, ok := combinationStarlarkData.(starlark.String)
+	combinationDict, ok := combinationStarlarkData.(*starlark.Dict)
 	if !ok {
-		return "", fmt.Errorf("%w: combination data is not a string", ErrCombinationDefinition)
+		return "", fmt.Errorf("%w: combination data is not a dict", ErrCombinationDefinition)
 	}
 
-	return combinationString.String(), nil
+	return combinationDict.String(), nil
 }
 
 func (cd *StarlarkDefinition) init() error {

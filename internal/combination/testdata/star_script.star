@@ -69,7 +69,17 @@ def build():
 
     json_combination = json.encode(combination)
 
-    return json_combination
+    result = {
+        "json": {
+            "Extension": "json",
+            "MimeType": "application/json",
+            "Type": "json",
+            "Data": json_combination
+        }
+    }
+
+
+    return result
 
 
 definition = {

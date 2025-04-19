@@ -1,7 +1,7 @@
 package combination
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"time"
@@ -30,11 +30,18 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
 	}
 
-	return &Combination{
+	result := &Combination{
 		UUID:           uuidV7,
 		CreatedAt:      time.Now(),
 		DefinitionID:   s.definition.ID,
 		DefinitionName: s.definition.Name,
-		Data:           bytes.NewBuffer([]byte(combinationData)),
-	}, nil
+		Data:           make(map[string]*Data),
+	}
+
+	err = json.Unmarshal([]byte(combinationData), &result.Data)
+	if err != nil {
+		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
+	}
+
+	return result, nil
 }
