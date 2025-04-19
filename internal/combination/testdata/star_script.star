@@ -68,8 +68,20 @@ def build_combination():
 
     return collection
 
-mdTemplate = """{{ .Metadata.Details }}\n\n
+mdTemplate = """# {{ .Metadata.Details }} 
+##### Date: {{ .Metadata.Date }} 
+{{ range .Collections }}
+### {{ .Metadata.Details }}
+{{ range .Sets }}
+    #### {{ .Metadata.Details }}
+    {{ range .Elements }}
+        ##### {{ .Metadata.Details }} - [ {{ range .Values }}{{ . }} {{ end }}]
+    {{ end }}
+{{ end }}
+{{ end }}
 """
+
+
 def build():
     combination = build_combination()
     json_combination = json.encode(combination)
