@@ -188,24 +188,21 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	renderTextTemplate := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 		var tpl string
 		var tplJsonArgs string
+		var tplGoArgs any
 
 		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "tpl", &tpl, "tplJsonArgs", &tplJsonArgs); err != nil {
 			return nil, err
 		}
 
 		// Create a new template and parse the letter into it.
-		t := template.Must(template.New("letter").Parse(tpl))
-
-		var tplGoArgs any
-
+		t := template.Must(template.New("render_text_template").Parse(tpl))
 		if err := json.Unmarshal([]byte(tplJsonArgs), &tplGoArgs); err != nil {
 			return nil, fmt.Errorf("unmarshal slJson args: %w", err)
 		}
-
 		buff := &bytes.Buffer{}
 
 		// Execute the template.
-		err := t.Execute(buff, tplJsonArgs)
+		err := t.Execute(buff, tplGoArgs)
 		if err != nil {
 			return nil, fmt.Errorf("execute template: %w", err)
 		}

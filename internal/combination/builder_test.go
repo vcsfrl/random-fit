@@ -72,6 +72,8 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data[DataTypeJson].Data.String(), "4200")
 	//suite.Equal(4523, len(combination.Data[DataTypeJson].Data.String()))
 
+	//suite.Contains(combination.Data[DataTypeMd].Data.String(), "6/49 and Lucky Number")
+
 	// Build first combination
 	combination, err = builder.Build()
 	suite.NoError(err)

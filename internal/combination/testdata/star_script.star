@@ -1,3 +1,6 @@
+definition_id = "lotto-test"
+definition_name = "Lotto Number Picks"
+
 def build_combination():
     users = [
         {"ID": "u1", "Name": "User 1"},
@@ -10,7 +13,8 @@ def build_combination():
     collection = {
         "Metadata": {
             "ID": root_uuid ,
-            "Details": "Monthly Users Lotto Number Picks",
+            "ParentID": definition_id,
+            "Details": definition_name,
             "Date": current_time
         },
         "Collections": []
@@ -64,6 +68,8 @@ def build_combination():
 
     return collection
 
+mdTemplate = """{{ .Metadata.Details }}\n\n
+"""
 def build():
     combination = build_combination()
     json_combination = json.encode(combination)
@@ -79,7 +85,7 @@ def build():
             "Extension": "md",
             "MimeType": "text/markdown",
             "Type": "markdown",
-            "Data": ""
+            "Data": render_text_template(mdTemplate, json_combination)
         }
     }
 
@@ -87,8 +93,8 @@ def build():
 
 
 definition = {
-    "ID": "lotto-test",
-    "Name": "Lotto Number Picks",
+    "ID": definition_id,
+    "Name": definition_name,
     "BuildFunction": build,
 }
 
