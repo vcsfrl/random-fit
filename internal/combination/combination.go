@@ -12,13 +12,17 @@ type Combination struct {
 	CreatedAt      time.Time
 	DefinitionID   string
 	DefinitionName string
-	Data           map[string]*Data
+	Data           map[DataType]*Data
 }
+
+type DataType string
+
+const DataTypeJson DataType = "json"
 
 type Data struct {
 	Extension string
 	MimeType  string
-	Type      string
+	Type      DataType
 	Data      *bytes.Buffer
 }
 
@@ -36,7 +40,7 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 		case "MimeType":
 			d.MimeType = string(value)
 		case "Type":
-			d.Type = string(value)
+			d.Type = DataType(value)
 		case "Data":
 			d.Data = bytes.NewBuffer(value)
 		}

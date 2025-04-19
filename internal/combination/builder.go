@@ -35,12 +35,22 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		CreatedAt:      time.Now(),
 		DefinitionID:   s.definition.ID,
 		DefinitionName: s.definition.Name,
-		Data:           make(map[string]*Data),
+		Data:           make(map[DataType]*Data),
 	}
 
 	err = json.Unmarshal([]byte(combinationData), &result.Data)
 	if err != nil {
 		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
+	}
+
+	if result.Data == nil {
+		return nil, fmt.Errorf("%w: combination data is nil", ErrCombinationDefinition)
+	}
+
+	// Check if the Data map has a json key
+
+	if _, ok := result.Data[DataTypeJson]; !ok {
+		return nil, fmt.Errorf("%w: combination data does not contain json key", ErrCombinationDefinition)
 	}
 
 	return result, nil
