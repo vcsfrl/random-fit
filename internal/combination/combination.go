@@ -18,6 +18,14 @@ type Combination struct {
 type DataType string
 
 const DataTypeJson DataType = "json"
+const DataTypeMd DataType = "markdown"
+const DataTypeHtml DataType = "html"
+
+var DataTypes = []DataType{
+	DataTypeJson,
+	DataTypeMd,
+	DataTypeHtml,
+}
 
 type Data struct {
 	Extension string
@@ -40,7 +48,12 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 		case "MimeType":
 			d.MimeType = string(value)
 		case "Type":
-			d.Type = DataType(value)
+			dataType := DataType(value)
+			// TODO: Check if dataType is valid
+			//if !slices.Contains(DataTypes, dataType) {
+			//	return fmt.Errorf("invalid data type: %s", dataType)
+			//}
+			d.Type = dataType
 		case "Data":
 			d.Data = bytes.NewBuffer(value)
 		}

@@ -66,9 +66,8 @@ def build_combination():
 
 def build():
     combination = build_combination()
-
     json_combination = json.encode(combination)
-
+    
     result = {
         "json": {
             "Extension": "json",
@@ -77,7 +76,6 @@ def build():
             "Data": json_combination
         }
     }
-
 
     return result
 
