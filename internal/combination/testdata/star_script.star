@@ -74,6 +74,12 @@ def build():
             "MimeType": "application/json",
             "Type": "json",
             "Data": json_combination
+        },
+        "markdown": {
+            "Extension": "md",
+            "MimeType": "text/markdown",
+            "Type": "markdown",
+            "Data": ""
         }
     }
 

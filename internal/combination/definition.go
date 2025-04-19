@@ -1,13 +1,16 @@
 package combination
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
-	"go.starlark.net/lib/json"
+	slJson "go.starlark.net/lib/json"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 	"slices"
+	"text/template"
 	"time"
 )
 
@@ -180,12 +183,43 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 		return result, nil
 	}
 
+	// renderTextTemplate() is a Go function called from Starlark.
+	// It renders a text template with the given arguments.
+	renderTextTemplate := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+		var tpl string
+		var tplJsonArgs string
+
+		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "tpl", &tpl, "tplJsonArgs", &tplJsonArgs); err != nil {
+			return nil, err
+		}
+
+		// Create a new template and parse the letter into it.
+		t := template.Must(template.New("letter").Parse(tpl))
+
+		var tplGoArgs any
+
+		if err := json.Unmarshal([]byte(tplJsonArgs), &tplGoArgs); err != nil {
+			return nil, fmt.Errorf("unmarshal slJson args: %w", err)
+		}
+
+		buff := &bytes.Buffer{}
+
+		// Execute the template.
+		err := t.Execute(buff, tplJsonArgs)
+		if err != nil {
+			return nil, fmt.Errorf("execute template: %w", err)
+		}
+
+		return starlark.String(buff.String()), nil
+	}
+
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		"uuid":       starlark.NewBuiltin("uuid", uuidF),
-		"now":        starlark.NewBuiltin("now", now),
-		"random_int": starlark.NewBuiltin("random_int", randomInt),
-		"json":       json.Module,
+		"uuid":                 starlark.NewBuiltin("uuid", uuidF),
+		"now":                  starlark.NewBuiltin("now", now),
+		"random_int":           starlark.NewBuiltin("random_int", randomInt),
+		"render_text_template": starlark.NewBuiltin("render_text_template", renderTextTemplate),
+		"json":                 slJson.Module,
 	}
 
 	return predeclared
