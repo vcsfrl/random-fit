@@ -1,8 +1,8 @@
 package combination
 
 import (
+	"bytes"
 	"github.com/google/uuid"
-	"github.com/vcsfrl/random-fit/internal/core"
 	"time"
 )
 
@@ -11,8 +11,13 @@ type Combination struct {
 	CreatedAt    time.Time
 	DefinitionID string
 	Name         string
-	JSONData     string
+	Template     string
+	Data         *bytes.Buffer
+	Output       []Output
+}
 
-	Template string
-	Data     *core.Collection
+type Output struct {
+	Extension string
+	MimeType  string
+	Data      []byte
 }

@@ -67,6 +67,8 @@ def build_combination():
 
 definition = {
     "ID": "lotto-test",
+    "UUID": uuid(),
+    "Created": now(),
     "Name": "Lotto Number Picks",
     "BuildFunction": build_combination,
     "Template": """{{- /*Generate lotto numbers*/ -}}
