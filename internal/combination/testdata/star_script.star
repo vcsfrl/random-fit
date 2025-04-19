@@ -67,17 +67,7 @@ def build_combination():
 
 definition = {
     "ID": "lotto-test",
-    "UUID": uuid(),
-    "Created": now(),
     "Name": "Lotto Number Picks",
     "BuildFunction": build_combination,
-    "Template": """{{- /*Generate lotto numbers*/ -}}
-{{ .Data.Metadata.ID }}
-{{ .Data.Metadata.Name }}
-{{ .Data.Metadata.Description }}
-{{range .Data.Collections}}
-  {{ .Metadata.Name }}
-{{end}}
-""",
 }
 

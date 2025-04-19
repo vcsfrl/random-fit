@@ -52,7 +52,6 @@ func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBui
 
 	suite.Equal("lotto-test", suite.definition.ID)
 	suite.Equal("Lotto Number Picks", suite.definition.Name)
-	suite.Contains(suite.definition.GoTemplate, "{{- /*Generate lotto numbers*/ -}}")
 	suite.Equal(suite.definition.StarScript, suite.scriptFile)
 
 	suite.Contains(JSONData, "6/49 and Lucky Number")

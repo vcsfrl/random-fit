@@ -58,8 +58,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal(36, len(combination.UUID.String()))
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
-	suite.Equal("Lotto Number Picks", combination.Name)
-	suite.Contains(combination.Template, "{{- /*Generate lotto numbers*/ -}}")
+	suite.Equal("Lotto Number Picks", combination.DefinitionName)
 	suite.NotNil(combination.Data)
 
 	suite.Contains(combination.Data.String(), "6/49 and Lucky Number")
@@ -81,8 +80,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal(36, len(combination.UUID.String()))
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
-	suite.Equal("Lotto Number Picks", combination.Name)
-	suite.Contains(combination.Template, "{{- /*Generate lotto numbers*/ -}}")
+	suite.Equal("Lotto Number Picks", combination.DefinitionName)
 	suite.NotNil(combination.Data)
 
 	suite.Contains(combination.Data.String(), "6/49 and Lucky Number")
@@ -97,25 +95,3 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal(4363, len(combination.Data.String()))
 
 }
-
-//
-//func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build_View() {
-//
-//	builder := NewStarlarkBuilder(suite.definition)
-//	suite.NotNil(builder)
-//
-//	// Build first combination
-//	combination, err := builder.Build()
-//
-//	tmpl, err := template.New(combination.DefinitionID).Parse(combination.Template)
-//	suite.NoError(err)
-//
-//	buffer := &bytes.Buffer{}
-//	//buffer, err := os.OpenFile("testdata/lotto_test.md", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
-//	suite.NoError(err)
-//	err = tmpl.Execute(buffer, combination)
-//	suite.NoError(err)
-//
-//	fmt.Println(buffer.String())
-//
-//}

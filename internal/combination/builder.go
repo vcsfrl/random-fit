@@ -31,11 +31,10 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 	}
 
 	return &Combination{
-		UUID:         uuidV7,
-		CreatedAt:    time.Now(),
-		DefinitionID: s.definition.ID,
-		Name:         s.definition.Name,
-		Template:     s.definition.GoTemplate,
-		Data:         bytes.NewBuffer([]byte(combinationData)),
+		UUID:           uuidV7,
+		CreatedAt:      time.Now(),
+		DefinitionID:   s.definition.ID,
+		DefinitionName: s.definition.Name,
+		Data:           bytes.NewBuffer([]byte(combinationData)),
 	}, nil
 }

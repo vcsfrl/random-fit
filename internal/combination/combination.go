@@ -7,13 +7,12 @@ import (
 )
 
 type Combination struct {
-	UUID         uuid.UUID
-	CreatedAt    time.Time
-	DefinitionID string
-	Name         string
-	Template     string
-	Data         *bytes.Buffer
-	Output       []Output
+	UUID           uuid.UUID
+	CreatedAt      time.Time
+	DefinitionID   string
+	DefinitionName string
+	Data           *bytes.Buffer
+	Output         []Output
 }
 
 type Output struct {
