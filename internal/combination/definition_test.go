@@ -3,6 +3,7 @@ package combination
 import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
+	random2 "github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	"testing"
 )
 
@@ -33,10 +34,10 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	}
 
-	suite.definition.randomUintFunc = func(min uint, max uint) (uint, error) {
+	random2.SetUintFunc(func(min uint, max uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil
-	}
+	})
 
 	suite.NoError(err)
 }

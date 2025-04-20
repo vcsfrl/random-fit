@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/vcsfrl/random-fit/internal/platform/random"
+	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	slJson "go.starlark.net/lib/json"
 	slTime "go.starlark.net/lib/time"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
-	"slices"
 	"text/template"
 )
 
@@ -21,10 +20,9 @@ type StarlarkDefinition struct {
 	Details    string
 	StarScript string
 
-	buildFunction  *starlark.Function
-	thread         *starlark.Thread
-	uuidFunc       func() (string, error)
-	randomUintFunc func(min uint, max uint) (uint, error)
+	buildFunction *starlark.Function
+	thread        *starlark.Thread
+	uuidFunc      func() (string, error)
 }
 
 func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
@@ -130,50 +128,6 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 		return starlark.String(id), nil
 	}
 
-	// randomInt() is a Go function called from Starlark.
-	// It returns multiple random values from an interval.
-	randomInt := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var minVal uint
-		var maxVal uint
-		var nr int
-		var allowDuplicates = false
-		var sort = false
-
-		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
-			return nil, err
-		}
-
-		sliceResult := make([]uint, 0)
-
-		for i := 0; i < nr; i++ {
-			randUint, err := cd.getRandomIntFunc()(minVal, maxVal)
-			if err != nil {
-				return nil, err
-			}
-
-			if !allowDuplicates && slices.Contains(sliceResult, randUint) {
-				i--
-				continue
-			}
-
-			sliceResult = append(sliceResult, randUint)
-		}
-
-		if sort {
-			slices.Sort(sliceResult)
-		}
-
-		result := starlark.NewList([]starlark.Value{})
-		for _, randUint := range sliceResult {
-			err := result.Append(starlark.MakeUint(randUint))
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		return result, nil
-	}
-
 	// renderTextTemplate() is a Go function called from Starlark.
 	// It renders a text template with the given arguments.
 	renderTextTemplate := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
@@ -205,10 +159,10 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	predeclared := starlark.StringDict{
 		// TODO: Move to module.
 		"uuid":                 starlark.NewBuiltin("uuid", uuidF),
-		"random_int":           starlark.NewBuiltin("random_int", randomInt),
 		"render_text_template": starlark.NewBuiltin("render_text_template", renderTextTemplate),
 		"json":                 slJson.Module,
 		"time":                 slTime.Module,
+		"random":               random.Module,
 	}
 
 	return predeclared
@@ -228,14 +182,4 @@ func (cd *StarlarkDefinition) getUuidFunc() func() (string, error) {
 	}
 
 	return cd.uuidFunc
-}
-
-func (cd *StarlarkDefinition) getRandomIntFunc() func(min uint, max uint) (uint, error) {
-	if cd.randomUintFunc != nil {
-		return cd.randomUintFunc
-	}
-
-	cd.randomUintFunc = random.NewCrypto().Uint
-
-	return cd.randomUintFunc
 }

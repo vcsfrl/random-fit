@@ -49,7 +49,7 @@ def build_combination():
                             "Details": "6/49",
                             "Date": current_time
                         },
-                        "Values": random_int(1, 49, 6, False, True)
+                        "Values": random.uint(1, 49, 6, False, True)
                     },
                     {
                         "Metadata": {
@@ -58,7 +58,7 @@ def build_combination():
                             "Details": "Lucky Number",
                             "Date": current_time
                         },
-                        "Values": [random_int(240, 530, 1, False, True)[0]*100]
+                        "Values": [random.uint(240, 530, 1, False, True)[0]*100]
                     }
                 ]
             }

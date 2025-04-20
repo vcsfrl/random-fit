@@ -3,6 +3,7 @@ package combination
 import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
+	random2 "github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	"testing"
 )
 
@@ -36,10 +37,10 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 	}
 
 	suite.testRand = 0
-	suite.definition.randomUintFunc = func(min uint, max uint) (uint, error) {
+	random2.SetUintFunc(func(min uint, max uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil
-	}
+	})
 
 	suite.NoError(err)
 }

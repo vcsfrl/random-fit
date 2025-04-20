@@ -9,7 +9,7 @@ def build_combination():
             "Details": "Sample",
             "Date": time.now().format("2006-01-02T15:04:05Z07:00"),
         },
-        "Data": random_int(1, 10, 10, False, True),
+        "Data": random.uint(1, 10, 10, False, True),
     }
 
 mdTemplate = """# {{ .Metadata.Details }} 
