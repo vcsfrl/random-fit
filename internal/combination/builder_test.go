@@ -122,3 +122,21 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
 	suite.Error(err, "combination data does not contain json representation (required)")
 	suite.Nil(combination)
 }
+func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
+	suite.initDefinition("./template/script.star")
+	builder := NewStarlarkBuilder(suite.definition)
+	suite.NotNil(builder)
+
+	// Build first combination
+	combination, err := builder.Build()
+	suite.Nil(err)
+	suite.NotNil(combination)
+
+	suite.Equal(36, len(combination.UUID.String()))
+	suite.NotNil(combination.CreatedAt)
+	suite.Equal("sample", combination.DefinitionID)
+	suite.Equal("Sample Combination", combination.Details)
+	suite.NotNil(combination.Data)
+	suite.Contains(combination.Data[DataTypeJson].Data.String(), "Sample")
+	suite.Contains(combination.Data[DataTypeMd].Data.String(), "Sample")
+}
