@@ -7,7 +7,7 @@ def build_combination():
         {"ID": "u2", "Name": "User 2"},
     ]
 
-    current_time = now()
+    current_time = time.now().format("2006-01-02T15:04:05Z07:00")
     root_uuid = "collection_" + uuid()
 
     collection = {

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
 	"testing"
-	"time"
 )
 
 func TestStarlarkBuilder(t *testing.T) {
@@ -34,10 +33,6 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 	suite.definition.uuidFunc = func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
-	}
-
-	suite.definition.nowFunc = func() time.Time {
-		return time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 	}
 
 	suite.testRand = 0

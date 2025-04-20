@@ -7,11 +7,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
 	slJson "go.starlark.net/lib/json"
+	slTime "go.starlark.net/lib/time"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
 	"slices"
 	"text/template"
-	"time"
 )
 
 var ErrCombinationDefinition = fmt.Errorf("error combination definition")
@@ -24,7 +24,6 @@ type StarlarkDefinition struct {
 	buildFunction  *starlark.Function
 	thread         *starlark.Thread
 	uuidFunc       func() (string, error)
-	nowFunc        func() time.Time
 	randomUintFunc func(min uint, max uint) (uint, error)
 }
 
@@ -131,14 +130,6 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 		return starlark.String(id), nil
 	}
 
-	// now() is a Go function called from Starlark.
-	// It returns the current time in RFC3339 format.
-	now := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		now := cd.getNowFunc()()
-
-		return starlark.String(time.Time.Format(now, time.RFC3339)), nil
-	}
-
 	// randomInt() is a Go function called from Starlark.
 	// It returns multiple random values from an interval.
 	randomInt := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
@@ -214,10 +205,10 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	predeclared := starlark.StringDict{
 		// TODO: Move to module.
 		"uuid":                 starlark.NewBuiltin("uuid", uuidF),
-		"now":                  starlark.NewBuiltin("now", now),
 		"random_int":           starlark.NewBuiltin("random_int", randomInt),
 		"render_text_template": starlark.NewBuiltin("render_text_template", renderTextTemplate),
 		"json":                 slJson.Module,
+		"time":                 slTime.Module,
 	}
 
 	return predeclared
@@ -237,18 +228,6 @@ func (cd *StarlarkDefinition) getUuidFunc() func() (string, error) {
 	}
 
 	return cd.uuidFunc
-}
-
-func (cd *StarlarkDefinition) getNowFunc() func() time.Time {
-	if cd.nowFunc != nil {
-		return cd.nowFunc
-	}
-
-	cd.nowFunc = func() time.Time {
-		return time.Now()
-	}
-
-	return cd.nowFunc
 }
 
 func (cd *StarlarkDefinition) getRandomIntFunc() func(min uint, max uint) (uint, error) {
