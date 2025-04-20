@@ -212,6 +212,7 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
+		// TODO: Move to module.
 		"uuid":                 starlark.NewBuiltin("uuid", uuidF),
 		"now":                  starlark.NewBuiltin("now", now),
 		"random_int":           starlark.NewBuiltin("random_int", randomInt),
