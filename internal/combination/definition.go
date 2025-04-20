@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
+	"github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	slJson "go.starlark.net/lib/json"
 	slTime "go.starlark.net/lib/time"
 	"go.starlark.net/starlark"
@@ -22,7 +22,6 @@ type StarlarkDefinition struct {
 
 	buildFunction *starlark.Function
 	thread        *starlark.Thread
-	uuidFunc      func() (string, error)
 }
 
 func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
@@ -115,19 +114,6 @@ func (cd *StarlarkDefinition) init() error {
 }
 
 func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
-	// uuidF() is a Go function called from Starlark.
-	// It returns a new UUID.
-	uuidF := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		uuidFunc := cd.getUuidFunc()
-		id, err := uuidFunc()
-		if err != nil {
-			return nil, err
-
-		}
-
-		return starlark.String(id), nil
-	}
-
 	// renderTextTemplate() is a Go function called from Starlark.
 	// It renders a text template with the given arguments.
 	renderTextTemplate := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
@@ -157,8 +143,7 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		// TODO: Move to module.
-		"uuid":                 starlark.NewBuiltin("uuid", uuidF),
+		"uuid":                 uuid.Module,
 		"render_text_template": starlark.NewBuiltin("render_text_template", renderTextTemplate),
 		"json":                 slJson.Module,
 		"time":                 slTime.Module,
@@ -166,20 +151,4 @@ func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	}
 
 	return predeclared
-}
-
-func (cd *StarlarkDefinition) getUuidFunc() func() (string, error) {
-	if cd.uuidFunc != nil {
-		return cd.uuidFunc
-	}
-
-	cd.uuidFunc = func() (string, error) {
-		id, err := uuid.NewV7()
-		if err != nil {
-			return "", err
-		}
-		return id.String(), nil
-	}
-
-	return cd.uuidFunc
 }

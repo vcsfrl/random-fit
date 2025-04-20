@@ -8,7 +8,7 @@ def build_combination():
     ]
 
     current_time = time.now().format("2006-01-02T15:04:05Z07:00")
-    root_uuid = "collection_" + uuid()
+    root_uuid = "collection_" + uuid.v7()
 
     collection = {
         "Metadata": {
@@ -21,7 +21,7 @@ def build_combination():
     }
 
     for i in range(len(users)):
-        user_collection_id = "collection_" + uuid()
+        user_collection_id = "collection_" + uuid.v7()
         user_collection = {
             "Metadata": {
                 "ID": user_collection_id,
@@ -33,7 +33,7 @@ def build_combination():
         }
 
         for j in range(3):
-            user_set_id = "set_" + uuid()
+            user_set_id = "set_" + uuid.v7()
             sixfortynine = {
                 "Metadata": {
                     "ID": user_set_id,
@@ -44,7 +44,7 @@ def build_combination():
                 "Elements": [
                     {
                         "Metadata": {
-                            "ID": "element_" + uuid(),
+                            "ID": "element_" + uuid.v7(),
                             "ParentID": user_set_id,
                             "Details": "6/49",
                             "Date": current_time
@@ -53,7 +53,7 @@ def build_combination():
                     },
                     {
                         "Metadata": {
-                            "ID": "element_" + uuid(),
+                            "ID": "element_" + uuid.v7(),
                             "ParentID": user_set_id,
                             "Details": "Lucky Number",
                             "Date": current_time

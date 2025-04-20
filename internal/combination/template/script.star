@@ -4,8 +4,8 @@ definition_name = "Sample Combination"
 def build_combination():
     return {
         "Metadata": {
-            "ID": uuid(),
-            "ParentID": uuid(),
+            "ID": uuid.v7(),
+            "ParentID": uuid.v7(),
             "Details": "Sample",
             "Date": time.now().format("2006-01-02T15:04:05Z07:00"),
         },

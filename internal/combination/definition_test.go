@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
 	random2 "github.com/vcsfrl/random-fit/internal/platform/starlark/random"
+	uuid2 "github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	"testing"
 )
 
@@ -29,10 +30,10 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 	suite.NotNil(suite.definition)
 
 	suite.id = 0
-	suite.definition.uuidFunc = func() (string, error) {
+	uuid2.SetUuidFunc(func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
-	}
+	})
 
 	random2.SetUintFunc(func(min uint, max uint) (uint, error) {
 		suite.testRand++
