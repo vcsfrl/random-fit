@@ -51,7 +51,7 @@ func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBui
 	suite.NoError(err)
 
 	suite.Equal("lotto-test", suite.definition.ID)
-	suite.Equal("Lotto Number Picks", suite.definition.Name)
+	suite.Equal("Lotto Number Picks", suite.definition.Details)
 	suite.Equal(suite.definition.StarScript, suite.scriptFile)
 
 	suite.Contains(buildData, "6/49 and Lucky Number")

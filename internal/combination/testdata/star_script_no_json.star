@@ -8,7 +8,7 @@ def build():
 
 definition = {
     "ID": definition_id,
-    "Name": definition_name,
+    "Details": definition_name,
     "BuildFunction": build,
 }
 

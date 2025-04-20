@@ -61,7 +61,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal(36, len(combination.UUID.String()))
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
-	suite.Equal("Lotto Number Picks", combination.DefinitionName)
+	suite.Equal("Lotto Number Picks", combination.Details)
 	suite.NotNil(combination.Data)
 
 	suite.Contains(combination.Data[DataTypeJson].Data.String(), "6/49 and Lucky Number")
@@ -90,7 +90,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal(36, len(combination.UUID.String()))
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
-	suite.Equal("Lotto Number Picks", combination.DefinitionName)
+	suite.Equal("Lotto Number Picks", combination.Details)
 	suite.NotNil(combination.Data)
 
 	suite.Contains(combination.Data[DataTypeJson].Data.String(), "6/49 and Lucky Number")

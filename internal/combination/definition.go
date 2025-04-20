@@ -18,7 +18,7 @@ var ErrCombinationDefinition = fmt.Errorf("error combination definition")
 
 type StarlarkDefinition struct {
 	ID         string
-	Name       string
+	Details    string
 	StarScript string
 
 	buildFunction  *starlark.Function
@@ -58,7 +58,7 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 func (cd *StarlarkDefinition) init() error {
 	// The Thread defines the behavior of the built-in 'print' function.
 	cd.thread = &starlark.Thread{
-		Name:  cd.Name,
+		Name:  cd.Details,
 		Print: func(_ *starlark.Thread, msg string) { fmt.Println(msg) },
 	}
 
@@ -92,8 +92,8 @@ func (cd *StarlarkDefinition) init() error {
 	}
 	cd.ID = string(id)
 
-	// Retrieve the Name field fro	m the dict.
-	sName, ok, err := dictDefinition.Get(starlark.String("Name"))
+	// Retrieve the Details field fro	m the dict.
+	sName, ok, err := dictDefinition.Get(starlark.String("Details"))
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
@@ -101,7 +101,7 @@ func (cd *StarlarkDefinition) init() error {
 	if !ok {
 		return fmt.Errorf("%w 'definition' name field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
-	cd.Name = string(name)
+	cd.Details = string(name)
 
 	// Retrieve the BuildFunction field from the dict.
 	sBuildFunction, ok, err := dictDefinition.Get(starlark.String("BuildFunction"))

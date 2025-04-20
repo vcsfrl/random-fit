@@ -11,23 +11,21 @@ import (
 )
 
 type Combination struct {
-	UUID           uuid.UUID
-	CreatedAt      time.Time
-	DefinitionID   string
-	DefinitionName string
-	Data           map[DataType]*Data
+	UUID         uuid.UUID
+	CreatedAt    time.Time
+	DefinitionID string
+	Details      string
+	Data         map[DataType]*Data
 }
 
 type DataType string
 
 const DataTypeJson DataType = "json"
 const DataTypeMd DataType = "markdown"
-const DataTypeHtml DataType = "html"
 
 var DataTypes = []DataType{
 	DataTypeJson,
 	DataTypeMd,
-	DataTypeHtml,
 }
 
 type Data struct {

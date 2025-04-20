@@ -31,11 +31,11 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 	}
 
 	result := &Combination{
-		UUID:           uuidV7,
-		CreatedAt:      time.Now(),
-		DefinitionID:   s.definition.ID,
-		DefinitionName: s.definition.Name,
-		Data:           make(map[DataType]*Data),
+		UUID:         uuidV7,
+		CreatedAt:    time.Now(),
+		DefinitionID: s.definition.ID,
+		Details:      s.definition.Details,
+		Data:         make(map[DataType]*Data),
 	}
 
 	err = json.Unmarshal([]byte(combinationData), &result.Data)
