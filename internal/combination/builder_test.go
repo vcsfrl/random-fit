@@ -40,6 +40,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 		return time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)
 	}
 
+	suite.testRand = 0
 	suite.definition.randomUintFunc = func(min uint, max uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil
@@ -122,6 +123,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
 	suite.Error(err, "combination data does not contain json representation (required)")
 	suite.Nil(combination)
 }
+
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 	suite.initDefinition("./template/script.star")
 	builder := NewStarlarkBuilder(suite.definition)
@@ -138,5 +140,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 	suite.Equal("Sample Combination", combination.Details)
 	suite.NotNil(combination.Data)
 	suite.Contains(combination.Data[DataTypeJson].Data.String(), "Sample")
+	suite.Contains(combination.Data[DataTypeJson].Data.String(), "[1,2,3,4,5,6,7,8,9,10]")
 	suite.Contains(combination.Data[DataTypeMd].Data.String(), "Sample")
+	suite.Contains(combination.Data[DataTypeMd].Data.String(), "[ 1 2 3 4 5 6 7 8 9 10 ]")
 }

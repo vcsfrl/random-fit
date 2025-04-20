@@ -9,11 +9,12 @@ def build_combination():
             "Details": "Sample",
             "Date": now(),
         },
-        "Data": [],
+        "Data": random_int(1, 10, 10, False, True),
     }
 
 mdTemplate = """# {{ .Metadata.Details }} 
 ##### Date: {{ .Metadata.Date }} 
+[ {{ range .Data }}{{.}} {{ end }}]
 """
 
 
