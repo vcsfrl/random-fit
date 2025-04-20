@@ -38,7 +38,6 @@ type Data struct {
 }
 
 func (d *Data) UnmarshalJSON(data []byte) error {
-
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
