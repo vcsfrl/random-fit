@@ -1,16 +1,14 @@
 package combination
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
+	"github.com/vcsfrl/random-fit/internal/platform/starlark/template"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	slJson "go.starlark.net/lib/json"
 	slTime "go.starlark.net/lib/time"
 	"go.starlark.net/starlark"
 	"go.starlark.net/syntax"
-	"text/template"
 )
 
 var ErrCombinationDefinition = fmt.Errorf("error combination definition")
@@ -114,40 +112,13 @@ func (cd *StarlarkDefinition) init() error {
 }
 
 func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
-	// renderTextTemplate() is a Go function called from Starlark.
-	// It renders a text template with the given arguments.
-	renderTextTemplate := func(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-		var tpl string
-		var tplJsonArgs string
-		var tplGoArgs any
-
-		if err := starlark.UnpackArgs(b.Name(), args, kwargs, "tpl", &tpl, "tplJsonArgs", &tplJsonArgs); err != nil {
-			return nil, err
-		}
-
-		// Create a new template and parse the letter into it.
-		t := template.Must(template.New("render_text_template").Parse(tpl))
-		if err := json.Unmarshal([]byte(tplJsonArgs), &tplGoArgs); err != nil {
-			return nil, fmt.Errorf("unmarshal slJson args: %w", err)
-		}
-		buff := &bytes.Buffer{}
-
-		// Execute the template.
-		err := t.Execute(buff, tplGoArgs)
-		if err != nil {
-			return nil, fmt.Errorf("execute template: %w", err)
-		}
-
-		return starlark.String(buff.String()), nil
-	}
-
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		"uuid":                 uuid.Module,
-		"render_text_template": starlark.NewBuiltin("render_text_template", renderTextTemplate),
-		"json":                 slJson.Module,
-		"time":                 slTime.Module,
-		"random":               random.Module,
+		"uuid":     uuid.Module,
+		"template": template.Module,
+		"json":     slJson.Module,
+		"time":     slTime.Module,
+		"random":   random.Module,
 	}
 
 	return predeclared

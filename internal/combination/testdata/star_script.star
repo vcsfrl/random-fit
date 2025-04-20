@@ -97,7 +97,7 @@ def build():
             "Extension": "md",
             "MimeType": "text/markdown",
             "Type": "markdown",
-            "Data": render_text_template(mdTemplate, json_combination)
+            "Data": template.render_text(mdTemplate, json_combination)
         }
     }
 
