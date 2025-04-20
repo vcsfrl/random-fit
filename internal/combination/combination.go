@@ -3,7 +3,10 @@ package combination
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
+	"slices"
+	"strconv"
 	"time"
 )
 
@@ -42,20 +45,24 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 	}
 
 	for key, value := range raw {
+		unquoted, err := strconv.Unquote(string(value))
+		if err != nil {
+			return fmt.Errorf("error unquoting value: %w", err)
+		}
+
 		switch key {
 		case "Extension":
-			d.Extension = string(value)
+			d.Extension = unquoted
 		case "MimeType":
-			d.MimeType = string(value)
+			d.MimeType = unquoted
 		case "Type":
-			dataType := DataType(value)
-			// TODO: Check if dataType is valid
-			//if !slices.Contains(DataTypes, dataType) {
-			//	return fmt.Errorf("invalid data type: %s", dataType)
-			//}
+			dataType := DataType(unquoted)
+			if !slices.Contains(DataTypes, dataType) {
+				return fmt.Errorf("invalid data type: %s", dataType)
+			}
 			d.Type = dataType
 		case "Data":
-			d.Data = bytes.NewBuffer(value)
+			d.Data = bytes.NewBuffer([]byte(unquoted))
 		}
 	}
 
