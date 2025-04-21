@@ -15,7 +15,7 @@ type Combination struct {
 	CreatedAt    time.Time
 	DefinitionID string
 	Details      string
-	Data         map[DataType]*Data
+	Data         map[DataType]*Data `validate:"combination_data_json"`
 }
 
 type DataType string

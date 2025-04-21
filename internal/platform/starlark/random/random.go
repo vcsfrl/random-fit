@@ -17,7 +17,7 @@ var Module = &starlarkstruct.Module{
 var randomUintFunc func(min uint, max uint) (uint, error)
 
 // getUint() is a Go function called from Starlark.
-// It returns multiple random values from an interval.
+// It returns multiple random values from an interval of type uint.
 func getUint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var minVal uint
 	var maxVal uint

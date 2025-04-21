@@ -117,7 +117,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
 
 	// Build first combination
 	combination, err := builder.Build()
-	suite.Error(err, "combination data does not contain json representation (required)")
+	suite.Error(err)
 	suite.Nil(combination)
 }
 

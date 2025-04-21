@@ -3,6 +3,7 @@ package combination
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"time"
 )
@@ -55,9 +56,19 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		return nil, fmt.Errorf("%w: combination data is nil", ErrCombinationDefinition)
 	}
 
-	// Check if the Data map has a json key
-	if _, ok := result.Data[DataTypeJson]; !ok {
-		return nil, fmt.Errorf("%w: combination data does not contain json representation (required)", ErrCombinationDefinition)
+	//// Check if the Data map has a json key
+	//if _, ok := result.Data[DataTypeJson]; !ok {
+	//	return nil, fmt.Errorf("%w: combination data does not contain json representation (required)", ErrCombinationDefinition)
+	//}
+
+	validate, err := Validator()
+	if err != nil {
+		return nil, fmt.Errorf("%w: error creating validator: %w", ErrCombinationDefinition, err)
+	}
+
+	err = validate.Struct(result)
+	if err != nil {
+		return nil, fmt.Errorf("%w: error validating combination data: %w", ErrCombinationDefinition, err.(validator.ValidationErrors))
 	}
 
 	return result, nil
