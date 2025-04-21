@@ -1,3 +1,5 @@
+# This script provides the definition of a combination for a specific use case.
+#
 # The script must define a variable called `definition`:
 #  - Type: Dict
 #  - Keys:

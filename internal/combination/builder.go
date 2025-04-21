@@ -13,14 +13,22 @@ type Builder interface {
 
 type StarlarkBuilder struct {
 	definition *StarlarkDefinition
+	now        func() time.Time
+	uuidV7     func() (uuid.UUID, error)
 }
 
 func NewStarlarkBuilder(definition *StarlarkDefinition) *StarlarkBuilder {
-	return &StarlarkBuilder{definition: definition}
+	return &StarlarkBuilder{
+		definition: definition,
+		now:        time.Now,
+		uuidV7: func() (uuid.UUID, error) {
+			return uuid.NewV7()
+		},
+	}
 }
 
 func (s *StarlarkBuilder) Build() (*Combination, error) {
-	uuidV7, err := uuid.NewV7()
+	uuidV7, err := s.uuidV7()
 	if err != nil {
 		return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
 	}
@@ -32,7 +40,7 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 
 	result := &Combination{
 		UUID:         uuidV7,
-		CreatedAt:    time.Now(),
+		CreatedAt:    s.now(),
 		DefinitionID: s.definition.ID,
 		Details:      s.definition.Details,
 		Data:         make(map[DataType]*Data),
