@@ -12,13 +12,13 @@ import (
 var Module = &starlarkstruct.Module{
 	Name: "template",
 	Members: starlark.StringDict{
-		"render_text": starlark.NewBuiltin("render_text", RenderText),
+		"render_text": starlark.NewBuiltin("render_text", renderText),
 	},
 }
 
-// RenderText() is a Go function called from Starlark.
+// renderText() is a Go function called from Starlark.
 // It renders a text textTemplate with the given arguments.
-func RenderText(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func renderText(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var tpl string
 	var tplJsonArgs string
 	var tplGoArgs any

@@ -10,15 +10,15 @@ import (
 var Module = &starlarkstruct.Module{
 	Name: "random",
 	Members: starlark.StringDict{
-		"uint": starlark.NewBuiltin("uint", Uint),
+		"uint": starlark.NewBuiltin("uint", getUint),
 	},
 }
 
 var randomUintFunc func(min uint, max uint) (uint, error)
 
-// Uint() is a Go function called from Starlark.
+// getUint() is a Go function called from Starlark.
 // It returns multiple random values from an interval.
-func Uint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func getUint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var minVal uint
 	var maxVal uint
 	var nr int

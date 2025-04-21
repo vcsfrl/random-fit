@@ -1,3 +1,26 @@
+# The script must define a variable called `definition`:
+#  - Type: Dict
+#  - Keys:
+#    - ID: String: The ID of the combination
+#    - Details: String: The details of the combination
+#    - BuildFunction: Function: The function that builds the combination
+#
+# Example:
+#
+# definition = {
+#     "ID": "sample",
+#     "Details": "Sample Combination",
+#     "BuildFunction": build,
+# }
+#
+# Available Functions:
+# - json.encode
+# - json.decode
+# - time.now
+# - template.render_text
+# - random.uint
+# - uuid.v7
+
 definition_id = "sample"
 definition_name = "Sample Combination"
 
