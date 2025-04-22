@@ -12,7 +12,7 @@ install: ## APP Build.
 	if [ ! -f .env ]; then cp -n .env.dist .env; echo "CONTAINER_EXEC_USER_ID=`id -u`" >> .env; echo "CONTAINER_USERNAME=${USER}" >> .env; fi
 	docker compose build;
 
-bash: ## APP Bash.
+shell: ## APP Shell.
 	docker compose run --remove-orphans random-fit_app bash
 
 test: ## APP Test
