@@ -56,11 +56,6 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 		return nil, fmt.Errorf("%w: combination data is nil", ErrCombinationDefinition)
 	}
 
-	//// Check if the Data map has a json key
-	//if _, ok := result.Data[DataTypeJson]; !ok {
-	//	return nil, fmt.Errorf("%w: combination data does not contain json representation (required)", ErrCombinationDefinition)
-	//}
-
 	validate, err := Validator()
 	if err != nil {
 		return nil, fmt.Errorf("%w: error creating validator: %w", ErrCombinationDefinition, err)
