@@ -36,6 +36,7 @@ func (suite *BuildSuite) TestBuild() {
 
 	suite.Equal(definition.ID, plan.DefinitionID)
 	suite.Equal(definition.Details, plan.Details)
+	suite.Equal(definition.Users, plan.Users)
 	suite.Equal(definition.GroupDefinition.NumberOfGroups, len(plan.Groups))
 	suite.Equal(definition.GroupDefinition.NrOfCombinations, len(plan.Groups[0].Combinations))
 	suite.Equal(definition.GroupDefinition.NamePrefix+"-1", plan.Groups[0].Details)

@@ -38,6 +38,7 @@ func (b *Builder) Build() (*Plan, error) {
 		CreatedAt:    b.Now(),
 		DefinitionID: b.Definition.ID,
 		Details:      b.Definition.Details,
+		Users:        b.Definition.Users,
 	}
 
 	// Create groups

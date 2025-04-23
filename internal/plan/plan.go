@@ -11,7 +11,7 @@ import (
 type Definition struct {
 	ID      string
 	Details string
-	UserID  string
+	Users   []string
 	GroupDefinition
 }
 
@@ -32,5 +32,6 @@ type Plan struct {
 	CreatedAt    time.Time
 	DefinitionID string
 	Details      string
+	Users        []string
 	Groups       []*Group
 }
