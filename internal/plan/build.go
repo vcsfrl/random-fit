@@ -38,25 +38,31 @@ func (b *Builder) Build() (*Plan, error) {
 		CreatedAt:    b.Now(),
 		DefinitionID: b.Definition.ID,
 		Details:      b.Definition.Details,
-		Users:        b.Definition.Users,
+		UserGroups:   make(map[string][]*Group),
 	}
 
-	// Create groups
-	for i := 0; i < b.Definition.GroupDefinition.NumberOfGroups; i++ {
-		group := &Group{
-			Details:      fmt.Sprintf("%s-%d", b.Definition.GroupDefinition.NamePrefix, i+1),
-			Combinations: make([]*combination.Combination, 0),
-		}
-		for j := 0; j < b.Definition.GroupDefinition.NrOfCombinations; j++ {
-			newCombination, err := b.CombinationBuilder.Build()
-			if err != nil {
-				return nil, fmt.Errorf("%w: error building combination: %w", ErrPlanBuild, err)
+	for _, user := range b.Definition.Users {
+		userGroups := make([]*Group, 0)
+
+		// Create groups
+		for i := 0; i < b.Definition.GroupDefinition.NumberOfGroups; i++ {
+			group := &Group{
+				Details:      fmt.Sprintf("%s-%d", b.Definition.GroupDefinition.NamePrefix, i+1),
+				Combinations: make([]*combination.Combination, 0),
+			}
+			for j := 0; j < b.Definition.GroupDefinition.NrOfCombinations; j++ {
+				newCombination, err := b.CombinationBuilder.Build()
+				if err != nil {
+					return nil, fmt.Errorf("%w: error building combination: %w", ErrPlanBuild, err)
+				}
+
+				group.Combinations = append(group.Combinations, newCombination)
 			}
 
-			group.Combinations = append(group.Combinations, newCombination)
+			userGroups = append(userGroups, group)
 		}
 
-		plan.Groups = append(plan.Groups, group)
+		plan.UserGroups[user] = userGroups
 	}
 
 	return plan, nil

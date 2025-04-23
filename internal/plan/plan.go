@@ -32,6 +32,5 @@ type Plan struct {
 	CreatedAt    time.Time
 	DefinitionID string
 	Details      string
-	Users        []string
-	Groups       []*Group
+	UserGroups   map[string][]*Group
 }

@@ -21,6 +21,7 @@ func (suite *BuildSuite) TestBuild() {
 	definition := &Definition{
 		ID:      "test",
 		Details: "Test",
+		Users:   []string{"user-1", "user-2"},
 		GroupDefinition: GroupDefinition{
 			NamePrefix:       "Test",
 			NumberOfGroups:   4,
@@ -36,18 +37,25 @@ func (suite *BuildSuite) TestBuild() {
 
 	suite.Equal(definition.ID, plan.DefinitionID)
 	suite.Equal(definition.Details, plan.Details)
-	suite.Equal(definition.Users, plan.Users)
-	suite.Equal(definition.GroupDefinition.NumberOfGroups, len(plan.Groups))
-	suite.Equal(definition.GroupDefinition.NrOfCombinations, len(plan.Groups[0].Combinations))
-	suite.Equal(definition.GroupDefinition.NamePrefix+"-1", plan.Groups[0].Details)
-	suite.Equal(definition.GroupDefinition.NamePrefix+"-2", plan.Groups[1].Details)
-	suite.Equal(definition.GroupDefinition.NamePrefix+"-3", plan.Groups[2].Details)
-	suite.Equal(definition.GroupDefinition.NamePrefix+"-4", plan.Groups[3].Details)
-	suite.Equal(mockBuilder.Calls, definition.GroupDefinition.NumberOfGroups*definition.GroupDefinition.NrOfCombinations)
-	suite.Equal(mockBuilder.Calls, len(plan.Groups[0].Combinations)+len(plan.Groups[1].Combinations)+len(plan.Groups[2].Combinations)+len(plan.Groups[3].Combinations))
+	suite.Equal(definition.GroupDefinition.NumberOfGroups, len(plan.UserGroups["user-1"]))
+	suite.Equal(definition.GroupDefinition.NrOfCombinations, len(plan.UserGroups["user-1"][0].Combinations))
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-1", plan.UserGroups["user-1"][0].Details)
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-2", plan.UserGroups["user-1"][1].Details)
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-3", plan.UserGroups["user-1"][2].Details)
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-4", plan.UserGroups["user-1"][3].Details)
+	suite.Equal("test-1", plan.UserGroups["user-1"][0].Combinations[0].Details)
+	suite.Equal("test-12", plan.UserGroups["user-1"][3].Combinations[2].Details)
 
-	suite.Equal("test-1", plan.Groups[0].Combinations[0].Details)
-	suite.Equal("test-12", plan.Groups[3].Combinations[2].Details)
+	suite.Equal(definition.GroupDefinition.NumberOfGroups, len(plan.UserGroups["user-2"]))
+	suite.Equal(definition.GroupDefinition.NrOfCombinations, len(plan.UserGroups["user-2"][0].Combinations))
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-1", plan.UserGroups["user-2"][0].Details)
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-2", plan.UserGroups["user-2"][1].Details)
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-3", plan.UserGroups["user-2"][2].Details)
+	suite.Equal(definition.GroupDefinition.NamePrefix+"-4", plan.UserGroups["user-2"][3].Details)
+	suite.Equal("test-13", plan.UserGroups["user-2"][0].Combinations[0].Details)
+	suite.Equal("test-24", plan.UserGroups["user-2"][3].Combinations[2].Details)
+
+	suite.Equal(mockBuilder.Calls, definition.GroupDefinition.NumberOfGroups*definition.GroupDefinition.NrOfCombinations*len(definition.Users))
 }
 
 type MockCombinationBuilder struct {

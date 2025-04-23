@@ -18,16 +18,3 @@ func (e *Exporter) Export(plan *Plan) error {
 	// Placeholder for actual implementation
 	return nil
 }
-
-//func toSnakeCase(s string) string {
-//	s = strings.ToLower(strings.TrimSpace(s))
-//	var result []rune
-//	for i, r := range s {
-//		if i > 0 && r >= 'A' && r <= 'Z' {
-//			result = append(result, '_')
-//		}
-//		result = append(result, r)
-//	}
-//
-//	return s
-//}
