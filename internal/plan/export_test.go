@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 func TestExportSuite(t *testing.T) {
@@ -36,7 +37,7 @@ func (suite *ExportSuite) SetupTest() {
 		Users:   []string{"user-1"},
 		UserData: UserData{
 			ContainerName:            "Group-Container",
-			RecurrentGroupNamePrefix: "Recurrent-Group ",
+			RecurrentGroupNamePrefix: "Recurrent-Group",
 			RecurrentGroups:          4,
 			NrOfGroupCombinations:    3,
 		},
@@ -47,6 +48,9 @@ func (suite *ExportSuite) SetupTest() {
 	suite.combinationBuilder = combination.NewStarlarkBuilder(definition)
 
 	suite.planBuilder = NewBuilder(suite.planDefinition, suite.combinationBuilder)
+	suite.planBuilder.Now = func() time.Time {
+		return time.Date(2010, 1, 2, 3, 4, 5, 6, time.UTC)
+	}
 }
 
 func (suite *ExportSuite) TearDownTest() {
