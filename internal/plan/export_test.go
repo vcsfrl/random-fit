@@ -1,9 +1,12 @@
 package plan
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
+	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
+	slUuid "github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	"os"
 	"path/filepath"
 	"testing"
@@ -21,6 +24,8 @@ type ExportSuite struct {
 	planDefinition     *Definition
 	combinationBuilder combination.Builder
 	planBuilder        *Builder
+	id                 int
+	testRand           uint
 }
 
 func (suite *ExportSuite) SetupTest() {
@@ -46,6 +51,18 @@ func (suite *ExportSuite) SetupTest() {
 	definition, err := combination.NewCombinationDefinition("./testdata/star_script.star")
 	suite.NoError(err)
 	suite.combinationBuilder = combination.NewStarlarkBuilder(definition)
+
+	suite.id = 0
+	slUuid.SetUuidFunc(func() (string, error) {
+		suite.id++
+		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
+	})
+
+	suite.testRand = 0
+	random.SetUintFunc(func(min uint, max uint) (uint, error) {
+		suite.testRand++
+		return suite.testRand, nil
+	})
 
 	suite.planBuilder = NewBuilder(suite.planDefinition, suite.combinationBuilder)
 	suite.planBuilder.Now = func() time.Time {
