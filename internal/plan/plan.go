@@ -24,8 +24,9 @@ type UserData struct {
 }
 
 type Group struct {
-	Details      string
-	Combinations []*combination.Combination
+	ContainerName string
+	Details       string
+	Combinations  []*combination.Combination
 }
 
 type Plan struct {

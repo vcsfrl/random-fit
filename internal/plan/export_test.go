@@ -1,7 +1,6 @@
 package plan
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
@@ -32,11 +31,12 @@ func (suite *ExportSuite) SetupTest() {
 
 	// Create a test plan definition
 	suite.planDefinition = &Definition{
-		ID:      "test",
-		Details: "Test",
+		ID:      "test-definition",
+		Details: "Test definition",
 		Users:   []string{"user-1"},
 		UserData: UserData{
-			RecurrentGroupNamePrefix: "Test",
+			ContainerName:            "Group-Container",
+			RecurrentGroupNamePrefix: "Recurrent-Group ",
 			RecurrentGroups:          4,
 			NrOfGroupCombinations:    3,
 		},
@@ -51,8 +51,8 @@ func (suite *ExportSuite) SetupTest() {
 
 func (suite *ExportSuite) TearDownTest() {
 	// Remove the test folder
-	//err := os.RemoveAll(suite.testFolder)
-	//suite.NoError(err)
+	err := os.RemoveAll(suite.testFolder)
+	suite.NoError(err)
 }
 
 func (suite *ExportSuite) TestExport() {
@@ -60,8 +60,6 @@ func (suite *ExportSuite) TestExport() {
 	suite.NoError(err)
 	suite.NotNil(plan)
 
-	for user, group := range plan.UserGroups {
-		fmt.Println(user, group)
-	}
-
+	exporter := NewExporter(suite.testFolder)
+	err = exporter.Export(plan)
 }
