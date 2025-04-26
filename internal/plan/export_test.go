@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
@@ -34,10 +35,10 @@ func (suite *ExportSuite) SetupTest() {
 		ID:      "test",
 		Details: "Test",
 		Users:   []string{"user-1"},
-		GroupDefinition: GroupDefinition{
-			NamePrefix:       "Test",
-			NumberOfGroups:   4,
-			NrOfCombinations: 3,
+		UserData: UserData{
+			RecurrentGroupNamePrefix: "Test",
+			RecurrentGroups:          4,
+			NrOfGroupCombinations:    3,
 		},
 	}
 
@@ -55,14 +56,12 @@ func (suite *ExportSuite) TearDownTest() {
 }
 
 func (suite *ExportSuite) TestExport() {
-	//plan, err := suite.planBuilder.Build()
-	//suite.NoError(err)
-	//suite.NotNil(plan)
+	plan, err := suite.planBuilder.Build()
+	suite.NoError(err)
+	suite.NotNil(plan)
 
-	//for _, user := range plan.Users {
-	//	for _, group := range plan.UserGroups {
-	//		fmt.Println(user, group)
-	//	}
-	//}
+	for user, group := range plan.UserGroups {
+		fmt.Println(user, group)
+	}
 
 }

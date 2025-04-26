@@ -12,14 +12,15 @@ type Definition struct {
 	ID      string
 	Details string
 	Users   []string
-	GroupDefinition
+	UserData
 }
 
-// GroupDefinition is used to define a group of combinations.
-type GroupDefinition struct {
-	NamePrefix       string
-	NumberOfGroups   int
-	NrOfCombinations int
+// UserData is used to define a group of combinations.
+type UserData struct {
+	ContainerName            string
+	RecurrentGroupNamePrefix string
+	RecurrentGroups          int
+	NrOfGroupCombinations    int
 }
 
 type Group struct {
