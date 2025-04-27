@@ -31,7 +31,7 @@ func (e *Exporter) Export(plan *Plan) error {
 			// Create a file for each combination by type
 			for i, groupCombination := range group.Combinations {
 				for _, data := range groupCombination.Data {
-					if err := e.saveToFile(groupCombination, data, groupFolder, i); err != nil {
+					if err := e.saveToFile(groupCombination, data, groupFolder, i+1); err != nil {
 						return err
 					}
 				}

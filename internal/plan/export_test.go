@@ -1,12 +1,14 @@
 package plan
 
 import (
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	slUuid "github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"testing"
@@ -72,8 +74,8 @@ func (suite *ExportSuite) SetupTest() {
 
 func (suite *ExportSuite) TearDownTest() {
 	// Remove the test folder
-	err := os.RemoveAll(suite.testFolder)
-	suite.NoError(err)
+	//err := os.RemoveAll(suite.testFolder)
+	//suite.NoError(err)
 }
 
 func (suite *ExportSuite) TestExport() {
@@ -83,4 +85,55 @@ func (suite *ExportSuite) TestExport() {
 
 	exporter := NewExporter(suite.testFolder)
 	err = exporter.Export(plan)
+	suite.NoError(err)
+
+	// Check if the user folder exists
+	userFolder := filepath.Join(suite.testFolder, "user-1")
+	suite.True(suite.fileExists(userFolder))
+
+	// Check if the group folder exists
+	groupContainer := filepath.Join(userFolder, "2010-01-02-0304_Group-Container")
+	suite.True(suite.fileExists(groupContainer))
+	for i := 1; i <= 4; i++ {
+		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-Group-%d", i))
+		suite.True(suite.fileExists(groupFolder))
+
+		extensions := []string{"json", "md"}
+
+		// Check if the group combinations exist
+		for j := 1; j <= 3; j++ {
+			for _, ext := range extensions {
+				groupCombination := filepath.Join(groupFolder, fmt.Sprintf("Lotto_Number_Picks_%d.%s", j, ext))
+				exists, err := suite.fileExists(groupCombination)
+				suite.NoError(err)
+				suite.True(exists, fmt.Sprintf("File %s does not exist", groupCombination))
+
+				// Check if the file is not empty
+				fileInfo, err := os.Stat(groupCombination)
+				suite.NoError(err)
+				suite.True(fileInfo.Size() > 0, fmt.Sprintf("File %s is empty", groupCombination))
+
+				// Check if file contains a specific string
+				file, err := os.ReadFile(groupCombination)
+				suite.NoError(err)
+				suite.Contains(string(file), "Lotto Number Picks")
+				suite.Contains(string(file), "Lotto Numbers for User 1")
+				suite.Contains(string(file), "6/49 and Lucky Number")
+			}
+		}
+	}
+
+}
+
+func (suite *ExportSuite) fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+
+	if errors.Is(err, fs.ErrNotExist) {
+		return false, nil
+	}
+
+	return false, err
 }
