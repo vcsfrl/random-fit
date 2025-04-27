@@ -74,8 +74,8 @@ func (suite *ExportSuite) SetupTest() {
 
 func (suite *ExportSuite) TearDownTest() {
 	// Remove the test folder
-	//err := os.RemoveAll(suite.testFolder)
-	//suite.NoError(err)
+	err := os.RemoveAll(suite.testFolder)
+	suite.NoError(err)
 }
 
 func (suite *ExportSuite) TestExport() {
