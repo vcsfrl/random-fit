@@ -3,7 +3,10 @@ package shell
 import (
 	"bytes"
 	"github.com/abiosoft/ishell/v2"
+	"github.com/abiosoft/readline"
+	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	textTemplate "text/template"
 )
@@ -15,7 +18,10 @@ const definitionSkeleton = `package shell
 var definitionTemplate = {{.}}`
 
 type Shell struct {
-	shell *ishell.Shell
+	shell  *ishell.Shell
+	stdin  io.ReadCloser
+	stdout io.Writer
+	stderr io.Writer
 
 	definitionManager *StarDefinitionManager
 }
@@ -23,6 +29,9 @@ type Shell struct {
 func New() *Shell {
 	newShell := &Shell{}
 	newShell.init()
+	newShell.stdin = os.Stdin
+	newShell.stdout = os.Stdout
+	newShell.stderr = os.Stderr
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 	newShell.definitionManager = NewStarDefinitionManager(datatFolder + "/definition")
@@ -42,7 +51,12 @@ func (s *Shell) Run() {
 }
 
 func (s *Shell) init() {
-	s.shell = ishell.New()
+	s.shell = ishell.NewWithConfig(&readline.Config{
+		Prompt: ">>> ",
+		Stdin:  s.stdin,
+		Stdout: s.stdout,
+		Stderr: s.stderr,
+	})
 	s.shell.Println("==============")
 	s.shell.Println("= Random-fit =")
 	s.shell.Println("==============\n")
@@ -99,6 +113,43 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 		},
 	}
 
+	editDefinition := &ishell.Cmd{
+		Name:     "edit",
+		Help:     "Edit definition",
+		LongHelp: "Edit a definition.",
+		Func: func(c *ishell.Context) {
+			definitions, err := s.definitionManager.List()
+			if err != nil {
+				c.Println("-> Error getting definitions list:", err)
+				return
+			}
+
+			choice := c.MultiChoice(definitions, "Select a definition to edit:")
+
+			scriptName, err := s.definitionManager.GetScript(definitions[choice])
+			if err != nil {
+				c.Println("-> Error getting definition script:", err)
+				return
+			}
+
+			cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
+			cmd.Stdin = s.stdin
+			cmd.Stdout = s.stdout
+			cmd.Stderr = s.stderr
+
+			if err = cmd.Start(); err != nil {
+				c.Println("-> Error starting editor:", err)
+				return
+			}
+			if err := cmd.Wait(); err != nil {
+				c.Println("-> Error waiting for editor:", err)
+				return
+			}
+
+			c.Println("-> Definition edited:", definitions[choice], "\n")
+		},
+	}
+
 	definition := &ishell.Cmd{
 		Name: "definition",
 		Help: "Manage definitions",
@@ -109,6 +160,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 
 	definition.AddCmd(listDefinition)
 	definition.AddCmd(newDefinition)
+	definition.AddCmd(editDefinition)
 
 	return definition
 }

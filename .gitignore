@@ -28,3 +28,4 @@ go.work.sum
 /vendor
 
 /cmd/shell/definition_template.go
+
