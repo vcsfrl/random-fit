@@ -26,3 +26,5 @@ go.work.sum
 
 .idea/
 /vendor
+
+/cmd/shell/definition_template.go

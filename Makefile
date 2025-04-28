@@ -15,6 +15,9 @@ install: ## APP Build.
 shell: ## APP Shell.
 	docker compose run --remove-orphans random-fit_app bash
 
+generate: ## APP Generate code.
+	docker compose run --remove-orphans random-fit_app go generate github.com/vcsfrl/random-fit/cmd
+
 test: ## APP Test
 	docker compose run --remove-orphans random-fit_app go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./internal/...;
 

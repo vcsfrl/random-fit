@@ -38,3 +38,20 @@ func (dm *DefinitionManager) List() ([]string, error) {
 
 	return result, nil
 }
+
+func (dm *DefinitionManager) New(definitionName string) error {
+	// create a file for the definition
+	definitionFileName := fmt.Sprintf("%s.star", definitionName)
+	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
+
+	// check if the file already exists
+	if _, err := os.Stat(definitionFilePath); !os.IsNotExist(err) {
+		return fmt.Errorf("%s: definition already exists", ErrDefinitionManager)
+	}
+
+	if err := os.WriteFile(definitionFilePath, []byte(definitionTemplate), 0644); err != nil {
+		return fmt.Errorf("%s: new definition: %w", ErrDefinitionManager, err)
+	}
+
+	return nil
+}

@@ -1,6 +1,6 @@
 # This script provides the definition of a combination for a specific use case.
 #
-# The script must define a variable called `definition`:
+# The script must define a variable called "definition":
 #  - Type: Dict
 #  - Keys:
 #    - ID: String: The ID of the combination
@@ -70,4 +70,3 @@ definition = {
     "Details": definition_name,
     "BuildFunction": build,
 }
-

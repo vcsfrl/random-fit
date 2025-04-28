@@ -54,3 +54,25 @@ func (suite *DefinitionManagerSuite) TestList() {
 		suite.Contains(definitions, definitionFileName)
 	}
 }
+
+func (suite *DefinitionManagerSuite) TestNewDefinition() {
+	// create a test definitionFileName file
+	testDefinitionFileName := "test-definitionFileName"
+	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
+
+	err := suite.definitionManager.New(testDefinitionFileName)
+	suite.NoError(err)
+
+	// check if the file exists
+	_, err = os.Stat(testDefinitionFile)
+	suite.NoError(err)
+
+	data, err := os.ReadFile(testDefinitionFile)
+	suite.NoError(err)
+	suite.NotEmpty(data)
+	suite.Equal(definitionTemplate, string(data))
+
+	// do not overwrite the file if it already exists
+	err = suite.definitionManager.New(testDefinitionFileName)
+	suite.Error(err)
+}
