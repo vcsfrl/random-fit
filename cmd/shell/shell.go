@@ -7,11 +7,16 @@ import (
 
 type Shell struct {
 	shell *ishell.Shell
+
+	definitionManager *DefinitionManager
 }
 
 func New() *Shell {
 	newShell := &Shell{}
 	newShell.init()
+
+	datatFolder := os.Getenv("RF_DATA_FOLDER")
+	newShell.definitionManager = NewDefinitionManager(datatFolder + "/definition")
 
 	return newShell
 }
@@ -29,13 +34,16 @@ func (s *Shell) Run() {
 
 func (s *Shell) init() {
 	s.shell = ishell.New()
-	s.shell.Println("Random-fit")
+	s.shell.Println("==============")
+	s.shell.Println("= Random-fit =")
+	s.shell.Println("==============\n")
 	s.shell.AddCmd(s.definitionCmd())
 	s.shell.AddCmd(&ishell.Cmd{
 		Name:     "exec",
 		Help:     "Execute a command non-interactively",
 		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
 	})
+
 }
 
 func (s *Shell) definitionCmd() *ishell.Cmd {
@@ -43,7 +51,30 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 		Name: "list",
 		Help: "List definitions",
 		Func: func(c *ishell.Context) {
-			c.Println("List definitions")
+			c.Println("Definitions:")
+
+			definitions, err := s.definitionManager.List()
+			if err != nil {
+				c.Println("->Error:", err)
+				return
+			}
+
+			if len(definitions) == 0 {
+				c.Println("-> No definitions found.")
+				return
+			}
+
+			for _, definition := range definitions {
+				c.Println(" - ", definition)
+			}
+		},
+	}
+
+	newDefinition := &ishell.Cmd{
+		Name: "new",
+		Help: "Create a new definition",
+		Func: func(c *ishell.Context) {
+			return
 		},
 	}
 
@@ -56,6 +87,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 	}
 
 	definition.AddCmd(listDefinition)
+	definition.AddCmd(newDefinition)
 
 	return definition
 }

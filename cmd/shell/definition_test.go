@@ -1,0 +1,56 @@
+package shell
+
+import (
+	"fmt"
+	"github.com/google/uuid"
+	"github.com/stretchr/testify/suite"
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestDefinitionManager(t *testing.T) {
+	suite.Run(t, new(DefinitionManagerSuite))
+}
+
+type DefinitionManagerSuite struct {
+	suite.Suite
+	testFolder string
+
+	definitionManager *DefinitionManager
+}
+
+func (suite *DefinitionManagerSuite) SetupTest() {
+	suite.testFolder = filepath.Join("..", "..", "data", "test", uuid.New().String())
+
+	// Create the test folder
+	err := os.MkdirAll(suite.testFolder, 0755)
+	suite.NoError(err)
+
+	suite.definitionManager = NewDefinitionManager(suite.testFolder)
+}
+
+func (suite *DefinitionManagerSuite) TearDownTest() {
+	// Remove the test folder
+	err := os.RemoveAll(suite.testFolder)
+	suite.NoError(err)
+}
+
+func (suite *DefinitionManagerSuite) TestList() {
+	// create a test definitionFileName files
+	testDefinitions := []string{"test-definitionFileName-1", "test-definitionFileName-2", "test-definitionFileName-3"}
+	for _, definitionFileName := range testDefinitions {
+		testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", definitionFileName))
+		err := os.WriteFile(testDefinitionFile, []byte(`test`), 0644)
+		suite.NoError(err)
+	}
+
+	definitions, err := suite.definitionManager.List()
+	suite.NoError(err)
+	suite.NotNil(definitions)
+	suite.Equal(len(testDefinitions), len(definitions))
+
+	for _, definitionFileName := range testDefinitions {
+		suite.Contains(definitions, definitionFileName)
+	}
+}
