@@ -55,3 +55,14 @@ func (dm *DefinitionManager) New(definitionName string) error {
 
 	return nil
 }
+
+func (dm *DefinitionManager) GetScript(definitionName string) (string, error) {
+	definitionFileName := fmt.Sprintf("%s.star", definitionName)
+	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
+
+	if _, err := os.Stat(definitionFilePath); os.IsNotExist(err) {
+		return "", fmt.Errorf("%s: definition does not exist", ErrDefinitionManager)
+	}
+
+	return definitionFilePath, nil
+}

@@ -55,7 +55,7 @@ func (suite *DefinitionManagerSuite) TestList() {
 	}
 }
 
-func (suite *DefinitionManagerSuite) TestNewDefinition() {
+func (suite *DefinitionManagerSuite) TestNew() {
 	// create a test definitionFileName file
 	testDefinitionFileName := "test-definitionFileName"
 	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
@@ -75,4 +75,18 @@ func (suite *DefinitionManagerSuite) TestNewDefinition() {
 	// do not overwrite the file if it already exists
 	err = suite.definitionManager.New(testDefinitionFileName)
 	suite.Error(err)
+}
+
+func (suite *DefinitionManagerSuite) TestGetScript() {
+	// create a test definitionFileName file
+	testDefinitionFileName := "test-definitionFileName"
+	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
+
+	err := suite.definitionManager.New(testDefinitionFileName)
+	suite.NoError(err)
+
+	script, err := suite.definitionManager.GetScript(testDefinitionFileName)
+	suite.NoError(err)
+	suite.NotEmpty(script)
+	suite.Equal(testDefinitionFile, script)
 }
