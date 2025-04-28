@@ -96,7 +96,6 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 			}
 
 			c.Println("-> Definition created:", c.Args[0], "\n")
-			return
 		},
 	}
 

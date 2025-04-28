@@ -45,13 +45,13 @@ func (b *Builder) Build() (*Plan, error) {
 		userGroups := make([]*Group, 0)
 
 		// Create groups
-		for i := 0; i < b.Definition.UserData.RecurrentGroups; i++ {
+		for i := 0; i < b.Definition.RecurrentGroups; i++ {
 			group := &Group{
-				Details:       fmt.Sprintf("%s-%d", b.Definition.UserData.RecurrentGroupNamePrefix, i+1),
+				Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
 				Combinations:  make([]*combination.Combination, 0),
-				ContainerName: b.Definition.UserData.ContainerName,
+				ContainerName: b.Definition.ContainerName,
 			}
-			for j := 0; j < b.Definition.UserData.NrOfGroupCombinations; j++ {
+			for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
 				newCombination, err := b.CombinationBuilder.Build()
 				if err != nil {
 					return nil, fmt.Errorf("%w: error building combination: %w", ErrPlanBuild, err)

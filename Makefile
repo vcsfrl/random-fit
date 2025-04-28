@@ -19,7 +19,7 @@ generate: ## APP Generate code.
 	docker compose run --remove-orphans random-fit_app go generate github.com/vcsfrl/random-fit/cmd
 
 test: ## APP Test
-	docker compose run --remove-orphans random-fit_app go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./internal/...;
+	docker compose run --remove-orphans random-fit_app go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
 
 test-name: ##  Run test by name.
 	docker compose run --remove-orphans random-fit_app go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$;
