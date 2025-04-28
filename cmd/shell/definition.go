@@ -9,17 +9,17 @@ import (
 
 var ErrDefinitionManager = "definition manager error"
 
-type DefinitionManager struct {
+type StarDefinitionManager struct {
 	dataFolder string
 }
 
-func NewDefinitionManager(dataFolder string) *DefinitionManager {
-	return &DefinitionManager{
+func NewStarDefinitionManager(dataFolder string) *StarDefinitionManager {
+	return &StarDefinitionManager{
 		dataFolder: dataFolder,
 	}
 }
 
-func (dm *DefinitionManager) List() ([]string, error) {
+func (dm *StarDefinitionManager) List() ([]string, error) {
 	result := make([]string, 0)
 
 	// print all files from the definitions folder
@@ -39,7 +39,7 @@ func (dm *DefinitionManager) List() ([]string, error) {
 	return result, nil
 }
 
-func (dm *DefinitionManager) New(definitionName string) error {
+func (dm *StarDefinitionManager) New(definitionName string) error {
 	// create a file for the definition
 	definitionFileName := fmt.Sprintf("%s.star", definitionName)
 	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
@@ -56,7 +56,7 @@ func (dm *DefinitionManager) New(definitionName string) error {
 	return nil
 }
 
-func (dm *DefinitionManager) GetScript(definitionName string) (string, error) {
+func (dm *StarDefinitionManager) GetScript(definitionName string) (string, error) {
 	definitionFileName := fmt.Sprintf("%s.star", definitionName)
 	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
 

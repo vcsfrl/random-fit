@@ -17,7 +17,7 @@ var definitionTemplate = {{.}}`
 type Shell struct {
 	shell *ishell.Shell
 
-	definitionManager *DefinitionManager
+	definitionManager *StarDefinitionManager
 }
 
 func New() *Shell {
@@ -25,7 +25,7 @@ func New() *Shell {
 	newShell.init()
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
-	newShell.definitionManager = NewDefinitionManager(datatFolder + "/definition")
+	newShell.definitionManager = NewStarDefinitionManager(datatFolder + "/definition")
 
 	return newShell
 }

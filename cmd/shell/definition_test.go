@@ -10,33 +10,33 @@ import (
 )
 
 func TestDefinitionManager(t *testing.T) {
-	suite.Run(t, new(DefinitionManagerSuite))
+	suite.Run(t, new(StarDefinitionManagerSuite))
 }
 
-type DefinitionManagerSuite struct {
+type StarDefinitionManagerSuite struct {
 	suite.Suite
 	testFolder string
 
-	definitionManager *DefinitionManager
+	definitionManager *StarDefinitionManager
 }
 
-func (suite *DefinitionManagerSuite) SetupTest() {
+func (suite *StarDefinitionManagerSuite) SetupTest() {
 	suite.testFolder = filepath.Join("..", "..", "data", "test", uuid.New().String())
 
 	// Create the test folder
 	err := os.MkdirAll(suite.testFolder, 0755)
 	suite.NoError(err)
 
-	suite.definitionManager = NewDefinitionManager(suite.testFolder)
+	suite.definitionManager = NewStarDefinitionManager(suite.testFolder)
 }
 
-func (suite *DefinitionManagerSuite) TearDownTest() {
+func (suite *StarDefinitionManagerSuite) TearDownTest() {
 	// Remove the test folder
 	err := os.RemoveAll(suite.testFolder)
 	suite.NoError(err)
 }
 
-func (suite *DefinitionManagerSuite) TestList() {
+func (suite *StarDefinitionManagerSuite) TestList() {
 	// create a test definitionFileName files
 	testDefinitions := []string{"test-definitionFileName-1", "test-definitionFileName-2", "test-definitionFileName-3"}
 	for _, definitionFileName := range testDefinitions {
@@ -55,7 +55,7 @@ func (suite *DefinitionManagerSuite) TestList() {
 	}
 }
 
-func (suite *DefinitionManagerSuite) TestNew() {
+func (suite *StarDefinitionManagerSuite) TestNew() {
 	// create a test definitionFileName file
 	testDefinitionFileName := "test-definitionFileName"
 	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
@@ -77,7 +77,7 @@ func (suite *DefinitionManagerSuite) TestNew() {
 	suite.Error(err)
 }
 
-func (suite *DefinitionManagerSuite) TestGetScript() {
+func (suite *StarDefinitionManagerSuite) TestGetScript() {
 	// create a test definitionFileName file
 	testDefinitionFileName := "test-definitionFileName"
 	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
