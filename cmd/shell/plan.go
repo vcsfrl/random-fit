@@ -1,7 +1,9 @@
 package shell
 
 import (
+	"encoding/json"
 	"fmt"
+	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,11 +11,11 @@ import (
 
 var ErrPlanManager = "plan manager error"
 
-type PlanManager struct {
+type PlanDefinitionManager struct {
 	dataFolder string
 }
 
-func (m *PlanManager) List() ([]string, error) {
+func (m *PlanDefinitionManager) List() ([]string, error) {
 	result := make([]string, 0)
 	files, err := os.ReadDir(m.dataFolder)
 	if err != nil {
@@ -30,8 +32,30 @@ func (m *PlanManager) List() ([]string, error) {
 	return result, nil
 }
 
-func NewPlanManager(folder string) *PlanManager {
-	return &PlanManager{
+func (m *PlanDefinitionManager) New(plan string) error {
+	planFileName := fmt.Sprintf("%s.json", plan)
+	planFilePath := filepath.Join(m.dataFolder, planFileName)
+
+	if _, err := os.Stat(planFilePath); !os.IsNotExist(err) {
+		return fmt.Errorf("%s: plan already exists", ErrPlanManager)
+	}
+
+	emptyPlan := rfPlan.Plan{}
+
+	buff, err := json.Marshal(&emptyPlan)
+	if err != nil {
+		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanManager, err)
+	}
+
+	if err := os.WriteFile(planFilePath, buff, 0644); err != nil {
+		return fmt.Errorf("%s: new plan: %w", ErrPlanManager, err)
+	}
+
+	return nil
+}
+
+func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
+	return &PlanDefinitionManager{
 		dataFolder: folder,
 	}
 }

@@ -17,7 +17,7 @@ type StarDefinitionManagerSuite struct {
 	suite.Suite
 	testFolder string
 
-	definitionManager *StarDefinitionManager
+	definitionManager *CombinationStarDefinitionManager
 }
 
 func (suite *StarDefinitionManagerSuite) SetupTest() {
@@ -27,7 +27,7 @@ func (suite *StarDefinitionManagerSuite) SetupTest() {
 	err := os.MkdirAll(suite.testFolder, 0755)
 	suite.NoError(err)
 
-	suite.definitionManager = NewStarDefinitionManager(suite.testFolder)
+	suite.definitionManager = NewCombinationStarDefinitionManager(suite.testFolder)
 }
 
 func (suite *StarDefinitionManagerSuite) TearDownTest() {

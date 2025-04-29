@@ -8,6 +8,15 @@ import (
 	textTemplate "text/template"
 )
 
+const definitionSkeleton = `package shell
+
+// This is a generated file. Do not edit!
+
+func init() {
+	// definitionTemplate is a template for a definition file
+	definitionTemplate = {{.}}
+}`
+
 func (s *Shell) generateCode() *ishell.Cmd {
 	return &ishell.Cmd{
 		Name: "generate-code",
@@ -20,7 +29,7 @@ func (s *Shell) generateCode() *ishell.Cmd {
 			t := textTemplate.Must(textTemplate.New("template.render_text").Parse(definitionSkeleton))
 
 			//create a file in shell/ folder
-			fileName := filepath.Join(baseFolder, "cmd", "shell", "definition_template.go")
+			fileName := filepath.Join(baseFolder, "cmd", "shell", "combination_definition_template.go")
 			// remove the file if it exists
 			if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {
 				c.Println(messagePrompt+"Error:", err)

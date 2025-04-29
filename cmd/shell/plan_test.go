@@ -1,6 +1,7 @@
 package shell
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"os"
@@ -8,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestPlanManager(t *testing.T) {
+func TestPlanDefinitionManager(t *testing.T) {
 	suite.Run(t, new(StarPlanManagerSuite))
 }
 
@@ -16,7 +17,7 @@ type StarPlanManagerSuite struct {
 	suite.Suite
 	testFolder string
 
-	planManager *PlanManager
+	planDefinitionManager *PlanDefinitionManager
 }
 
 func (suite *StarPlanManagerSuite) SetupTest() {
@@ -26,7 +27,7 @@ func (suite *StarPlanManagerSuite) SetupTest() {
 	err := os.MkdirAll(suite.testFolder, 0755)
 	suite.NoError(err)
 
-	suite.planManager = NewPlanManager(suite.testFolder)
+	suite.planDefinitionManager = NewPlanDefinitionManager(suite.testFolder)
 }
 
 func (suite *StarPlanManagerSuite) TearDownTest() {
@@ -44,7 +45,7 @@ func (suite *StarPlanManagerSuite) TestList() {
 		suite.NoError(err)
 	}
 
-	plans, err := suite.planManager.List()
+	plans, err := suite.planDefinitionManager.List()
 	suite.NoError(err)
 	suite.NotNil(plans)
 	suite.Equal(len(testPlans), len(plans))
@@ -52,4 +53,28 @@ func (suite *StarPlanManagerSuite) TestList() {
 	for _, plan := range testPlans {
 		suite.Contains(plans, plan)
 	}
+}
+
+func (suite *StarPlanManagerSuite) TestNew() {
+	testPlan := "test-plan"
+	// create a test plan file
+	testPlanFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.json", testPlan))
+
+	// create a new plan
+	err := suite.planDefinitionManager.New(testPlan)
+	suite.NoError(err)
+
+	// check if the plan file exists
+	_, err = os.Stat(testPlanFile)
+	suite.NoError(err)
+
+	// check if the plan file is empty
+	fileInfo, err := os.Stat(testPlanFile)
+	suite.NoError(err)
+	suite.Greater(fileInfo.Size(), int64(0))
+
+	// check if the plan file is valid json
+	data, err := os.ReadFile(testPlanFile)
+	suite.NoError(err)
+	suite.NotEmpty(data)
 }

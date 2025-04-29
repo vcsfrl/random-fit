@@ -10,17 +10,19 @@ import (
 
 var ErrDefinitionManager = "definition manager error"
 
-type StarDefinitionManager struct {
+var definitionTemplate string
+
+type CombinationStarDefinitionManager struct {
 	dataFolder string
 }
 
-func NewStarDefinitionManager(dataFolder string) *StarDefinitionManager {
-	return &StarDefinitionManager{
+func NewCombinationStarDefinitionManager(dataFolder string) *CombinationStarDefinitionManager {
+	return &CombinationStarDefinitionManager{
 		dataFolder: dataFolder,
 	}
 }
 
-func (dm *StarDefinitionManager) List() ([]string, error) {
+func (dm *CombinationStarDefinitionManager) List() ([]string, error) {
 	result := make([]string, 0)
 
 	// print all files from the definitions folder
@@ -40,7 +42,7 @@ func (dm *StarDefinitionManager) List() ([]string, error) {
 	return result, nil
 }
 
-func (dm *StarDefinitionManager) New(definitionName string) error {
+func (dm *CombinationStarDefinitionManager) New(definitionName string) error {
 	// create a file for the definition
 	definitionFileName := fmt.Sprintf("%s.star", definitionName)
 	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
@@ -57,7 +59,7 @@ func (dm *StarDefinitionManager) New(definitionName string) error {
 	return nil
 }
 
-func (dm *StarDefinitionManager) GetScript(definitionName string) (string, error) {
+func (dm *CombinationStarDefinitionManager) GetScript(definitionName string) (string, error) {
 	definitionFileName := fmt.Sprintf("%s.star", definitionName)
 	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
 
@@ -68,7 +70,7 @@ func (dm *StarDefinitionManager) GetScript(definitionName string) (string, error
 	return definitionFilePath, nil
 }
 
-func (dm *StarDefinitionManager) Build(definitionName string) (*combination.Combination, error) {
+func (dm *CombinationStarDefinitionManager) Build(definitionName string) (*combination.Combination, error) {
 	definitionScript, err := dm.GetScript(definitionName)
 	if err != nil {
 		return nil, fmt.Errorf("%s: getting script: %w", ErrDefinitionManager, err)

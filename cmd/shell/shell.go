@@ -7,13 +7,6 @@ import (
 	"os"
 )
 
-const definitionSkeleton = `package shell
-
-// This is a generated file. Do not edit!
-
-// definitionTemplate is a template for a definition file
-var definitionTemplate = {{.}}`
-
 const prompt = ">>> "
 const messagePrompt = "-> "
 
@@ -23,7 +16,7 @@ type Shell struct {
 	stdout io.Writer
 	stderr io.Writer
 
-	definitionManager *StarDefinitionManager
+	definitionManager *CombinationStarDefinitionManager
 }
 
 func New() *Shell {
@@ -33,7 +26,7 @@ func New() *Shell {
 	newShell.stderr = os.Stderr
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
-	newShell.definitionManager = NewStarDefinitionManager(datatFolder + "/definition")
+	newShell.definitionManager = NewCombinationStarDefinitionManager(datatFolder + "/definition")
 
 	newShell.init()
 
