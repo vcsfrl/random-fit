@@ -153,6 +153,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 		Help:     "View definition",
 		LongHelp: "View a definition.",
 		Func: func(c *ishell.Context) {
+			_ = c.ClearScreen()
 			definitions, err := s.definitionManager.List()
 			if err != nil {
 				c.Println(messagePrompt+"Error getting definitions list:", err)
