@@ -2,8 +2,11 @@ package shell
 
 import (
 	"bytes"
+	"encoding/json"
 	"github.com/abiosoft/ishell/v2"
 	"github.com/abiosoft/readline"
+	"github.com/charmbracelet/glamour"
+	"github.com/vcsfrl/random-fit/internal/combination"
 	"io"
 	"os"
 	"os/exec"
@@ -17,6 +20,9 @@ const definitionSkeleton = `package shell
 // 
 // definitionTemplate is a template for a definition file
 var definitionTemplate = {{.}}`
+
+const prompt = ">>> "
+const messagePrompt = "-> "
 
 type Shell struct {
 	shell  *ishell.Shell
@@ -58,7 +64,7 @@ func (s *Shell) Run() {
 
 func (s *Shell) init() {
 	s.shell = ishell.NewWithConfig(&readline.Config{
-		Prompt: ">>> ",
+		Prompt: prompt,
 		Stdin:  s.stdin,
 		Stdout: s.stdout,
 		Stderr: s.stderr,
@@ -82,12 +88,12 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 
 			definitions, err := s.definitionManager.List()
 			if err != nil {
-				c.Println("-> Error listing definition:", err)
+				c.Println(messagePrompt+"Error listing definition:", err)
 				return
 			}
 
 			if len(definitions) == 0 {
-				c.Println("-> No definitions found.")
+				c.Println(messagePrompt + "No definitions found.")
 				return
 			}
 
@@ -103,19 +109,19 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 		LongHelp: "Create a new definition.\nUsage: <shell> definition new <definition_name>",
 		Func: func(c *ishell.Context) {
 			if len(c.Args) == 0 {
-				c.Println("-> Error: definition name is required.")
+				c.Println(messagePrompt + "Error: definition name is required.")
 				return
 			}
 
 			err := s.definitionManager.New(c.Args[0])
 			if err != nil {
-				c.Println("-> Error new definition:", err)
+				c.Println(messagePrompt+"Error new definition:", err)
 				return
 			}
-			c.Println("-> Definition created:", c.Args[0], "\n")
+			c.Println(messagePrompt+"Definition created:", c.Args[0], "\n")
 
 			if err := s.editDefinition(c.Args[0]); err != nil {
-				c.Println("-> Error editing definition:", err)
+				c.Println(messagePrompt+"Error editing definition:", err)
 				return
 			}
 		},
@@ -128,17 +134,64 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 		Func: func(c *ishell.Context) {
 			definitions, err := s.definitionManager.List()
 			if err != nil {
-				c.Println("-> Error getting definitions list:", err)
+				c.Println(messagePrompt+"Error getting definitions list:", err)
 				return
 			}
 			choice := c.MultiChoice(definitions, "Select a definition to edit:")
 
 			if err := s.editDefinition(definitions[choice]); err != nil {
-				c.Println("-> Error editing definition:", err)
+				c.Println(messagePrompt+"Error editing definition:", err)
 				return
 			}
 
-			c.Println("-> Definition edited:", definitions[choice], "\n")
+			c.Println(messagePrompt+"Definition edited:", definitions[choice], "\n")
+		},
+	}
+
+	viewDefinition := &ishell.Cmd{
+		Name:     "view",
+		Help:     "View definition",
+		LongHelp: "View a definition.",
+		Func: func(c *ishell.Context) {
+			definitions, err := s.definitionManager.List()
+			if err != nil {
+				c.Println(messagePrompt+"Error getting definitions list:", err)
+				return
+			}
+			choice := c.MultiChoice(definitions, "Select a definition to view:")
+
+			script, err := s.definitionManager.GetScript(definitions[choice])
+			if err != nil {
+				c.Println(messagePrompt+"Error viewing definition:", err)
+				return
+			}
+
+			definition, err := combination.NewCombinationDefinition(script)
+			if err != nil {
+				c.Println(messagePrompt+"Error creating definition:", err)
+				return
+			}
+
+			viewCombination, err := combination.NewStarlarkBuilder(definition).Build()
+			if err != nil {
+				c.Println(messagePrompt+"Error building viewCombination:", err)
+				return
+			}
+
+			c.Println(messagePrompt+"Definition ID:", viewCombination.DefinitionID)
+			c.Println(messagePrompt+"Definition script:\n", script)
+
+			for dataType, data := range viewCombination.Data {
+				c.Println(messagePrompt+"Definition view:", dataType)
+				c.Println(messagePrompt + "====================================")
+				err := s.printData(c, data)
+				if err != nil {
+					c.Println(messagePrompt+"Error viewing data:", err)
+					return
+				}
+				c.Println(messagePrompt + "====================================")
+			}
+
 		},
 	}
 
@@ -153,6 +206,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 	definition.AddCmd(listDefinition)
 	definition.AddCmd(newDefinition)
 	definition.AddCmd(editDefinition)
+	definition.AddCmd(viewDefinition)
 
 	return definition
 }
@@ -183,6 +237,29 @@ func (s *Shell) editDefinitionScript(scriptName string) error {
 	if err := cmd.Wait(); err != nil {
 		return err
 	}
+
+	return nil
+}
+
+func (s *Shell) printData(c *ishell.Context, data *combination.Data) error {
+	switch data.Type {
+	case combination.DataTypeJson:
+		var prettyJSON bytes.Buffer
+		err := json.Indent(&prettyJSON, data.Data.Bytes(), "", "  ")
+		if err != nil {
+			return err
+		}
+		c.Println(prettyJSON.String())
+	case combination.DataTypeMd:
+		out, err := glamour.Render(data.Data.String(), "dark")
+		if err != nil {
+			return err
+		}
+		c.Println(out)
+	default:
+		c.Println(data.Data.String())
+	}
+
 	return nil
 }
 
@@ -201,28 +278,28 @@ func (s *Shell) generateCode() *ishell.Cmd {
 			fileName := filepath.Join(baseFolder, "cmd", "shell", "definition_template.go")
 			// remove the file if it exists
 			if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {
-				c.Println("Error:", err)
+				c.Println(messagePrompt+"Error:", err)
 				return
 			}
 
 			// get content of star definition template
 			content, err := os.ReadFile(filepath.Join(baseFolder, "internal", "combination", "template", "script.star"))
 			if err != nil {
-				c.Println("Error:", err)
+				c.Println(messagePrompt+"Error:", err)
 				return
 			}
 
 			buff := &bytes.Buffer{}
 			if err := t.Execute(buff, "`"+string(content)+"`"); err != nil {
-				c.Println("Error:", err)
+				c.Println(messagePrompt+"Error:", err)
 				return
 			}
 
 			if err := os.WriteFile(fileName, buff.Bytes(), 0644); err != nil {
-				c.Println("Error:", err)
+				c.Println(messagePrompt+"Error:", err)
 			}
 
-			c.Println("Code generated in", fileName, "\n")
+			c.Println(messagePrompt+"Code generated in", fileName, "\n")
 		},
 	}
 }

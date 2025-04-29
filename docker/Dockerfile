@@ -13,6 +13,5 @@ RUN chown $username:$username /srv/random-fit -R
 USER $username:$username
 RUN go install github.com/divan/expvarmon@latest
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
-RUN go install github.com/charmbracelet/glow@latest
 
 WORKDIR /srv/random-fit
