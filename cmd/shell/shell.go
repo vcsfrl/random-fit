@@ -13,8 +13,9 @@ import (
 
 const definitionSkeleton = `package shell
 
+// This is a generated file. Do not edit!
+// 
 // definitionTemplate is a template for a definition file
-// This is a generated file. Do not edit.
 var definitionTemplate = {{.}}`
 
 type Shell struct {
@@ -28,7 +29,6 @@ type Shell struct {
 
 func New() *Shell {
 	newShell := &Shell{}
-	newShell.init()
 	newShell.stdin = os.Stdin
 	newShell.stdout = os.Stdout
 	newShell.stderr = os.Stderr
@@ -36,10 +36,16 @@ func New() *Shell {
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 	newShell.definitionManager = NewStarDefinitionManager(datatFolder + "/definition")
 
+	newShell.init()
+
 	return newShell
 }
 
 func (s *Shell) Run() {
+	s.shell.Println("\n==================")
+	s.shell.Println("=== Random-fit ===")
+	s.shell.Println("==================\n")
+
 	if len(os.Args) > 1 && os.Args[1] == "exec" {
 		err := s.shell.Process(os.Args[2:]...)
 		if err != nil {
@@ -57,9 +63,7 @@ func (s *Shell) init() {
 		Stdout: s.stdout,
 		Stderr: s.stderr,
 	})
-	s.shell.Println("==============")
-	s.shell.Println("= Random-fit =")
-	s.shell.Println("==============\n")
+
 	s.shell.AddCmd(s.definitionCmd())
 	s.shell.AddCmd(&ishell.Cmd{
 		Name:     "exec",
@@ -108,8 +112,12 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 				c.Println("-> Error new definition:", err)
 				return
 			}
-
 			c.Println("-> Definition created:", c.Args[0], "\n")
+
+			if err := s.editDefinition(c.Args[0]); err != nil {
+				c.Println("-> Error editing definition:", err)
+				return
+			}
 		},
 	}
 
@@ -123,26 +131,10 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 				c.Println("-> Error getting definitions list:", err)
 				return
 			}
-
 			choice := c.MultiChoice(definitions, "Select a definition to edit:")
 
-			scriptName, err := s.definitionManager.GetScript(definitions[choice])
-			if err != nil {
-				c.Println("-> Error getting definition script:", err)
-				return
-			}
-
-			cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
-			cmd.Stdin = s.stdin
-			cmd.Stdout = s.stdout
-			cmd.Stderr = s.stderr
-
-			if err = cmd.Start(); err != nil {
-				c.Println("-> Error starting editor:", err)
-				return
-			}
-			if err := cmd.Wait(); err != nil {
-				c.Println("-> Error waiting for editor:", err)
+			if err := s.editDefinition(definitions[choice]); err != nil {
+				c.Println("-> Error editing definition:", err)
 				return
 			}
 
@@ -163,6 +155,35 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 	definition.AddCmd(editDefinition)
 
 	return definition
+}
+
+func (s *Shell) editDefinition(definition string) error {
+	scriptName, err := s.definitionManager.GetScript(definition)
+	if err != nil {
+		return err
+	}
+
+	if err := s.editDefinitionScript(scriptName); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Shell) editDefinitionScript(scriptName string) error {
+	cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
+	cmd.Stdin = s.stdin
+	cmd.Stdout = s.stdout
+	cmd.Stderr = s.stderr
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *Shell) generateCode() *ishell.Cmd {
