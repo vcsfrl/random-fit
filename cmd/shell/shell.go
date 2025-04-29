@@ -173,7 +173,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 			for dataType, data := range viewCombination.Data {
 				c.Println(messagePrompt+"Definition view:", dataType)
 				c.Println(messagePrompt + "====================================")
-				err := s.printData(c, data)
+				err := s.printCombination(c, data)
 				if err != nil {
 					c.Println(messagePrompt+"Error viewing data:", err)
 					return
@@ -230,7 +230,7 @@ func (s *Shell) editDefinitionScript(scriptName string) error {
 	return nil
 }
 
-func (s *Shell) printData(c *ishell.Context, data *combination.Data) error {
+func (s *Shell) printCombination(c *ishell.Context, data *combination.Data) error {
 	switch data.Type {
 	case combination.DataTypeJson:
 		var prettyJSON bytes.Buffer
