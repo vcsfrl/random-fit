@@ -40,9 +40,8 @@ func (m *PlanDefinitionManager) New(plan string) error {
 		return fmt.Errorf("%s: plan already exists", ErrPlanManager)
 	}
 
-	emptyPlan := rfPlan.Plan{}
-
-	buff, err := json.Marshal(&emptyPlan)
+	emptyPlan := m.getSamplePlanDefinition()
+	buff, err := json.Marshal(emptyPlan)
 	if err != nil {
 		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanManager, err)
 	}
@@ -52,6 +51,20 @@ func (m *PlanDefinitionManager) New(plan string) error {
 	}
 
 	return nil
+}
+
+func (m *PlanDefinitionManager) getSamplePlanDefinition() *rfPlan.Definition {
+	return &rfPlan.Definition{
+		ID:      "definition",
+		Details: "Definition",
+		Users:   []string{"user1"},
+		UserData: rfPlan.UserData{
+			ContainerName:            "ContainerName",
+			RecurrentGroupNamePrefix: "Group",
+			RecurrentGroups:          1,
+			NrOfGroupCombinations:    1,
+		},
+	}
 }
 
 func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {

@@ -1,9 +1,11 @@
 package shell
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
+	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
 	"os"
 	"path/filepath"
 	"testing"
@@ -77,4 +79,10 @@ func (suite *StarPlanManagerSuite) TestNew() {
 	data, err := os.ReadFile(testPlanFile)
 	suite.NoError(err)
 	suite.NotEmpty(data)
+
+	resultPlanDefinition := &rfPlan.Definition{}
+
+	err = json.Unmarshal(data, resultPlanDefinition)
+	suite.NoError(err)
+	suite.Equal(suite.planDefinitionManager.getSamplePlanDefinition(), resultPlanDefinition)
 }
