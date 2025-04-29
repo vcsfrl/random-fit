@@ -2,6 +2,7 @@ package shell
 
 import (
 	"fmt"
+	"github.com/vcsfrl/random-fit/internal/combination"
 	"os"
 	"path/filepath"
 	"strings"
@@ -65,4 +66,23 @@ func (dm *StarDefinitionManager) GetScript(definitionName string) (string, error
 	}
 
 	return definitionFilePath, nil
+}
+
+func (dm *StarDefinitionManager) Build(definitionName string) (*combination.Combination, error) {
+	definitionScript, err := dm.GetScript(definitionName)
+	if err != nil {
+		return nil, fmt.Errorf("%s: getting script: %w", ErrDefinitionManager, err)
+	}
+
+	definition, err := combination.NewCombinationDefinition(definitionScript)
+	if err != nil {
+		return nil, fmt.Errorf("%s: creating combination definition: %w", ErrDefinitionManager, err)
+	}
+
+	builtCombination, err := combination.NewStarlarkBuilder(definition).Build()
+	if err != nil {
+		return nil, fmt.Errorf("%s: building combination: %w", ErrDefinitionManager, err)
+	}
+
+	return builtCombination, nil
 }

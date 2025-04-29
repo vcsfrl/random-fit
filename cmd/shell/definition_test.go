@@ -90,3 +90,15 @@ func (suite *StarDefinitionManagerSuite) TestGetScript() {
 	suite.NotEmpty(script)
 	suite.Equal(testDefinitionFile, script)
 }
+
+func (suite *StarDefinitionManagerSuite) TestBuild() {
+	testDefinitionFileName := "test-definitionFileName"
+	err := suite.definitionManager.New(testDefinitionFileName)
+	suite.NoError(err)
+
+	combination, err := suite.definitionManager.Build(testDefinitionFileName)
+	suite.NoError(err)
+	suite.NotNil(combination)
+
+	suite.Equal("Sample Combination", combination.Details)
+}

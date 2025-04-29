@@ -17,7 +17,7 @@ import (
 const definitionSkeleton = `package shell
 
 // This is a generated file. Do not edit!
-// 
+
 // definitionTemplate is a template for a definition file
 var definitionTemplate = {{.}}`
 
@@ -161,26 +161,14 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 			}
 			choice := c.MultiChoice(definitions, "Select a definition to view:")
 
-			script, err := s.definitionManager.GetScript(definitions[choice])
+			viewCombination, err := s.definitionManager.Build(definitions[choice])
 			if err != nil {
-				c.Println(messagePrompt+"Error viewing definition:", err)
+				c.Println(messagePrompt+"Error building definition:", err)
 				return
 			}
 
-			definition, err := combination.NewCombinationDefinition(script)
-			if err != nil {
-				c.Println(messagePrompt+"Error creating definition:", err)
-				return
-			}
-
-			viewCombination, err := combination.NewStarlarkBuilder(definition).Build()
-			if err != nil {
-				c.Println(messagePrompt+"Error building viewCombination:", err)
-				return
-			}
-
+			c.Println(messagePrompt+"Combination:", viewCombination.Details)
 			c.Println(messagePrompt+"Definition ID:", viewCombination.DefinitionID)
-			c.Println(messagePrompt+"Definition script:\n", script)
 
 			for dataType, data := range viewCombination.Data {
 				c.Println(messagePrompt+"Definition view:", dataType)
