@@ -5,6 +5,7 @@ import (
 	"github.com/abiosoft/readline"
 	"io"
 	"os"
+	"os/exec"
 )
 
 const prompt = ">>> "
@@ -16,7 +17,8 @@ type Shell struct {
 	stdout io.Writer
 	stderr io.Writer
 
-	definitionManager *CombinationStarDefinitionManager
+	combinationDefinitionManager *CombinationStarDefinitionManager
+	planDefinitionManager        *PlanDefinitionManager
 }
 
 func New() *Shell {
@@ -26,7 +28,8 @@ func New() *Shell {
 	newShell.stderr = os.Stderr
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
-	newShell.definitionManager = NewCombinationStarDefinitionManager(datatFolder + "/definition")
+	newShell.combinationDefinitionManager = NewCombinationStarDefinitionManager(datatFolder + "/definition")
+	newShell.planDefinitionManager = NewPlanDefinitionManager(datatFolder + "/plan")
 
 	newShell.init()
 
@@ -56,11 +59,30 @@ func (s *Shell) init() {
 		Stderr: s.stderr,
 	})
 
-	s.shell.AddCmd(s.combinationDefinitionCmd())
 	s.shell.AddCmd(&ishell.Cmd{
 		Name:     "exec",
 		Help:     "Execute a command non-interactively",
 		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
 	})
+
+	s.shell.AddCmd(s.combinationDefinitionCmd())
+	s.shell.AddCmd(s.planDefinitionCmd())
 	s.shell.AddCmd(s.generateCode())
+}
+
+func (s *Shell) editScript(scriptName string) error {
+	cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
+	cmd.Stdin = s.stdin
+	cmd.Stdout = s.stdout
+	cmd.Stderr = s.stderr
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return err
+	}
+
+	return nil
 }

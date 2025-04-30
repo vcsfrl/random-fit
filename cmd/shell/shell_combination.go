@@ -6,8 +6,6 @@ import (
 	"github.com/abiosoft/ishell/v2"
 	"github.com/charmbracelet/glamour"
 	"github.com/vcsfrl/random-fit/internal/combination"
-	"os"
-	"os/exec"
 )
 
 func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
@@ -17,7 +15,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		Func: func(c *ishell.Context) {
 			c.Println("Definitions:")
 
-			definitions, err := s.definitionManager.List()
+			definitions, err := s.combinationDefinitionManager.List()
 			if err != nil {
 				c.Println(messagePrompt+"Error listing definition:", err)
 				return
@@ -44,7 +42,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 				return
 			}
 
-			err := s.definitionManager.New(c.Args[0])
+			err := s.combinationDefinitionManager.New(c.Args[0])
 			if err != nil {
 				c.Println(messagePrompt+"Error new definition:", err)
 				return
@@ -63,7 +61,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		Help:     "Edit definition",
 		LongHelp: "Edit a definition.",
 		Func: func(c *ishell.Context) {
-			definitions, err := s.definitionManager.List()
+			definitions, err := s.combinationDefinitionManager.List()
 			if err != nil {
 				c.Println(messagePrompt+"Error getting definitions list:", err)
 				return
@@ -85,14 +83,14 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		LongHelp: "View a definition.",
 		Func: func(c *ishell.Context) {
 			_ = c.ClearScreen()
-			definitions, err := s.definitionManager.List()
+			definitions, err := s.combinationDefinitionManager.List()
 			if err != nil {
 				c.Println(messagePrompt+"Error getting definitions list:", err)
 				return
 			}
 			choice := c.MultiChoice(definitions, "Select a definition to view:")
 
-			viewCombination, err := s.definitionManager.Build(definitions[choice])
+			viewCombination, err := s.combinationDefinitionManager.Build(definitions[choice])
 			if err != nil {
 				c.Println(messagePrompt+"Error building definition:", err)
 				return
@@ -116,7 +114,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 	}
 
 	definition := &ishell.Cmd{
-		Name: "combination",
+		Name: "combination-definition",
 		Help: "Manage combination definitions",
 		Func: func(c *ishell.Context) {
 			listDefinition.Func(c)
@@ -132,29 +130,12 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 }
 
 func (s *Shell) editCombinationDefinition(definition string) error {
-	scriptName, err := s.definitionManager.GetScript(definition)
+	scriptName, err := s.combinationDefinitionManager.GetScript(definition)
 	if err != nil {
 		return err
 	}
 
-	if err := s.editCombinationDefinitionScript(scriptName); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shell) editCombinationDefinitionScript(scriptName string) error {
-	cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
-	cmd.Stdin = s.stdin
-	cmd.Stdout = s.stdout
-	cmd.Stderr = s.stderr
-
-	if err := cmd.Start(); err != nil {
-		return err
-	}
-
-	if err := cmd.Wait(); err != nil {
+	if err := s.editScript(scriptName); err != nil {
 		return err
 	}
 

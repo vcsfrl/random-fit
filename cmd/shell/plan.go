@@ -1,6 +1,7 @@
 package shell
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
@@ -46,7 +47,12 @@ func (m *PlanDefinitionManager) New(plan string) error {
 		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanManager, err)
 	}
 
-	if err := os.WriteFile(planFilePath, buff, 0644); err != nil {
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, buff, "", "  "); err != nil {
+		return fmt.Errorf("%s: indent json: %w", ErrPlanManager, err)
+	}
+
+	if err := os.WriteFile(planFilePath, prettyJSON.Bytes(), 0644); err != nil {
 		return fmt.Errorf("%s: new plan: %w", ErrPlanManager, err)
 	}
 
