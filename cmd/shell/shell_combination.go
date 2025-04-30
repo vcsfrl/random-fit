@@ -14,8 +14,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		Help: "List definitions",
 		Func: func(c *ishell.Context) {
 			c.Println("Definitions:")
-
-			definitions, err := s.combinationDefinitionManager.List()
+			definitions, err := s.getCombinationDefinitionManager().List()
 			if err != nil {
 				c.Println(messagePrompt+"Error listing definition:", err)
 				return
@@ -42,7 +41,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 				return
 			}
 
-			err := s.combinationDefinitionManager.New(c.Args[0])
+			err := s.getCombinationDefinitionManager().New(c.Args[0])
 			if err != nil {
 				c.Println(messagePrompt+"Error new definition:", err)
 				return
@@ -64,7 +63,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 
 			var selectedDefinition string
 			if len(c.Args) == 0 {
-				definitions, err := s.combinationDefinitionManager.List()
+				definitions, err := s.getCombinationDefinitionManager().List()
 				if err != nil {
 					c.Println(messagePrompt+"Error getting definitions list:", err)
 					return
@@ -74,7 +73,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 				selectedDefinition = definitions[choice]
 			} else {
 				selectedDefinition = c.Args[0]
-				if _, err := s.combinationDefinitionManager.GetScript(selectedDefinition); err != nil {
+				if _, err := s.getCombinationDefinitionManager().GetScript(selectedDefinition); err != nil {
 					c.Println(messagePrompt+"Error getting definition:", err)
 					return
 				}
@@ -95,14 +94,14 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		LongHelp: "View a definition.",
 		Func: func(c *ishell.Context) {
 			_ = c.ClearScreen()
-			definitions, err := s.combinationDefinitionManager.List()
+			definitions, err := s.getCombinationDefinitionManager().List()
 			if err != nil {
 				c.Println(messagePrompt+"Error getting definitions list:", err)
 				return
 			}
 			choice := c.MultiChoice(definitions, "Select a definition to view:")
 
-			viewCombination, err := s.combinationDefinitionManager.Build(definitions[choice])
+			viewCombination, err := s.getCombinationDefinitionManager().Build(definitions[choice])
 			if err != nil {
 				c.Println(messagePrompt+"Error building definition:", err)
 				return
@@ -142,7 +141,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 }
 
 func (s *Shell) editCombinationDefinition(definition string) error {
-	scriptName, err := s.combinationDefinitionManager.GetScript(definition)
+	scriptName, err := s.getCombinationDefinitionManager().GetScript(definition)
 	if err != nil {
 		return err
 	}

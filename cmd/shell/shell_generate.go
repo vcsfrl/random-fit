@@ -21,12 +21,12 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 
 			combinationDefinitionName := c.Args[0]
 			planDefinitionName := c.Args[1]
-			combinationDefinition, err := s.combinationDefinitionManager.GetScript(combinationDefinitionName)
+			combinationDefinition, err := s.getCombinationDefinitionManager().GetScript(combinationDefinitionName)
 			if err != nil {
 				c.Println(messagePrompt+"Error getting combination definition:", err)
 				return
 			}
-			planDefinition, err := s.planDefinitionManager.GetFile(planDefinitionName)
+			planDefinition, err := s.getPlanDefinitionManager().GetFile(planDefinitionName)
 			if err != nil {
 				c.Println(messagePrompt+"Error getting plan definition:", err)
 				return
@@ -42,7 +42,7 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 			c.Println(messagePrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start), "\n")
 
 			start = time.Now()
-			if err := s.exporter.Export(newPlan); err != nil {
+			if err := s.getExporter().Export(newPlan); err != nil {
 				c.Println(messagePrompt+"Error exporting plan:", err)
 				return
 			}

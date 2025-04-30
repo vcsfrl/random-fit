@@ -9,7 +9,7 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 		Func: func(c *ishell.Context) {
 			c.Println("Plan definitions:")
 
-			definitions, err := s.planDefinitionManager.List()
+			definitions, err := s.getPlanDefinitionManager().List()
 			if err != nil {
 				c.Println(messagePrompt+"Error listing plan definitions:", err)
 				return
@@ -37,7 +37,7 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 				return
 			}
 
-			err := s.planDefinitionManager.New(c.Args[0])
+			err := s.getPlanDefinitionManager().New(c.Args[0])
 			if err != nil {
 				c.Println(messagePrompt+"Error creating new plan definition:", err)
 				return
@@ -56,7 +56,7 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 		Help:     "Edit plan definition",
 		LongHelp: "Edit a plan definition.\nUsage: <shell> plan-definition edit",
 		Func: func(c *ishell.Context) {
-			definitions, err := s.planDefinitionManager.List()
+			definitions, err := s.getPlanDefinitionManager().List()
 			if err != nil {
 				c.Println(messagePrompt+"Error getting plan definitions list:", err)
 				return
@@ -86,7 +86,7 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 }
 
 func (s *Shell) editPlanDefinition(definition string) error {
-	scriptName, err := s.planDefinitionManager.GetFile(definition)
+	scriptName, err := s.getPlanDefinitionManager().GetFile(definition)
 	if err != nil {
 		return err
 	}
