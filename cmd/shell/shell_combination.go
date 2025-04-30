@@ -60,23 +60,10 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		Help:     "Edit definition",
 		LongHelp: "Edit a definition.",
 		Func: func(c *ishell.Context) {
-
-			var selectedDefinition string
-			if len(c.Args) == 0 {
-				definitions, err := s.getCombinationDefinitionManager().List()
-				if err != nil {
-					c.Println(messagePrompt+"Error getting definitions list:", err)
-					return
-				}
-				choice := c.MultiChoice(definitions, "Select a definition to edit:")
-
-				selectedDefinition = definitions[choice]
-			} else {
-				selectedDefinition = c.Args[0]
-				if _, err := s.getCombinationDefinitionManager().GetScript(selectedDefinition); err != nil {
-					c.Println(messagePrompt+"Error getting definition:", err)
-					return
-				}
+			selectedDefinition, err := s.getSelectedDefinition(c)
+			if err != nil {
+				c.Println(messagePrompt+"Error getting definition:", err)
+				return
 			}
 
 			if err := s.editCombinationDefinition(selectedDefinition); err != nil {
@@ -94,14 +81,13 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		LongHelp: "View a definition.",
 		Func: func(c *ishell.Context) {
 			_ = c.ClearScreen()
-			definitions, err := s.getCombinationDefinitionManager().List()
+			selectedDefinition, err := s.getSelectedDefinition(c)
 			if err != nil {
-				c.Println(messagePrompt+"Error getting definitions list:", err)
+				c.Println(messagePrompt+"Error getting definition:", err)
 				return
 			}
-			choice := c.MultiChoice(definitions, "Select a definition to view:")
 
-			viewCombination, err := s.getCombinationDefinitionManager().Build(definitions[choice])
+			viewCombination, err := s.getCombinationDefinitionManager().Build(selectedDefinition)
 			if err != nil {
 				c.Println(messagePrompt+"Error building definition:", err)
 				return
@@ -138,6 +124,26 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 	definition.AddCmd(viewDefinition)
 
 	return definition
+}
+
+func (s *Shell) getSelectedDefinition(c *ishell.Context) (string, error) {
+	var selectedDefinition string
+	if len(c.Args) == 0 {
+		definitions, err := s.getCombinationDefinitionManager().List()
+		if err != nil {
+			return "", err
+		}
+		choice := c.MultiChoice(definitions, "Select a definition to edit:")
+
+		selectedDefinition = definitions[choice]
+	} else {
+		selectedDefinition = c.Args[0]
+		if _, err := s.getCombinationDefinitionManager().GetScript(selectedDefinition); err != nil {
+			return "", err
+		}
+	}
+
+	return selectedDefinition, nil
 }
 
 func (s *Shell) editCombinationDefinition(definition string) error {
