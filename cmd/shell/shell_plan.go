@@ -51,6 +51,25 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 		},
 	}
 
+	editDefinition := &ishell.Cmd{
+		Name:     "edit",
+		Help:     "Edit plan definition",
+		LongHelp: "Edit a plan definition.\nUsage: <shell> plan-definition edit",
+		Func: func(c *ishell.Context) {
+			definitions, err := s.planDefinitionManager.List()
+			if err != nil {
+				c.Println(messagePrompt+"Error getting plan definitions list:", err)
+				return
+			}
+			choice := c.MultiChoice(definitions, "Select a definition to edit:")
+
+			if err := s.editPlanDefinition(definitions[choice]); err != nil {
+				c.Println(messagePrompt+"Error editing plan definition:", err)
+				return
+			}
+		},
+	}
+
 	definition := &ishell.Cmd{
 		Name: "plan-definition",
 		Help: "Manage combination definitions",
@@ -61,6 +80,7 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 
 	definition.AddCmd(listDefinition)
 	definition.AddCmd(newDefinition)
+	definition.AddCmd(editDefinition)
 
 	return definition
 }
