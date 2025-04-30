@@ -68,6 +68,26 @@ func (s *Shell) Run() {
 	}
 }
 
+func (s *Shell) init() {
+	s.shell = ishell.NewWithConfig(&readline.Config{
+		Prompt: prompt,
+		Stdin:  s.stdin,
+		Stdout: s.stdout,
+		Stderr: s.stderr,
+	})
+
+	s.shell.AddCmd(&ishell.Cmd{
+		Name:     "exec",
+		Help:     "Execute a command non-interactively",
+		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
+	})
+
+	s.shell.AddCmd(s.combinationDefinitionCmd())
+	s.shell.AddCmd(s.planDefinitionCmd())
+	s.shell.AddCmd(s.generateCode())
+	s.shell.AddCmd(s.generateCombination())
+}
+
 func (s *Shell) getCombinationDefinitionManager() *CombinationStarDefinitionManager {
 	if s.combinationDefinitionManager == nil {
 		s.combinationDefinitionManager = NewCombinationStarDefinitionManager(s.combinationFolder)
@@ -90,26 +110,6 @@ func (s *Shell) getExporter() *plan.Exporter {
 	}
 
 	return s.exporter
-}
-
-func (s *Shell) init() {
-	s.shell = ishell.NewWithConfig(&readline.Config{
-		Prompt: prompt,
-		Stdin:  s.stdin,
-		Stdout: s.stdout,
-		Stderr: s.stderr,
-	})
-
-	s.shell.AddCmd(&ishell.Cmd{
-		Name:     "exec",
-		Help:     "Execute a command non-interactively",
-		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
-	})
-
-	s.shell.AddCmd(s.combinationDefinitionCmd())
-	s.shell.AddCmd(s.planDefinitionCmd())
-	s.shell.AddCmd(s.generateCode())
-	s.shell.AddCmd(s.generateCombination())
 }
 
 func (s *Shell) editScript(scriptName string, filetype string) error {
