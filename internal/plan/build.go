@@ -16,13 +16,33 @@ type Builder struct {
 	CombinationBuilder combination.Builder
 }
 
+func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder {
+	combinationDefinition, err := combination.NewCombinationDefinition(combinationFile)
+	if err != nil {
+		panic(fmt.Errorf("%w: error creating combination definition: %w", ErrPlanBuild, err))
+	}
+
+	planDefinition, err := NewJsonDefinition(planFile)
+	if err != nil {
+		panic(fmt.Errorf("%w: error creating plan definition: %w", ErrPlanBuild, err))
+	}
+
+	builder := combination.NewStarlarkBuilder(combinationDefinition)
+
+	return &Builder{
+		Definition:         planDefinition,
+		Now:                time.Now,
+		UuidV7:             uuid.NewV7,
+		CombinationBuilder: builder,
+	}
+
+}
+
 func NewBuilder(definition *Definition, builder combination.Builder) *Builder {
 	return &Builder{
-		Definition: definition,
-		Now:        time.Now,
-		UuidV7: func() (uuid.UUID, error) {
-			return uuid.NewV7()
-		},
+		Definition:         definition,
+		Now:                time.Now,
+		UuidV7:             uuid.NewV7,
 		CombinationBuilder: builder,
 	}
 }

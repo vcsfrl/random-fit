@@ -3,6 +3,7 @@ package shell
 import (
 	"github.com/abiosoft/ishell/v2"
 	"github.com/abiosoft/readline"
+	"github.com/vcsfrl/random-fit/internal/plan"
 	"io"
 	"os"
 	"os/exec"
@@ -19,6 +20,7 @@ type Shell struct {
 
 	combinationDefinitionManager *CombinationStarDefinitionManager
 	planDefinitionManager        *PlanDefinitionManager
+	exporter                     *plan.Exporter
 }
 
 func New() *Shell {
@@ -30,6 +32,7 @@ func New() *Shell {
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 	newShell.combinationDefinitionManager = NewCombinationStarDefinitionManager(datatFolder + "/definition")
 	newShell.planDefinitionManager = NewPlanDefinitionManager(datatFolder + "/plan")
+	newShell.exporter = plan.NewExporter(datatFolder + "/plan")
 
 	newShell.init()
 
@@ -68,6 +71,7 @@ func (s *Shell) init() {
 	s.shell.AddCmd(s.combinationDefinitionCmd())
 	s.shell.AddCmd(s.planDefinitionCmd())
 	s.shell.AddCmd(s.generateCode())
+	s.shell.AddCmd(s.generateCombination())
 }
 
 func (s *Shell) editScript(scriptName string, filetype string) error {
