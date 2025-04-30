@@ -135,7 +135,7 @@ func (s *Shell) editCombinationDefinition(definition string) error {
 		return err
 	}
 
-	if err := s.editScript(scriptName); err != nil {
+	if err := s.editScript(scriptName, "python"); err != nil {
 		return err
 	}
 

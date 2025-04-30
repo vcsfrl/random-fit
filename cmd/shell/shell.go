@@ -70,8 +70,8 @@ func (s *Shell) init() {
 	s.shell.AddCmd(s.generateCode())
 }
 
-func (s *Shell) editScript(scriptName string) error {
-	cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
+func (s *Shell) editScript(scriptName string, filetype string) error {
+	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
 	cmd.Stdin = s.stdin
 	cmd.Stdout = s.stdout
 	cmd.Stderr = s.stderr
