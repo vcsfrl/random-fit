@@ -23,7 +23,7 @@ func NewExporter(outputDir string) *Exporter {
 func (e *Exporter) Export(plan *Plan) error {
 	for userID, groups := range plan.UserGroups {
 		for _, group := range groups {
-			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, fmt.Sprintf("%s_%s", plan.CreatedAt.Format("2006-01-02-1504"), group.ContainerName), group.Details), " ", "_")
+			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, fmt.Sprintf("%s_%s", group.ContainerName, plan.CreatedAt.Format("2006-01-02-1504")), group.Details), " ", "_")
 			if err := os.MkdirAll(groupFolder, 0755); err != nil {
 				return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
 			}

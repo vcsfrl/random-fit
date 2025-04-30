@@ -92,7 +92,7 @@ func (suite *ExportSuite) TestExport() {
 	suite.True(suite.fileExists(userFolder))
 
 	// Check if the group folder exists
-	groupContainer := filepath.Join(userFolder, "2010-01-02-0304_Group-Container")
+	groupContainer := filepath.Join(userFolder, "Group-Container_2010-01-02-0304")
 	suite.True(suite.fileExists(groupContainer))
 	for i := 1; i <= 4; i++ {
 		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-Group-%d", i))

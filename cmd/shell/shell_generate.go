@@ -39,19 +39,14 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 				c.Println(messagePrompt+"Error generating combination:", err)
 				return
 			}
-
-			elapsed := time.Since(start)
-
-			c.Println(messagePrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", elapsed, "\n")
+			c.Println(messagePrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start), "\n")
 
 			start = time.Now()
 			if err := s.exporter.Export(newPlan); err != nil {
 				c.Println(messagePrompt+"Error exporting plan:", err)
 				return
 			}
-			elapsed = time.Since(start)
-			c.Println(messagePrompt+"Plan exported in", elapsed, "\n")
-
+			c.Println(messagePrompt+"Plan exported in", time.Since(start), "\n")
 		},
 	}
 }
