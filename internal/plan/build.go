@@ -27,7 +27,10 @@ func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder 
 		panic(fmt.Errorf("%w: error creating plan definition: %w", ErrPlanBuild, err))
 	}
 
-	builder := combination.NewStarlarkBuilder(combinationDefinition)
+	builder, err := combination.NewStarBuilder(combinationDefinition)
+	if err != nil {
+		panic(fmt.Errorf("%w: error creating combination builder: %w", ErrPlanBuild, err))
+	}
 
 	return &Builder{
 		Definition:         planDefinition,

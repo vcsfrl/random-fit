@@ -8,35 +8,44 @@ import (
 	"time"
 )
 
+var ErrStarBuilder = fmt.Errorf("error combination definition")
+
 type Builder interface {
 	Build() (*Combination, error)
 }
 
-type StarlarkBuilder struct {
+type StarBuilder struct {
 	definition *StarlarkDefinition
 	now        func() time.Time
 	uuidV7     func() (uuid.UUID, error)
+	validate   *validator.Validate
 }
 
-func NewStarlarkBuilder(definition *StarlarkDefinition) *StarlarkBuilder {
-	return &StarlarkBuilder{
+func NewStarBuilder(definition *StarlarkDefinition) (*StarBuilder, error) {
+	validate, err := Validator()
+	if err != nil {
+		return nil, fmt.Errorf("%w: error creating validator: %w", ErrStarBuilder, err)
+	}
+
+	return &StarBuilder{
 		definition: definition,
 		now:        time.Now,
 		uuidV7: func() (uuid.UUID, error) {
 			return uuid.NewV7()
 		},
-	}
+		validate: validate,
+	}, nil
 }
 
-func (s *StarlarkBuilder) Build() (*Combination, error) {
+func (s *StarBuilder) Build() (*Combination, error) {
 	uuidV7, err := s.uuidV7()
 	if err != nil {
-		return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrCombinationDefinition, err)
+		return nil, fmt.Errorf("%w: error building combination uuid: %w", ErrStarBuilder, err)
 	}
 
 	combinationData, err := s.definition.CallScriptBuildFunction()
 	if err != nil {
-		return nil, fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
+		return nil, fmt.Errorf("%w: error building combination data: %w", ErrStarBuilder, err)
 	}
 
 	result := &Combination{
@@ -49,21 +58,16 @@ func (s *StarlarkBuilder) Build() (*Combination, error) {
 
 	err = json.Unmarshal([]byte(combinationData), &result.Data)
 	if err != nil {
-		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrCombinationDefinition, err)
+		return nil, fmt.Errorf("%w: error unmarshalling combination data: %w", ErrStarBuilder, err)
 	}
 
 	if result.Data == nil {
-		return nil, fmt.Errorf("%w: combination data is nil", ErrCombinationDefinition)
+		return nil, fmt.Errorf("%w: combination data is nil", ErrStarBuilder)
 	}
 
-	validate, err := Validator()
+	err = s.validate.Struct(result)
 	if err != nil {
-		return nil, fmt.Errorf("%w: error creating validator: %w", ErrCombinationDefinition, err)
-	}
-
-	err = validate.Struct(result)
-	if err != nil {
-		return nil, fmt.Errorf("%w: error validating combination data: %w", ErrCombinationDefinition, err.(validator.ValidationErrors))
+		return nil, fmt.Errorf("%w: error validating combination data: %w", ErrStarBuilder, err.(validator.ValidationErrors))
 	}
 
 	return result, nil

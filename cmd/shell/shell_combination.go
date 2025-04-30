@@ -61,19 +61,31 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		Help:     "Edit definition",
 		LongHelp: "Edit a definition.",
 		Func: func(c *ishell.Context) {
-			definitions, err := s.combinationDefinitionManager.List()
-			if err != nil {
-				c.Println(messagePrompt+"Error getting definitions list:", err)
-				return
-			}
-			choice := c.MultiChoice(definitions, "Select a definition to edit:")
 
-			if err := s.editCombinationDefinition(definitions[choice]); err != nil {
+			var selectedDefinition string
+			if len(c.Args) == 0 {
+				definitions, err := s.combinationDefinitionManager.List()
+				if err != nil {
+					c.Println(messagePrompt+"Error getting definitions list:", err)
+					return
+				}
+				choice := c.MultiChoice(definitions, "Select a definition to edit:")
+
+				selectedDefinition = definitions[choice]
+			} else {
+				selectedDefinition = c.Args[0]
+				if _, err := s.combinationDefinitionManager.GetScript(selectedDefinition); err != nil {
+					c.Println(messagePrompt+"Error getting definition:", err)
+					return
+				}
+			}
+
+			if err := s.editCombinationDefinition(selectedDefinition); err != nil {
 				c.Println(messagePrompt+"Error editing definition:", err)
 				return
 			}
 
-			c.Println(messagePrompt+"Definition edited:", definitions[choice], "\n")
+			c.Println(messagePrompt+"Definition edited:", selectedDefinition, "\n")
 		},
 	}
 

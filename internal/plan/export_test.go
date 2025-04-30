@@ -63,7 +63,8 @@ func (suite *ExportSuite) SetupTest() {
 
 	definition, err := combination.NewCombinationDefinition("./testdata/star_script.star")
 	suite.NoError(err)
-	suite.combinationBuilder = combination.NewStarlarkBuilder(definition)
+	suite.combinationBuilder, err = combination.NewStarBuilder(definition)
+	suite.NoError(err)
 
 	suite.id = 0
 	slUuid.SetUuidFunc(func() (string, error) {

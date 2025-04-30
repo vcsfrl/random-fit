@@ -44,6 +44,15 @@ func (s *Shell) Run() {
 	s.shell.Println("=== Random-fit ===")
 	s.shell.Println("==================\n")
 
+	defer func() {
+		// recover from panic if one occurred.
+		if err := recover(); err != nil {
+			s.shell.Println(messagePrompt+"Error:", err)
+
+		}
+		s.shell.Stop()
+	}()
+
 	if len(os.Args) > 1 && os.Args[1] == "exec" {
 		err := s.shell.Process(os.Args[2:]...)
 		if err != nil {

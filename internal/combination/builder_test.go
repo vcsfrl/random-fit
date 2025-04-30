@@ -48,7 +48,8 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.initDefinition(suite.scriptFile)
-	builder := NewStarlarkBuilder(suite.definition)
+	builder, err := NewStarBuilder(suite.definition)
+	suite.NoError(err)
 	suite.NotNil(builder)
 
 	// Build first combination
@@ -112,7 +113,8 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
 	suite.initDefinition("./testdata/star_script_no_json.star")
-	builder := NewStarlarkBuilder(suite.definition)
+	builder, err := NewStarBuilder(suite.definition)
+	suite.NoError(err)
 	suite.NotNil(builder)
 
 	// Build first combination
@@ -123,7 +125,8 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
 
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 	suite.initDefinition("./template/script.star")
-	builder := NewStarlarkBuilder(suite.definition)
+	builder, err := NewStarBuilder(suite.definition)
+	suite.NoError(err)
 	suite.NotNil(builder)
 
 	// Build first combination
