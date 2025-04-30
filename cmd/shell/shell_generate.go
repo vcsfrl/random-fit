@@ -3,6 +3,7 @@ package shell
 import (
 	"github.com/abiosoft/ishell/v2"
 	"github.com/vcsfrl/random-fit/internal/plan"
+	"time"
 )
 
 func (s *Shell) generateCombination() *ishell.Cmd {
@@ -31,17 +32,25 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 				return
 			}
 
+			// measure execution time
+			start := time.Now()
 			newPlan, err := plan.NewBuilderFromStarConfig(combinationDefinition, planDefinition).Build()
 			if err != nil {
 				c.Println(messagePrompt+"Error generating combination:", err)
 				return
 			}
-			c.Println(messagePrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "\n")
 
+			elapsed := time.Since(start)
+
+			c.Println(messagePrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", elapsed, "\n")
+
+			start = time.Now()
 			if err := s.exporter.Export(newPlan); err != nil {
 				c.Println(messagePrompt+"Error exporting plan:", err)
 				return
 			}
+			elapsed = time.Since(start)
+			c.Println(messagePrompt+"Plan exported in", elapsed, "\n")
 
 		},
 	}
