@@ -22,9 +22,10 @@ type Shell struct {
 	planDefinitionManager        *PlanDefinitionManager
 	exporter                     *plan.Exporter
 
-	combinationFolder string
+	definitionFolder  string
 	planFolder        string
 	storageFolder     string
+	combinationFolder string
 }
 
 func New() *Shell {
@@ -35,7 +36,8 @@ func New() *Shell {
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 
-	newShell.combinationFolder = datatFolder + "/definition"
+	newShell.definitionFolder = datatFolder + "/definition"
+	newShell.combinationFolder = datatFolder + "/combination"
 	newShell.planFolder = datatFolder + "/plan"
 	newShell.storageFolder = datatFolder + "/storage"
 
@@ -90,7 +92,7 @@ func (s *Shell) init() {
 
 func (s *Shell) getCombinationDefinitionManager() *CombinationStarDefinitionManager {
 	if s.combinationDefinitionManager == nil {
-		s.combinationDefinitionManager = NewCombinationStarDefinitionManager(s.combinationFolder)
+		s.combinationDefinitionManager = NewCombinationStarDefinitionManager(s.definitionFolder)
 	}
 
 	return s.combinationDefinitionManager
