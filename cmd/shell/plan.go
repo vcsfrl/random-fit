@@ -67,6 +67,17 @@ func (m *PlanDefinitionManager) getSamplePlanDefinition() *rfPlan.Definition {
 	}
 }
 
+func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
+	planFileName := fmt.Sprintf("%s.json", plan)
+	planFilePath := filepath.Join(m.dataFolder, planFileName)
+
+	if _, err := os.Stat(planFilePath); os.IsNotExist(err) {
+		return "", fmt.Errorf("%s: plan does not exist", ErrPlanManager)
+	}
+
+	return planFilePath, nil
+}
+
 func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
 	return &PlanDefinitionManager{
 		dataFolder: folder,

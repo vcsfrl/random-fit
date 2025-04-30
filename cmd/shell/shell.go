@@ -56,7 +56,7 @@ func (s *Shell) init() {
 		Stderr: s.stderr,
 	})
 
-	s.shell.AddCmd(s.definitionCmd())
+	s.shell.AddCmd(s.combinationDefinitionCmd())
 	s.shell.AddCmd(&ishell.Cmd{
 		Name:     "exec",
 		Help:     "Execute a command non-interactively",

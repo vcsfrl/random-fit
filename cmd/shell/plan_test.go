@@ -86,3 +86,22 @@ func (suite *StarPlanManagerSuite) TestNew() {
 	suite.NoError(err)
 	suite.Equal(suite.planDefinitionManager.getSamplePlanDefinition(), resultPlanDefinition)
 }
+
+func (suite *StarPlanManagerSuite) TestGetFile() {
+	testPlan := "test-plan"
+	// create a test plan file
+	testPlanFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.json", testPlan))
+
+	// create a new plan
+	err := suite.planDefinitionManager.New(testPlan)
+	suite.NoError(err)
+
+	// check if the plan file exists
+	_, err = os.Stat(testPlanFile)
+	suite.NoError(err)
+
+	// get the plan file
+	result, err := suite.planDefinitionManager.GetFile(testPlan)
+	suite.NoError(err)
+	suite.Equal(testPlanFile, result)
+}

@@ -10,7 +10,7 @@ import (
 	"os/exec"
 )
 
-func (s *Shell) definitionCmd() *ishell.Cmd {
+func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 	listDefinition := &ishell.Cmd{
 		Name: "list",
 		Help: "List definitions",
@@ -51,7 +51,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 			}
 			c.Println(messagePrompt+"Definition created:", c.Args[0], "\n")
 
-			if err := s.editDefinition(c.Args[0]); err != nil {
+			if err := s.editCombinationDefinition(c.Args[0]); err != nil {
 				c.Println(messagePrompt+"Error editing definition:", err)
 				return
 			}
@@ -70,7 +70,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 			}
 			choice := c.MultiChoice(definitions, "Select a definition to edit:")
 
-			if err := s.editDefinition(definitions[choice]); err != nil {
+			if err := s.editCombinationDefinition(definitions[choice]); err != nil {
 				c.Println(messagePrompt+"Error editing definition:", err)
 				return
 			}
@@ -104,7 +104,7 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 			for dataType, data := range viewCombination.Data {
 				c.Println(messagePrompt+"Definition view:", dataType)
 				c.Println(messagePrompt + "====================================")
-				err := s.printCombination(c, data)
+				err := s.printCombinationDefinition(c, data)
 				if err != nil {
 					c.Println(messagePrompt+"Error viewing data:", err)
 					return
@@ -116,8 +116,8 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 	}
 
 	definition := &ishell.Cmd{
-		Name: "definition",
-		Help: "Manage definitions",
+		Name: "combination",
+		Help: "Manage combination definitions",
 		Func: func(c *ishell.Context) {
 			listDefinition.Func(c)
 		},
@@ -131,20 +131,20 @@ func (s *Shell) definitionCmd() *ishell.Cmd {
 	return definition
 }
 
-func (s *Shell) editDefinition(definition string) error {
+func (s *Shell) editCombinationDefinition(definition string) error {
 	scriptName, err := s.definitionManager.GetScript(definition)
 	if err != nil {
 		return err
 	}
 
-	if err := s.editDefinitionScript(scriptName); err != nil {
+	if err := s.editCombinationDefinitionScript(scriptName); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *Shell) editDefinitionScript(scriptName string) error {
+func (s *Shell) editCombinationDefinitionScript(scriptName string) error {
 	cmd := exec.Command(os.Getenv("EDITOR"), scriptName)
 	cmd.Stdin = s.stdin
 	cmd.Stdout = s.stdout
@@ -161,7 +161,7 @@ func (s *Shell) editDefinitionScript(scriptName string) error {
 	return nil
 }
 
-func (s *Shell) printCombination(c *ishell.Context, data *combination.Data) error {
+func (s *Shell) printCombinationDefinition(c *ishell.Context, data *combination.Data) error {
 	switch data.Type {
 	case combination.DataTypeJson:
 		var prettyJSON bytes.Buffer
