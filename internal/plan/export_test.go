@@ -83,7 +83,7 @@ func (suite *ExportSuite) TestExport() {
 	suite.NoError(err)
 	suite.NotNil(plan)
 
-	exporter := NewExporter(suite.testFolder)
+	exporter := NewExporter(suite.testFolder, suite.testFolder)
 	err = exporter.Export(plan)
 	suite.NoError(err)
 

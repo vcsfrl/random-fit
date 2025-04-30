@@ -11,12 +11,14 @@ import (
 var ErrExport = fmt.Errorf("error exporting plan")
 
 type Exporter struct {
-	OutputDir string
+	OutputDir  string
+	StorageDir string
 }
 
-func NewExporter(outputDir string) *Exporter {
+func NewExporter(outputDir string, storageDir string) *Exporter {
 	return &Exporter{
-		OutputDir: outputDir,
+		OutputDir:  outputDir,
+		StorageDir: storageDir,
 	}
 }
 

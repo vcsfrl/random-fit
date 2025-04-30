@@ -32,7 +32,7 @@ func New() *Shell {
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 	newShell.combinationDefinitionManager = NewCombinationStarDefinitionManager(datatFolder + "/definition")
 	newShell.planDefinitionManager = NewPlanDefinitionManager(datatFolder + "/plan")
-	newShell.exporter = plan.NewExporter(datatFolder + "/combination")
+	newShell.exporter = plan.NewExporter(datatFolder+"/combination", datatFolder+"/storage")
 
 	newShell.init()
 
