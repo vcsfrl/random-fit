@@ -2,6 +2,7 @@ package combination
 
 import (
 	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
@@ -33,6 +34,46 @@ type Data struct {
 	MimeType  string
 	Type      DataType
 	Data      *bytes.Buffer
+}
+
+type gobData struct {
+	Extension string
+	MimeType  string
+	Type      DataType
+	Data      []byte
+}
+
+func (d *Data) GobEncode() ([]byte, error) {
+	gData := &gobData{
+		Extension: d.Extension,
+		MimeType:  d.MimeType,
+		Type:      d.Type,
+		Data:      d.Data.Bytes(),
+	}
+
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	if err := encoder.Encode(gData); err != nil {
+		return nil, fmt.Errorf("error encoding data: %w", err)
+	}
+	return buffer.Bytes(), nil
+}
+
+func (d *Data) GobDecode(data []byte) error {
+	gData := &gobData{}
+	buffer := bytes.NewBuffer(data)
+	decoder := gob.NewDecoder(buffer)
+
+	if err := decoder.Decode(gData); err != nil {
+		return fmt.Errorf("error decoding data: %w", err)
+	}
+
+	d.Extension = gData.Extension
+	d.MimeType = gData.MimeType
+	d.Type = gData.Type
+	d.Data = bytes.NewBuffer(gData.Data)
+
+	return nil
 }
 
 func (d *Data) UnmarshalJSON(data []byte) error {

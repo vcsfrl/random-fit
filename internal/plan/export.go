@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"os"
@@ -40,6 +41,32 @@ func (e *Exporter) Export(plan *Plan) error {
 			}
 		}
 	}
+
+	if err := e.exportObject(plan); err != nil {
+		return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+	}
+
+	return nil
+}
+
+func (e *Exporter) exportObject(plan *Plan) error {
+	// save the plan to storage
+	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s.gob", plan.UUID.String()))
+	//open the file
+	file, err := os.Create(storageFile)
+	if err != nil {
+		return fmt.Errorf("%w: error creating storage file: %s", ErrExport, err)
+	}
+
+	defer func() {
+		_ = file.Close()
+	}()
+
+	encoder := gob.NewEncoder(file)
+	if err := encoder.Encode(plan); err != nil {
+		return fmt.Errorf("%w: error encoding plan object: %s", ErrExport, err)
+	}
+
 	return nil
 }
 

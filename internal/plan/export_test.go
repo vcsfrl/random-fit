@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"encoding/gob"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
@@ -23,6 +24,8 @@ type ExportSuite struct {
 	suite.Suite
 
 	testFolder         string
+	combinationFolder  string
+	storageFolder      string
 	planDefinition     *Definition
 	combinationBuilder combination.Builder
 	planBuilder        *Builder
@@ -35,6 +38,14 @@ func (suite *ExportSuite) SetupTest() {
 
 	// Create the test folder
 	err := os.MkdirAll(suite.testFolder, 0755)
+	suite.NoError(err)
+
+	suite.combinationFolder = filepath.Join(suite.testFolder, "combination")
+	err = os.MkdirAll(suite.combinationFolder, 0755)
+	suite.NoError(err)
+
+	suite.storageFolder = filepath.Join(suite.combinationFolder, "storage")
+	err = os.MkdirAll(suite.storageFolder, 0755)
 	suite.NoError(err)
 
 	// Create a test plan definition
@@ -83,12 +94,12 @@ func (suite *ExportSuite) TestExport() {
 	suite.NoError(err)
 	suite.NotNil(plan)
 
-	exporter := NewExporter(suite.testFolder, suite.testFolder)
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
 	err = exporter.Export(plan)
 	suite.NoError(err)
 
 	// Check if the user folder exists
-	userFolder := filepath.Join(suite.testFolder, "user-1")
+	userFolder := filepath.Join(suite.combinationFolder, "user-1")
 	suite.True(suite.fileExists(userFolder))
 
 	// Check if the group folder exists
@@ -122,7 +133,42 @@ func (suite *ExportSuite) TestExport() {
 			}
 		}
 	}
+}
 
+func (suite *ExportSuite) TestExportObject() {
+	plan, err := suite.planBuilder.Build()
+	suite.NoError(err)
+	suite.NotNil(plan)
+
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	err = exporter.Export(plan)
+	suite.NoError(err)
+
+	// Check if the user folder exists
+	dataFile := filepath.Join(suite.storageFolder, fmt.Sprintf("%s.gob", plan.UUID.String()))
+	suite.True(suite.fileExists(dataFile))
+
+	// open the file
+	file, err := os.Open(dataFile)
+
+	savedPlan := &Plan{}
+
+	decoder := gob.NewDecoder(file)
+	err = decoder.Decode(savedPlan)
+	suite.NoError(err)
+	suite.Equal(plan.UUID, savedPlan.UUID)
+	suite.Equal(plan.CreatedAt, savedPlan.CreatedAt)
+	suite.Equal(len(plan.UserGroups), len(savedPlan.UserGroups))
+	suite.Equal(len(plan.UserGroups["user-1"]), len(savedPlan.UserGroups["user-1"]))
+	suite.Equal(plan.UserGroups["user-1"][0].Details, savedPlan.UserGroups["user-1"][0].Details)
+	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].UUID, savedPlan.UserGroups["user-1"][0].Combinations[0].UUID)
+	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].Details, savedPlan.UserGroups["user-1"][0].Combinations[0].Details)
+	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].DefinitionID, savedPlan.UserGroups["user-1"][0].Combinations[0].DefinitionID)
+	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].Data, savedPlan.UserGroups["user-1"][0].Combinations[0].Data)
+	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].CreatedAt.Format(time.DateTime), savedPlan.UserGroups["user-1"][0].Combinations[0].CreatedAt.Format(time.DateTime))
+
+	err = file.Close()
+	suite.NoError(err)
 }
 
 func (suite *ExportSuite) fileExists(path string) (bool, error) {
