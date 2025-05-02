@@ -54,7 +54,7 @@ func (suite *ExportSuite) SetupTest() {
 		Details: "Test definition",
 		Users:   []string{"user-1"},
 		UserData: UserData{
-			ContainerName:            "Group-Container",
+			ContainerName:            []string{"Group-Container", "_date"},
 			RecurrentGroupNamePrefix: "Recurrent-Group",
 			RecurrentGroups:          4,
 			NrOfGroupCombinations:    3,
@@ -104,7 +104,7 @@ func (suite *ExportSuite) TestExport() {
 	suite.True(suite.fileExists(userFolder))
 
 	// Check if the group folder exists
-	groupContainer := filepath.Join(userFolder, "Group-Container_2010-01-02-0304")
+	groupContainer := filepath.Join(userFolder, "Group-Container", "2010-01-02-03-04")
 	suite.True(suite.fileExists(groupContainer))
 	for i := 1; i <= 4; i++ {
 		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-Group-%d", i))
@@ -134,6 +134,30 @@ func (suite *ExportSuite) TestExport() {
 			}
 		}
 	}
+}
+
+func (suite *ExportSuite) TestExportNoDateInContainer() {
+	suite.planDefinition.ContainerName = []string{"Group-Container"}
+	plan, err := suite.planBuilder.Build()
+	suite.NoError(err)
+	suite.NotNil(plan)
+
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	err = exporter.Export(plan)
+	suite.NoError(err)
+
+	// Check if the user folder exists
+	userFolder := filepath.Join(suite.combinationFolder, "user-1")
+	suite.True(suite.fileExists(userFolder))
+
+	// Check if the group folder exists.
+	groupContainer := filepath.Join(userFolder, "Group-Container")
+	suite.True(suite.fileExists(groupContainer))
+
+	// Check that the date was not included in the container name.
+	groupContainer = filepath.Join(userFolder, "Group-Container", "2010-01-02-03-04")
+	suite.False(suite.fileExists(groupContainer))
+
 }
 
 func (suite *ExportSuite) TestExportObject() {

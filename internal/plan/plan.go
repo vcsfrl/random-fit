@@ -20,14 +20,14 @@ type Definition struct {
 
 // UserData is used to define a group of combinations.
 type UserData struct {
-	ContainerName            string
+	ContainerName            []string
 	RecurrentGroupNamePrefix string
 	RecurrentGroups          int
 	NrOfGroupCombinations    int
 }
 
 type Group struct {
-	ContainerName string
+	ContainerName []string
 	Details       string
 	Combinations  []*combination.Combination
 }

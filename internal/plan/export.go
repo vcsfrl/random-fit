@@ -26,7 +26,7 @@ func NewExporter(outputDir string, storageDir string) *Exporter {
 func (e *Exporter) Export(plan *Plan) error {
 	for userID, groups := range plan.UserGroups {
 		for _, group := range groups {
-			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, fmt.Sprintf("%s_%s", group.ContainerName, plan.CreatedAt.Format("2006-01-02-1504")), group.Details), " ", "_")
+			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan, group), group.Details), " ", "_")
 			if err := os.MkdirAll(groupFolder, 0755); err != nil {
 				return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
 			}
@@ -47,6 +47,24 @@ func (e *Exporter) Export(plan *Plan) error {
 	}
 
 	return nil
+}
+
+func (e *Exporter) containerFolder(plan *Plan, group *Group) string {
+	if len(group.ContainerName) == 0 {
+		return plan.DefinitionID
+	}
+
+	var folder string
+
+	for _, container := range group.ContainerName {
+		if container == "_date" {
+			folder = filepath.Join(folder, plan.CreatedAt.Format("2006-01-02-15-04"))
+			continue
+		}
+		folder = filepath.Join(folder, container)
+	}
+
+	return folder
 }
 
 func (e *Exporter) exportObject(plan *Plan) error {

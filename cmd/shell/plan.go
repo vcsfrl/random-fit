@@ -65,7 +65,7 @@ func (m *PlanDefinitionManager) getSamplePlanDefinition() *rfPlan.Definition {
 		Details: "Definition",
 		Users:   []string{"user1"},
 		UserData: rfPlan.UserData{
-			ContainerName:            "ContainerName",
+			ContainerName:            []string{"ContainerName", "_date"},
 			RecurrentGroupNamePrefix: "Group",
 			RecurrentGroups:          1,
 			NrOfGroupCombinations:    1,
