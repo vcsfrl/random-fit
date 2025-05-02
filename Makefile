@@ -32,3 +32,7 @@ test-debug:
 
 lint: ## Run linter.
 	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.0.2 golangci-lint run
+
+build-docker-image:
+	docker build -t vcsfrl/random-fit:v1.0.0 --target prod .
+	#docker run --rm -it --entrypoint bash vcsfrl/random-fit:v1.0.0

@@ -1,8 +1,9 @@
 services:
   random-fit_app:
     build:
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
       context: .
+      target: dev
       args:
         - username=${CONTAINER_USERNAME}
         - exec_user_id=${CONTAINER_EXEC_USER_ID}
