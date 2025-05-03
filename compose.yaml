@@ -23,6 +23,7 @@ services:
     image: vcsfrl/random-fit:v1.0.0
     restart: "unless-stopped"
     volumes:
+      - ./data:/srv/random-fit/data:shared
       - /etc/localtime:/etc/localtime:ro
     user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
     ports:
