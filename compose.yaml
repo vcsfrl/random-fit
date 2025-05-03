@@ -1,9 +1,9 @@
 services:
-  random-fit_app:
+  random-fit_dev:
     build:
       dockerfile: Dockerfile
       context: .
-      target: dev
+      target: base
       args:
         - username=${CONTAINER_USERNAME}
         - exec_user_id=${CONTAINER_EXEC_USER_ID}
@@ -12,6 +12,17 @@ services:
     restart: "unless-stopped"
     volumes:
       - .:/srv/random-fit:shared
+      - /etc/localtime:/etc/localtime:ro
+    user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
+    ports:
+      - ${RF_DEBUGGER_TEST_PORT}:${RF_DEBUGGER_TEST_PORT}
+    env_file:
+      - .env
+  random-fit:
+    container_name: random-fit
+    image: vcsfrl/random-fit:v1.0.0
+    restart: "unless-stopped"
+    volumes:
       - /etc/localtime:/etc/localtime:ro
     user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
     ports:
