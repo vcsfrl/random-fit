@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: random-fit-config
+data:
+  container_exec_user_id: "1000"
+  container_username: "app"
+  rf_base_folder: "/srv/random-fit"
+  rf_data_folder: "/srv/random-fit/data"
+  editor: "micro"

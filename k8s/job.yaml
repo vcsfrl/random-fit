@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: random-fit
+spec:
+  template:
+    spec:
+      containers:
+        - name: random-fit
+          image: localhost:32000/vcsfrl/random-fit:v1.0.0
+          command: ["/srv/random-fit/bin/app", "exec", "generate-combination", "_definition_name", "_plan_name"]
+          env:
+            - name: CONTAINER_EXEC_USER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: container_exec_user_id
+            - name: CONTAINER_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: container_username
+            - name: RF_BASE_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: rf_base_folder
+            - name: RF_DATA_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: rf_data_folder
+            - name: EDITOR
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: editor
+      restartPolicy: Never
+  backoffLimit: 4
