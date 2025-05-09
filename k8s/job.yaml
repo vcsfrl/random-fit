@@ -5,10 +5,18 @@ metadata:
 spec:
   template:
     spec:
+      volumes:
+        - name: random-fit-volume
+          persistentVolumeClaim:
+            claimName: random-fit-pvc
       containers:
         - name: random-fit
           image: localhost:32000/vcsfrl/random-fit:v1.0.0
-          command: ["/srv/random-fit/bin/app", "exec", "generate-combination", "_definition_name", "_plan_name"]
+#          command: ["/srv/random-fit/bin/app", "exec", "generate-combination", "_definition_name", "_plan_name"]
+          command: ["sleep", "36000"]
+          volumeMounts:
+            - name: random-fit-volume
+              mountPath: /srv/random-fit/data
           env:
             - name: CONTAINER_EXEC_USER_ID
               valueFrom:
