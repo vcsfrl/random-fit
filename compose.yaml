@@ -20,7 +20,7 @@ services:
       - .env
   random-fit:
     container_name: random-fit
-    image: vcsfrl/random-fit:v1.0.0
+    image: vcsfrl/random-fit:v1.0.1
     restart: "unless-stopped"
     volumes:
       - ./data:/srv/random-fit/data:shared
