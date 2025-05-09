@@ -37,6 +37,7 @@ build-docker-image:
 	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.0 --target prod .
 	#docker run --rm -it --entrypoint bash vcsfrl/random-fit:v1.0.0
 	#docker tag <image hash> <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
+	#docker push <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
 
 run: ## Run the app.
 	docker compose run random-fit
