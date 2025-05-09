@@ -35,11 +35,28 @@ func New() *Shell {
 	newShell.stderr = os.Stderr
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
+	if err := createFolder(datatFolder); err != nil {
+		newShell.shell.Println(messagePrompt+"Error creating data folder:", err)
+	}
 
 	newShell.definitionFolder = datatFolder + "/definition"
 	newShell.combinationFolder = datatFolder + "/combination"
 	newShell.planFolder = datatFolder + "/plan"
 	newShell.storageFolder = datatFolder + "/storage"
+
+	// create folders if they do not exist
+	if err := createFolder(newShell.definitionFolder); err != nil {
+		newShell.shell.Println(messagePrompt+"Error creating definition folder:", err)
+	}
+	if err := createFolder(newShell.combinationFolder); err != nil {
+		newShell.shell.Println(messagePrompt+"Error creating combination folder:", err)
+	}
+	if err := createFolder(newShell.planFolder); err != nil {
+		newShell.shell.Println(messagePrompt+"Error creating plan folder:", err)
+	}
+	if err := createFolder(newShell.storageFolder); err != nil {
+		newShell.shell.Println(messagePrompt+"Error creating storage folder:", err)
+	}
 
 	newShell.init()
 
@@ -126,6 +143,16 @@ func (s *Shell) editScript(scriptName string, filetype string) error {
 
 	if err := cmd.Wait(); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func createFolder(folder string) error {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		if err := os.MkdirAll(folder, 0755); err != nil {
+			return err
+		}
 	}
 
 	return nil
