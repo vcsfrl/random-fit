@@ -11,7 +11,7 @@ spec:
             claimName: random-fit-pvc
       containers:
         - name: random-fit
-          image: localhost:32000/vcsfrl/random-fit:latest
+          image: localhost:32000/vcsfrl/random-fit:v1.0.1
 #          command: ["/srv/random-fit/bin/app", "exec", "generate-combination", "_definition_name", "_plan_name"]
           command: ["sleep", "36000"]
           volumeMounts:
