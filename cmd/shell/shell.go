@@ -193,6 +193,13 @@ func (s *Shell) editScript(scriptName string, filetype string) error {
 	return nil
 }
 
+func (s *Shell) Close() error {
+	s.ctxCancel()
+	s.shell.Close()
+
+	return nil
+}
+
 func createFolder(folder string) error {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		if err := os.MkdirAll(folder, 0755); err != nil {
