@@ -7,8 +7,6 @@ import (
 	"github.com/vcsfrl/random-fit/internal/plan"
 	"io"
 	"os"
-	"os/exec"
-	"time"
 )
 
 const prompt = ">>> "
@@ -79,6 +77,26 @@ func BuildNew() *Shell {
 	return newShell
 }
 
+func (s *Shell) Init() {
+	s.shell = ishell.NewWithConfig(&readline.Config{
+		Prompt:      prompt,
+		Stdin:       s.stdin,
+		StdinWriter: s.stdinWriter,
+		Stdout:      s.stdout,
+		Stderr:      s.stderr,
+	})
+
+	s.shell.DeleteCmd("exit")
+	s.shell.AddCmd(s.exitCmd())
+	s.shell.Interrupt(s.interruptFunc)
+
+	s.shell.AddCmd(s.execCmd())
+	s.shell.AddCmd(s.combinationDefinitionCmd())
+	s.shell.AddCmd(s.planDefinitionCmd())
+	s.shell.AddCmd(s.generateCode())
+	s.shell.AddCmd(s.generateCombination())
+}
+
 func (s *Shell) Run() {
 	s.shell.Println(separator)
 	s.shell.Println(welcomeMessage)
@@ -102,104 +120,6 @@ func (s *Shell) Run() {
 	} else {
 		s.shell.Run()
 	}
-}
-
-func (s *Shell) Init() {
-	s.shell = ishell.NewWithConfig(&readline.Config{
-		Prompt:      prompt,
-		Stdin:       s.stdin,
-		StdinWriter: s.stdinWriter,
-		Stdout:      s.stdout,
-		Stderr:      s.stderr,
-	})
-
-	s.shell.DeleteCmd("exit")
-	s.shell.AddCmd(s.exitCmd())
-	s.shell.Interrupt(s.interruptFunc)
-
-	s.shell.AddCmd(s.execCmd())
-	s.shell.AddCmd(s.combinationDefinitionCmd())
-	s.shell.AddCmd(s.planDefinitionCmd())
-	s.shell.AddCmd(s.generateCode())
-	s.shell.AddCmd(s.generateCombination())
-}
-
-func (s *Shell) exitCmd() *ishell.Cmd {
-	return &ishell.Cmd{
-		Name: "exit",
-		Help: "exit the program",
-		Func: func(c *ishell.Context) {
-			s.ctxCancel()
-			time.Sleep(100 * time.Millisecond)
-			c.Stop()
-		},
-	}
-}
-
-func (s *Shell) execCmd() *ishell.Cmd {
-	return &ishell.Cmd{
-		Name:     "exec",
-		Help:     "Execute a command non-interactively",
-		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
-	}
-}
-
-func (s *Shell) interruptFunc(c *ishell.Context, count int, line string) {
-	if count >= 2 {
-		s.ctxCancel()
-		s.shell.Close()
-
-		time.Sleep(100 * time.Millisecond)
-		c.Println("Interrupted")
-
-		os.Exit(1)
-	}
-	c.Println("Input Ctrl-c once more to exit")
-}
-
-func (s *Shell) getCombinationDefinitionManager() *CombinationStarDefinitionManager {
-	if s.combinationDefinitionManager == nil {
-		s.combinationDefinitionManager = NewCombinationStarDefinitionManager(s.definitionFolder)
-	}
-
-	return s.combinationDefinitionManager
-}
-
-func (s *Shell) getPlanDefinitionManager() *PlanDefinitionManager {
-	if s.planDefinitionManager == nil {
-		s.planDefinitionManager = NewPlanDefinitionManager(s.planFolder)
-	}
-
-	return s.planDefinitionManager
-}
-
-func (s *Shell) getExporter() *plan.Exporter {
-	if s.exporter == nil {
-		s.exporter = plan.NewExporter(s.combinationFolder, s.storageFolder)
-	}
-
-	return s.exporter
-}
-
-func (s *Shell) editScript(scriptName string, filetype string) error {
-	if os.Getenv("EDITOR") == "" {
-		s.shell.Println(messagePrompt + "Error: EDITOR environment variable is not set.")
-		return nil
-	}
-	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
-	cmd.Stdin = s.stdin
-	cmd.Stdout = s.stdout
-	cmd.Stderr = s.stderr
-
-	if err := cmd.Start(); err != nil {
-		return err
-	}
-
-	if err := cmd.Wait(); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (s *Shell) Close() error {
