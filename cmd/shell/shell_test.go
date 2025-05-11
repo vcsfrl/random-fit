@@ -2,7 +2,10 @@ package shell
 
 import (
 	"bytes"
+	"github.com/abiosoft/readline"
 	"github.com/stretchr/testify/suite"
+	"io"
+	"os"
 	"testing"
 )
 
@@ -14,17 +17,19 @@ type ShellSuite struct {
 	suite.Suite
 
 	shell       *Shell
-	input       *Buffer
-	inputWriter *Buffer
+	input       io.ReadCloser
+	inputWriter io.Writer
 	output      *Buffer
 	errors      *Buffer
+	inputBuffer *Buffer
 }
 
 func (suite *ShellSuite) SetupTest() {
-	suite.input = &Buffer{}
+	suite.inputBuffer = &Buffer{}
 	suite.output = &Buffer{}
 	suite.errors = &Buffer{}
-	suite.inputWriter = &Buffer{}
+
+	suite.input, suite.inputWriter = readline.NewFillableStdin(suite.inputBuffer)
 
 	// Create a new shell instance
 	suite.shell = BuildNew()
@@ -77,15 +82,23 @@ func (suite *ShellSuite) TestRun() {
 }
 
 func (suite *ShellSuite) TestHelp() {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"", "exec", "help"}
+
 	// Run the shell instance
 	suite.shell.Run()
 
-	// Check if the help command is available
-	suite.shell.RunCommand("help")
-	//
-	//output := suite.output.String()
-	//
-	//suite.Contains(output, "Commands:")
+	output := suite.output.String()
+	suite.Contains(output, "Commands:")
+	suite.Contains(output, "exec")
+	suite.Contains(output, "help")
+	suite.Contains(output, "clear")
+	suite.Contains(output, "exit")
+	suite.Contains(output, combinationDefinitionCmdName)
+	suite.Contains(output, combinationDefinitionCmdHelp)
+	suite.Contains(output, planDefinitionCmdName)
+	suite.Contains(output, planDefinitionCmdHelp)
 }
 
 type Buffer struct {

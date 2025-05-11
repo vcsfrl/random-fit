@@ -8,6 +8,9 @@ import (
 	"github.com/vcsfrl/random-fit/internal/combination"
 )
 
+const combinationDefinitionCmdName = "combination-definition"
+const combinationDefinitionCmdHelp = "Manage combination definitions"
+
 func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 	listDefinition := &ishell.Cmd{
 		Name: "list",
@@ -98,21 +101,20 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 
 			for dataType, data := range viewCombination.Data {
 				c.Println(messagePrompt+"Definition view:", dataType)
-				c.Println(messagePrompt + "====================================")
+				c.Println(messagePrompt + separator + separator)
 				err := s.printCombinationDefinition(c, data)
 				if err != nil {
 					c.Println(messagePrompt+"Error viewing data:", err)
 					return
 				}
-				c.Println(messagePrompt + "====================================")
+				c.Println(messagePrompt + separator + separator)
 			}
-
 		},
 	}
 
 	definition := &ishell.Cmd{
-		Name: "combination-definition",
-		Help: "Manage combination definitions",
+		Name: combinationDefinitionCmdName,
+		Help: combinationDefinitionCmdHelp,
 		Func: func(c *ishell.Context) {
 			listDefinition.Func(c)
 		},

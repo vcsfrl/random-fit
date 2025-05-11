@@ -129,11 +129,12 @@ func (s *Shell) Close() error {
 	return nil
 }
 
-func (s *Shell) RunCommand(command string) {
-	if _, err := s.stdinWriter.Write([]byte(command + "\n")); err != nil {
-		s.shell.Println(messagePrompt+"Error writing command to stdin:", err)
-	}
-}
+//
+//func (s *Shell) RunCommand(command string) {
+//	if _, err := s.stdinWriter.Write([]byte(command + "\n")); err != nil {
+//		s.shell.Println(messagePrompt+"Error writing command to stdin:", err)
+//	}
+//}
 
 func createFolder(folder string) error {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
