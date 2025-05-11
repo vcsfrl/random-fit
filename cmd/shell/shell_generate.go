@@ -46,6 +46,7 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 				c.Println(messagePrompt+"Error exporting plan:", err)
 				return
 			}
+			newPlan = nil
 			c.Println(messagePrompt+"Plan exported in", time.Since(start), "\n")
 		},
 	}

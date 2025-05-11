@@ -1,12 +1,14 @@
 package shell
 
 import (
+	"context"
 	"github.com/abiosoft/ishell/v2"
 	"github.com/abiosoft/readline"
 	"github.com/vcsfrl/random-fit/internal/plan"
 	"io"
 	"os"
 	"os/exec"
+	"time"
 )
 
 const prompt = ">>> "
@@ -26,6 +28,9 @@ type Shell struct {
 	planFolder        string
 	storageFolder     string
 	combinationFolder string
+
+	ctx       context.Context
+	ctxCancel context.CancelFunc
 }
 
 func New() *Shell {
@@ -33,6 +38,7 @@ func New() *Shell {
 	newShell.stdin = os.Stdin
 	newShell.stdout = os.Stdout
 	newShell.stderr = os.Stderr
+	newShell.ctx, newShell.ctxCancel = context.WithCancel(context.Background())
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 	if datatFolder != "" {
@@ -71,12 +77,11 @@ func (s *Shell) Run() {
 	s.shell.Println("==================\n")
 
 	defer func() {
-		// recover from panic if one occurred.
+		// handle panic.
 		if err := recover(); err != nil {
 			s.shell.Println(messagePrompt+"Error:", err)
-
 		}
-		s.shell.Stop()
+		s.shell.Close()
 	}()
 
 	if len(os.Args) > 1 && os.Args[1] == "exec" {
@@ -107,6 +112,33 @@ func (s *Shell) init() {
 	s.shell.AddCmd(s.planDefinitionCmd())
 	s.shell.AddCmd(s.generateCode())
 	s.shell.AddCmd(s.generateCombination())
+	s.shell.Interrupt(s.interruptFunc)
+	s.shell.DeleteCmd("exit")
+	s.shell.AddCmd(&ishell.Cmd{
+		Name: "exit",
+		Help: "exit the program",
+		Func: func(c *ishell.Context) {
+			s.ctxCancel()
+			time.Sleep(100 * time.Millisecond)
+			c.Stop()
+		},
+	},
+	)
+
+	s.runTrace()
+}
+
+func (s *Shell) interruptFunc(c *ishell.Context, count int, line string) {
+	if count >= 2 {
+		s.ctxCancel()
+		s.shell.Close()
+
+		time.Sleep(100 * time.Millisecond)
+		c.Println("Interrupted")
+
+		os.Exit(1)
+	}
+	c.Println("Input Ctrl-c once more to exit")
 }
 
 func (s *Shell) getCombinationDefinitionManager() *CombinationStarDefinitionManager {
@@ -134,6 +166,10 @@ func (s *Shell) getExporter() *plan.Exporter {
 }
 
 func (s *Shell) editScript(scriptName string, filetype string) error {
+	if os.Getenv("EDITOR") == "" {
+		s.shell.Println(messagePrompt + "Error: EDITOR environment variable is not set.")
+		return nil
+	}
 	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
 	cmd.Stdin = s.stdin
 	cmd.Stdout = s.stdout
