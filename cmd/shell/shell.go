@@ -82,6 +82,8 @@ func (s *Shell) Run() {
 	s.shell.Println(welcomeMessage)
 	s.shell.Println(separator, "\n")
 
+	s.runTrace()
+
 	defer func() {
 		// handle panic.
 		if err := recover(); err != nil {
@@ -117,8 +119,6 @@ func (s *Shell) Init() {
 	s.shell.AddCmd(s.planDefinitionCmd())
 	s.shell.AddCmd(s.generateCode())
 	s.shell.AddCmd(s.generateCombination())
-
-	s.runTrace()
 }
 
 func (s *Shell) exitCmd() *ishell.Cmd {
