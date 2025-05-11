@@ -102,14 +102,21 @@ func (s *Shell) init() {
 		Stderr: s.stderr,
 	})
 
-	s.shell.AddCmd(&ishell.Cmd{
-		Name:     "exec",
-		Help:     "Execute a command non-interactively",
-		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
-	})
-
 	s.shell.DeleteCmd("exit")
-	s.shell.AddCmd(&ishell.Cmd{
+	s.shell.AddCmd(s.exitCmd())
+	s.shell.Interrupt(s.interruptFunc)
+
+	s.shell.AddCmd(s.execCmd())
+	s.shell.AddCmd(s.combinationDefinitionCmd())
+	s.shell.AddCmd(s.planDefinitionCmd())
+	s.shell.AddCmd(s.generateCode())
+	s.shell.AddCmd(s.generateCombination())
+
+	s.runTrace()
+}
+
+func (s *Shell) exitCmd() *ishell.Cmd {
+	return &ishell.Cmd{
 		Name: "exit",
 		Help: "exit the program",
 		Func: func(c *ishell.Context) {
@@ -117,16 +124,15 @@ func (s *Shell) init() {
 			time.Sleep(100 * time.Millisecond)
 			c.Stop()
 		},
-	},
-	)
-	s.shell.Interrupt(s.interruptFunc)
+	}
+}
 
-	s.shell.AddCmd(s.combinationDefinitionCmd())
-	s.shell.AddCmd(s.planDefinitionCmd())
-	s.shell.AddCmd(s.generateCode())
-	s.shell.AddCmd(s.generateCombination())
-
-	s.runTrace()
+func (s *Shell) execCmd() *ishell.Cmd {
+	return &ishell.Cmd{
+		Name:     "exec",
+		Help:     "Execute a command non-interactively",
+		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
+	}
 }
 
 func (s *Shell) interruptFunc(c *ishell.Context, count int, line string) {
