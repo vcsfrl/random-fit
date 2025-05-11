@@ -12,7 +12,7 @@ const definitionSkeleton = `package shell
 
 // This is a generated file. Do not edit!
 
-func init() {
+func Init() {
 	// definitionTemplate is a template for a definition file
 	definitionTemplate = {{.}}
 }`

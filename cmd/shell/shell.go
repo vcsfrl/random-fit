@@ -13,6 +13,8 @@ import (
 
 const prompt = ">>> "
 const messagePrompt = "-> "
+const separator = "=================="
+const welcomeMessage = "=== Random-fit ==="
 
 type Shell struct {
 	shell  *ishell.Shell
@@ -34,6 +36,13 @@ type Shell struct {
 }
 
 func New() *Shell {
+	newShell := BuildNew()
+	newShell.Init()
+
+	return newShell
+}
+
+func BuildNew() *Shell {
 	newShell := &Shell{}
 	newShell.stdin = os.Stdin
 	newShell.stdout = os.Stdout
@@ -65,16 +74,13 @@ func New() *Shell {
 			newShell.shell.Println(messagePrompt+"Error creating storage folder:", err)
 		}
 	}
-
-	newShell.init()
-
 	return newShell
 }
 
 func (s *Shell) Run() {
-	s.shell.Println("\n==================")
-	s.shell.Println("=== Random-fit ===")
-	s.shell.Println("==================\n")
+	s.shell.Println(separator)
+	s.shell.Println(welcomeMessage)
+	s.shell.Println(separator, "\n")
 
 	defer func() {
 		// handle panic.
@@ -94,7 +100,7 @@ func (s *Shell) Run() {
 	}
 }
 
-func (s *Shell) init() {
+func (s *Shell) Init() {
 	s.shell = ishell.NewWithConfig(&readline.Config{
 		Prompt: prompt,
 		Stdin:  s.stdin,

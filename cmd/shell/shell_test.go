@@ -1,6 +1,7 @@
 package shell
 
 import (
+	"bytes"
 	"github.com/stretchr/testify/suite"
 	"testing"
 )
@@ -12,12 +13,19 @@ func TestShell(t *testing.T) {
 type ShellSuite struct {
 	suite.Suite
 
-	shell *Shell
+	shell  *Shell
+	input  *Buffer
+	output *Buffer
+	errors *Buffer
 }
 
 func (suite *ShellSuite) SetupTest() {
+	suite.input = &Buffer{}
+	suite.output = &Buffer{}
+	suite.errors = &Buffer{}
+
 	// Create a new shell instance
-	suite.shell = New()
+	suite.shell = BuildNew()
 
 	// Check if the shell instance is not nil
 	suite.NotNil(suite.shell)
@@ -25,6 +33,13 @@ func (suite *ShellSuite) SetupTest() {
 	suite.NotNil(suite.shell.stdin)
 	suite.NotNil(suite.shell.stdout)
 	suite.NotNil(suite.shell.stderr)
+
+	// Create a new shell instance with custom input and output
+	suite.shell.stdin = suite.input
+	suite.shell.stdout = suite.output
+	suite.shell.stderr = suite.errors
+	suite.shell.Init()
+
 }
 
 func (suite *ShellSuite) TearDownTest() {
@@ -35,16 +50,57 @@ func (suite *ShellSuite) TearDownTest() {
 }
 
 func (suite *ShellSuite) TestNew() {
-	// Create a new shell instance
-	newShell := New()
 
 	// Check if the shell instance is not nil
-	suite.NotNil(newShell)
+	suite.NotNil(suite.shell)
 
 	// Check if the shell instance has the expected properties
+	suite.NotNil(suite.shell.definitionFolder)
+	suite.NotNil(suite.shell.planFolder)
+	suite.NotNil(suite.shell.storageFolder)
+	suite.NotNil(suite.shell.combinationFolder)
+	suite.NotNil(suite.shell.ctxCancel)
+	suite.NotNil(suite.shell.ctx)
+}
 
-	suite.NotNil(newShell.definitionFolder)
-	suite.NotNil(newShell.planFolder)
-	suite.NotNil(newShell.storageFolder)
-	suite.NotNil(newShell.combinationFolder)
+func (suite *ShellSuite) TestRun() {
+	// Run the shell instance
+	suite.shell.Run()
+
+	output := suite.output.String()
+
+	suite.Contains(output, welcomeMessage)
+	suite.Contains(output, separator)
+}
+
+type Buffer struct {
+	buf *bytes.Buffer
+}
+
+func (cb *Buffer) Write(p []byte) (n int, err error) {
+	if cb.buf == nil {
+		cb.buf = &bytes.Buffer{}
+	}
+	return cb.buf.Write(p)
+}
+
+func (cb *Buffer) Read(p []byte) (n int, err error) {
+	if cb.buf == nil {
+		return 0, nil
+	}
+	return cb.buf.Read(p)
+}
+
+func (cb *Buffer) Close() error {
+	if cb.buf != nil {
+		cb.buf.Reset()
+	}
+	return nil
+}
+
+func (cb *Buffer) String() string {
+	if cb.buf != nil {
+		return cb.buf.String()
+	}
+	return ""
 }
