@@ -108,11 +108,6 @@ func (s *Shell) init() {
 		LongHelp: "Execute a command non-interactively.\nUsage: <shell> exec <command>",
 	})
 
-	s.shell.AddCmd(s.combinationDefinitionCmd())
-	s.shell.AddCmd(s.planDefinitionCmd())
-	s.shell.AddCmd(s.generateCode())
-	s.shell.AddCmd(s.generateCombination())
-	s.shell.Interrupt(s.interruptFunc)
 	s.shell.DeleteCmd("exit")
 	s.shell.AddCmd(&ishell.Cmd{
 		Name: "exit",
@@ -124,6 +119,12 @@ func (s *Shell) init() {
 		},
 	},
 	)
+	s.shell.Interrupt(s.interruptFunc)
+
+	s.shell.AddCmd(s.combinationDefinitionCmd())
+	s.shell.AddCmd(s.planDefinitionCmd())
+	s.shell.AddCmd(s.generateCode())
+	s.shell.AddCmd(s.generateCombination())
 
 	s.runTrace()
 }
