@@ -3,9 +3,11 @@ package shell
 import (
 	"bytes"
 	"github.com/abiosoft/readline"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"io"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -22,9 +24,22 @@ type ShellSuite struct {
 	output      *Buffer
 	errors      *Buffer
 	inputBuffer *Buffer
+	testFolder  string
 }
 
 func (suite *ShellSuite) SetupTest() {
+	suite.testFolder = filepath.Join("..", "..", "data", "test", uuid.New().String())
+
+	// Create the test folder
+	err := os.MkdirAll(suite.testFolder, 0755)
+	suite.NoError(err)
+
+	err = os.Setenv("RF_DATA_FOLDER", suite.testFolder)
+	suite.NoError(err)
+
+	err = os.Setenv("EDITOR", "")
+	suite.NoError(err)
+
 	suite.inputBuffer = &Buffer{}
 	suite.output = &Buffer{}
 	suite.errors = &Buffer{}
@@ -55,6 +70,10 @@ func (suite *ShellSuite) TearDownTest() {
 	if suite.shell != nil {
 		_ = suite.shell.Close()
 	}
+
+	// Remove the test folder
+	err := os.RemoveAll(suite.testFolder)
+	suite.NoError(err)
 }
 
 func (suite *ShellSuite) TestNew() {
@@ -82,24 +101,47 @@ func (suite *ShellSuite) TestRun() {
 }
 
 func (suite *ShellSuite) TestHelp() {
-	oldArgs := os.Args
-	defer func() { os.Args = oldArgs }()
-	os.Args = []string{"", "exec", "help"}
+	suite.shell.RunCommand("help")
+	suite.shell.RunCommand(cmdCombinationDefinitionName + " help")
+	suite.shell.RunCommand("exit")
 
 	// Run the shell instance
-	suite.shell.Run()
+	go suite.shell.Run()
+
+	<-suite.shell.ctx.Done()
 
 	output := suite.output.String()
+
 	suite.Contains(output, "Commands:")
 	suite.Contains(output, "exec")
 	suite.Contains(output, "help")
 	suite.Contains(output, "clear")
 	suite.Contains(output, "exit")
-	suite.Contains(output, combinationDefinitionCmdName)
-	suite.Contains(output, combinationDefinitionCmdHelp)
-	suite.Contains(output, planDefinitionCmdName)
-	suite.Contains(output, planDefinitionCmdHelp)
+	suite.Contains(output, "list")
+	suite.Contains(output, cmdCombinationDefinitionName)
+	suite.Contains(output, cmdCombinationDefinitionHelp)
+	suite.Contains(output, cmdPlanDefinitionName)
+	suite.Contains(output, cmdPlanDefinitionHelp)
+	suite.Contains(output, msgExiting)
 }
+
+func (suite *ShellSuite) TestExec() {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	os.Args = []string{"", "exec", cmdCombinationDefinitionName, "list"}
+	suite.shell.Run()
+	output := suite.output.String()
+	suite.Contains(output, msgNoDefinitions)
+}
+
+//
+//func (suite *ShellSuite) TestCombinationDefinition() {
+//	fmt.Println(suite.inputBuffer.String())
+//	suite.shell.Run()
+//	output := suite.output.String()
+//	suite.Contains(output, msgNoDefinitions)
+//}
 
 type Buffer struct {
 	buf *bytes.Buffer

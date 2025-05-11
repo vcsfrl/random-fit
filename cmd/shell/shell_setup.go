@@ -7,14 +7,16 @@ import (
 	"time"
 )
 
+const msgExiting = "Exiting..."
+
 func (s *Shell) exitCmd() *ishell.Cmd {
 	return &ishell.Cmd{
 		Name: "exit",
 		Help: "exit the program",
 		Func: func(c *ishell.Context) {
-			s.ctxCancel()
+			c.Println(messagePrompt + msgExiting)
+			_ = s.Close()
 			time.Sleep(100 * time.Millisecond)
-			c.Stop()
 		},
 	}
 }

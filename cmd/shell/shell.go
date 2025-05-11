@@ -109,7 +109,7 @@ func (s *Shell) Run() {
 		if err := recover(); err != nil {
 			s.shell.Println(messagePrompt+"Error:", err)
 		}
-		s.shell.Close()
+		_ = s.Close()
 	}()
 
 	if len(os.Args) > 1 && os.Args[1] == "exec" {
@@ -129,12 +129,11 @@ func (s *Shell) Close() error {
 	return nil
 }
 
-//
-//func (s *Shell) RunCommand(command string) {
-//	if _, err := s.stdinWriter.Write([]byte(command + "\n")); err != nil {
-//		s.shell.Println(messagePrompt+"Error writing command to stdin:", err)
-//	}
-//}
+func (s *Shell) RunCommand(command string) {
+	if _, err := io.WriteString(s.stdinWriter, command+"\n"); err != nil {
+		s.shell.Println(messagePrompt+"Error writing command to stdin:", err)
+	}
+}
 
 func createFolder(folder string) error {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {

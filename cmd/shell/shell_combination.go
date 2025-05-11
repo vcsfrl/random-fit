@@ -8,8 +8,9 @@ import (
 	"github.com/vcsfrl/random-fit/internal/combination"
 )
 
-const combinationDefinitionCmdName = "combination-definition"
-const combinationDefinitionCmdHelp = "Manage combination definitions"
+const cmdCombinationDefinitionName = "combination-definition"
+const cmdCombinationDefinitionHelp = "Manage combination definitions"
+const msgNoDefinitions = "No definitions found."
 
 func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 	listDefinition := &ishell.Cmd{
@@ -24,7 +25,7 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 			}
 
 			if len(definitions) == 0 {
-				c.Println(messagePrompt + "No definitions found.")
+				c.Println(messagePrompt + msgNoDefinitions)
 				return
 			}
 
@@ -113,8 +114,8 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 	}
 
 	definition := &ishell.Cmd{
-		Name: combinationDefinitionCmdName,
-		Help: combinationDefinitionCmdHelp,
+		Name: cmdCombinationDefinitionName,
+		Help: cmdCombinationDefinitionHelp,
 		Func: func(c *ishell.Context) {
 			listDefinition.Func(c)
 		},

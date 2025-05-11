@@ -2,8 +2,8 @@ package shell
 
 import "github.com/abiosoft/ishell/v2"
 
-const planDefinitionCmdName = "plan-definition"
-const planDefinitionCmdHelp = "Manage combination definitions"
+const cmdPlanDefinitionName = "plan-definition"
+const cmdPlanDefinitionHelp = "Manage combination definitions"
 
 func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 	listDefinition := &ishell.Cmd{
@@ -74,8 +74,8 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 	}
 
 	definition := &ishell.Cmd{
-		Name: planDefinitionCmdName,
-		Help: planDefinitionCmdHelp,
+		Name: cmdPlanDefinitionName,
+		Help: cmdPlanDefinitionHelp,
 		Func: func(c *ishell.Context) {
 			listDefinition.Func(c)
 		},
