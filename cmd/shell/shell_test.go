@@ -13,16 +13,18 @@ func TestShell(t *testing.T) {
 type ShellSuite struct {
 	suite.Suite
 
-	shell  *Shell
-	input  *Buffer
-	output *Buffer
-	errors *Buffer
+	shell       *Shell
+	input       *Buffer
+	inputWriter *Buffer
+	output      *Buffer
+	errors      *Buffer
 }
 
 func (suite *ShellSuite) SetupTest() {
 	suite.input = &Buffer{}
 	suite.output = &Buffer{}
 	suite.errors = &Buffer{}
+	suite.inputWriter = &Buffer{}
 
 	// Create a new shell instance
 	suite.shell = BuildNew()
@@ -36,6 +38,7 @@ func (suite *ShellSuite) SetupTest() {
 
 	// Create a new shell instance with custom input and output
 	suite.shell.stdin = suite.input
+	suite.shell.stdinWriter = suite.inputWriter
 	suite.shell.stdout = suite.output
 	suite.shell.stderr = suite.errors
 	suite.shell.Init()
@@ -71,6 +74,18 @@ func (suite *ShellSuite) TestRun() {
 
 	suite.Contains(output, welcomeMessage)
 	suite.Contains(output, separator)
+}
+
+func (suite *ShellSuite) TestHelp() {
+	// Run the shell instance
+	suite.shell.Run()
+
+	// Check if the help command is available
+	suite.shell.RunCommand("help")
+
+	output := suite.output.String()
+
+	suite.Contains(output, "Commands:")
 }
 
 type Buffer struct {

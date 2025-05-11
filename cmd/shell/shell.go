@@ -17,22 +17,23 @@ const separator = "=================="
 const welcomeMessage = "=== Random-fit ==="
 
 type Shell struct {
-	shell  *ishell.Shell
-	stdin  io.ReadCloser
-	stdout io.Writer
-	stderr io.Writer
+	shell       *ishell.Shell
+	stdin       io.ReadCloser
+	stdout      io.Writer
+	stdinWriter io.Writer
 
+	stderr                       io.Writer
 	combinationDefinitionManager *CombinationStarDefinitionManager
 	planDefinitionManager        *PlanDefinitionManager
-	exporter                     *plan.Exporter
 
-	definitionFolder  string
-	planFolder        string
-	storageFolder     string
+	exporter         *plan.Exporter
+	definitionFolder string
+	planFolder       string
+	storageFolder    string
+
 	combinationFolder string
-
-	ctx       context.Context
-	ctxCancel context.CancelFunc
+	ctx               context.Context
+	ctxCancel         context.CancelFunc
 }
 
 func New() *Shell {
@@ -47,6 +48,7 @@ func BuildNew() *Shell {
 	newShell.stdin = os.Stdin
 	newShell.stdout = os.Stdout
 	newShell.stderr = os.Stderr
+	newShell.stdinWriter = os.Stdin
 	newShell.ctx, newShell.ctxCancel = context.WithCancel(context.Background())
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
@@ -104,10 +106,11 @@ func (s *Shell) Run() {
 
 func (s *Shell) Init() {
 	s.shell = ishell.NewWithConfig(&readline.Config{
-		Prompt: prompt,
-		Stdin:  s.stdin,
-		Stdout: s.stdout,
-		Stderr: s.stderr,
+		Prompt:      prompt,
+		Stdin:       s.stdin,
+		StdinWriter: s.stdinWriter,
+		Stdout:      s.stdout,
+		Stderr:      s.stderr,
 	})
 
 	s.shell.DeleteCmd("exit")
@@ -204,6 +207,12 @@ func (s *Shell) Close() error {
 	s.shell.Close()
 
 	return nil
+}
+
+func (s *Shell) RunCommand(command string) {
+	if _, err := s.stdinWriter.Write([]byte(command + "\n")); err != nil {
+		s.shell.Println(messagePrompt+"Error writing command to stdin:", err)
+	}
 }
 
 func createFolder(folder string) error {
