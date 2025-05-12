@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 )
 
@@ -136,9 +137,7 @@ func (suite *ShellSuite) TestExec() {
 	suite.Contains(output, msgNoDefinitions)
 }
 
-//
 //func (suite *ShellSuite) TestCombinationDefinition() {
-//	fmt.Println(suite.inputBuffer.String())
 //	suite.shell.Run()
 //	output := suite.output.String()
 //	suite.Contains(output, msgNoDefinitions)
@@ -146,9 +145,14 @@ func (suite *ShellSuite) TestExec() {
 
 type Buffer struct {
 	buf *bytes.Buffer
+
+	lock sync.Mutex
 }
 
 func (cb *Buffer) Write(p []byte) (n int, err error) {
+	cb.lock.Lock()
+	defer cb.lock.Unlock()
+
 	if cb.buf == nil {
 		cb.buf = &bytes.Buffer{}
 	}
@@ -156,6 +160,9 @@ func (cb *Buffer) Write(p []byte) (n int, err error) {
 }
 
 func (cb *Buffer) Read(p []byte) (n int, err error) {
+	cb.lock.Lock()
+	defer cb.lock.Unlock()
+
 	if cb.buf == nil {
 		return 0, nil
 	}
@@ -163,6 +170,9 @@ func (cb *Buffer) Read(p []byte) (n int, err error) {
 }
 
 func (cb *Buffer) Close() error {
+	cb.lock.Lock()
+	defer cb.lock.Unlock()
+
 	if cb.buf != nil {
 		cb.buf.Reset()
 	}
