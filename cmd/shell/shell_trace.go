@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-// Start Debug Endpoints.
+// Start Trace Endpoints.
 //
 // /trace/pprof
 // /trace/vars
@@ -22,7 +22,7 @@ func (s *Shell) runTrace() {
 
 	r := chi.NewRouter()
 	r.Use(chiMiddleware.RequestID)
-	r.Mount("/debug", chiMiddleware.Profiler())
+	r.Mount("/trace", chiMiddleware.Profiler())
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf("0.0.0.0:%s", os.Getenv("RF_TRACE_PORT")),
