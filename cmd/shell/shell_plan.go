@@ -14,12 +14,12 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 
 			definitions, err := s.getPlanDefinitionManager().List()
 			if err != nil {
-				c.Println(messagePrompt+"Error listing plan definitions:", err)
+				c.Println(msgPrompt+"Error listing plan definitions:", err)
 				return
 			}
 
 			if len(definitions) == 0 {
-				c.Println(messagePrompt + "No plan definitions found.")
+				c.Println(msgPrompt + "No plan definitions found.")
 				return
 			}
 
@@ -36,19 +36,19 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 		LongHelp: "Create a new plan definition.\nUsage: <shell> plan-definition new <definition_name>",
 		Func: func(c *ishell.Context) {
 			if len(c.Args) == 0 {
-				c.Println(messagePrompt + "Error: plan definition name is required.")
+				c.Println(msgPrompt + "Error: plan definition name is required.")
 				return
 			}
 
 			err := s.getPlanDefinitionManager().New(c.Args[0])
 			if err != nil {
-				c.Println(messagePrompt+"Error creating new plan definition:", err)
+				c.Println(msgPrompt+"Error creating new plan definition:", err)
 				return
 			}
-			c.Println(messagePrompt+"Plan definition created:", c.Args[0], "\n")
+			c.Println(msgPrompt+"Plan definition created:", c.Args[0], "\n")
 
 			if err := s.editPlanDefinition(c.Args[0]); err != nil {
-				c.Println(messagePrompt+"Error editing plan definition:", err)
+				c.Println(msgPrompt+"Error editing plan definition:", err)
 				return
 			}
 		},
@@ -61,13 +61,13 @@ func (s *Shell) planDefinitionCmd() *ishell.Cmd {
 		Func: func(c *ishell.Context) {
 			definitions, err := s.getPlanDefinitionManager().List()
 			if err != nil {
-				c.Println(messagePrompt+"Error getting plan definitions list:", err)
+				c.Println(msgPrompt+"Error getting plan definitions list:", err)
 				return
 			}
 			choice := c.MultiChoice(definitions, "Select a definition to edit:")
 
 			if err := s.editPlanDefinition(definitions[choice]); err != nil {
-				c.Println(messagePrompt+"Error editing plan definition:", err)
+				c.Println(msgPrompt+"Error editing plan definition:", err)
 				return
 			}
 		},

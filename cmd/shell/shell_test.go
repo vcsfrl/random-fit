@@ -47,7 +47,7 @@ func (suite *ShellSuite) SetupTest() {
 	suite.input, suite.inputWriter = readline.NewFillableStdin(suite.inputBuffer)
 
 	// Create a new shell instance
-	suite.shell = BuildNew()
+	suite.shell = New()
 
 	// Check if the shell instance is not nil
 	suite.NotNil(suite.shell)
@@ -61,8 +61,6 @@ func (suite *ShellSuite) SetupTest() {
 	suite.shell.stdinWriter = suite.inputWriter
 	suite.shell.stdout = suite.output
 	suite.shell.stderr = suite.errors
-	suite.shell.Init()
-
 }
 
 func (suite *ShellSuite) TearDownTest() {
@@ -77,47 +75,50 @@ func (suite *ShellSuite) TearDownTest() {
 }
 
 func (suite *ShellSuite) TestNew() {
-
-	// Check if the shell instance is not nil
-	suite.NotNil(suite.shell)
+	// Check if the shell instance is nil. Should be initialized on Run()
+	suite.Nil(suite.shell.shell)
+	suite.Nil(suite.shell.ctxCancel)
+	suite.Nil(suite.shell.ctx)
 
 	// Check if the shell instance has the expected properties
 	suite.NotNil(suite.shell.definitionFolder)
 	suite.NotNil(suite.shell.planFolder)
 	suite.NotNil(suite.shell.storageFolder)
 	suite.NotNil(suite.shell.combinationFolder)
-	suite.NotNil(suite.shell.ctxCancel)
-	suite.NotNil(suite.shell.ctx)
+
 }
 
 func (suite *ShellSuite) TestRun() {
 	// Run the shell instance
 	suite.shell.Run()
 
-	output := suite.output.String()
+	<-suite.shell.ctx.Done()
 
-	suite.Contains(output, welcomeMessage)
-	suite.Contains(output, separator)
+	output := suite.output.String()
+	suite.Contains(output, msgWelcomeMessage)
+	suite.Contains(output, msgSeparator)
 }
 
 func (suite *ShellSuite) TestHelp() {
-	suite.shell.RunCommand("help")
-	suite.shell.RunCommand(cmdCombinationDefinitionName + " help")
-	suite.shell.RunCommand("exit")
+	suite.shell.SendCommand("help")
+	suite.shell.SendCommand(cmdCombinationDefinitionName + " help")
+	suite.shell.SendCommand("exit")
 
 	// Run the shell instance
-	go suite.shell.Run()
+	suite.shell.Run()
 
 	<-suite.shell.ctx.Done()
 
 	output := suite.output.String()
-
 	suite.Contains(output, "Commands:")
 	suite.Contains(output, "exec")
 	suite.Contains(output, "help")
 	suite.Contains(output, "clear")
 	suite.Contains(output, "exit")
 	suite.Contains(output, "list")
+	suite.Contains(output, "new")
+	suite.Contains(output, "edit")
+	suite.Contains(output, "view")
 	suite.Contains(output, cmdCombinationDefinitionName)
 	suite.Contains(output, cmdCombinationDefinitionHelp)
 	suite.Contains(output, cmdPlanDefinitionName)

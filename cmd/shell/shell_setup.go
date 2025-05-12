@@ -14,7 +14,7 @@ func (s *Shell) exitCmd() *ishell.Cmd {
 		Name: "exit",
 		Help: "exit the program",
 		Func: func(c *ishell.Context) {
-			c.Println(messagePrompt + msgExiting)
+			c.Println(msgPrompt + msgExiting)
 			_ = s.Close()
 			time.Sleep(100 * time.Millisecond)
 		},
@@ -64,4 +64,14 @@ func (s *Shell) getExporter() *plan.Exporter {
 	}
 
 	return s.exporter
+}
+
+func (s *Shell) createFolder(folder string) error {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		if err := os.MkdirAll(folder, 0755); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

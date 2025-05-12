@@ -16,7 +16,7 @@ import (
 // /trace/vars
 func (s *Shell) runTrace() {
 	if os.Getenv("RF_TRACE_PORT") == "" {
-		s.shell.Println(messagePrompt + "Error: RF_TRACE_PORT environment variable is not set.")
+		s.shell.Println(msgPrompt + "Error: RF_TRACE_PORT environment variable is not set.")
 		return
 	}
 
@@ -30,24 +30,24 @@ func (s *Shell) runTrace() {
 	}
 
 	go func() {
-		s.shell.Println(messagePrompt + "Trace endpoint starting on port " + os.Getenv("RF_TRACE_PORT"))
+		s.shell.Println(msgPrompt + "Trace endpoint starting on port " + os.Getenv("RF_TRACE_PORT"))
 
 		if err := server.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
-			s.shell.Println(messagePrompt+"HTTP server error:", err)
+			s.shell.Println(msgPrompt+"HTTP server error:", err)
 		}
 
-		s.shell.Println(messagePrompt + "Trace endpoint stopped")
+		s.shell.Println(msgPrompt + "Trace endpoint stopped")
 	}()
 
 	go func() {
 		<-s.ctx.Done()
-		s.shell.Println(messagePrompt + "Trace endpoint shutting down...")
+		s.shell.Println(msgPrompt + "Trace endpoint shutting down...")
 		if err := server.Shutdown(context.Background()); err != nil {
-			s.shell.Println(messagePrompt+"Error shutting down server:", err)
+			s.shell.Println(msgPrompt+"Error shutting down server:", err)
 			return
 		}
 
-		s.shell.Println(messagePrompt + "Trace endpoint shutdown gracefully.")
+		s.shell.Println(msgPrompt + "Trace endpoint shutdown gracefully.")
 	}()
 
 }

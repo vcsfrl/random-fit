@@ -32,28 +32,28 @@ func (s *Shell) generateCode() *ishell.Cmd {
 			fileName := filepath.Join(baseFolder, "cmd", "shell", "combination_definition_template.go")
 			// remove the file if it exists
 			if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {
-				c.Println(messagePrompt+"Error:", err)
+				c.Println(msgPrompt+"Error:", err)
 				return
 			}
 
 			// get content of star definition template
 			content, err := os.ReadFile(filepath.Join(baseFolder, "internal", "combination", "template", "script.star"))
 			if err != nil {
-				c.Println(messagePrompt+"Error:", err)
+				c.Println(msgPrompt+"Error:", err)
 				return
 			}
 
 			buff := &bytes.Buffer{}
 			if err := t.Execute(buff, "`"+string(content)+"`"); err != nil {
-				c.Println(messagePrompt+"Error:", err)
+				c.Println(msgPrompt+"Error:", err)
 				return
 			}
 
 			if err := os.WriteFile(fileName, buff.Bytes(), 0644); err != nil {
-				c.Println(messagePrompt+"Error:", err)
+				c.Println(msgPrompt+"Error:", err)
 			}
 
-			c.Println(messagePrompt+"Code generated in", fileName, "\n")
+			c.Println(msgPrompt+"Code generated in", fileName, "\n")
 		},
 	}
 }

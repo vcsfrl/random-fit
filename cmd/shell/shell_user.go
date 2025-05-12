@@ -7,7 +7,7 @@ import (
 
 func (s *Shell) editScript(scriptName string, filetype string) error {
 	if os.Getenv("EDITOR") == "" {
-		s.shell.Println(messagePrompt + "Error: EDITOR environment variable is not set.")
+		s.shell.Println(msgPrompt + "Error: EDITOR environment variable is not set.")
 		return nil
 	}
 	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)

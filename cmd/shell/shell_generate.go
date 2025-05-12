@@ -15,7 +15,7 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 			c.Println("Generating combination...\n")
 
 			if len(c.Args) < 2 {
-				c.Println(messagePrompt + "Error: combination definition name and plan definition name are required.")
+				c.Println(msgPrompt + "Error: combination definition name and plan definition name are required.")
 				return
 			}
 
@@ -23,12 +23,12 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 			planDefinitionName := c.Args[1]
 			combinationDefinition, err := s.getCombinationDefinitionManager().GetScript(combinationDefinitionName)
 			if err != nil {
-				c.Println(messagePrompt+"Error getting combination definition:", err)
+				c.Println(msgPrompt+"Error getting combination definition:", err)
 				return
 			}
 			planDefinition, err := s.getPlanDefinitionManager().GetFile(planDefinitionName)
 			if err != nil {
-				c.Println(messagePrompt+"Error getting plan definition:", err)
+				c.Println(msgPrompt+"Error getting plan definition:", err)
 				return
 			}
 
@@ -36,18 +36,18 @@ func (s *Shell) generateCombination() *ishell.Cmd {
 			start := time.Now()
 			newPlan, err := plan.NewBuilderFromStarConfig(combinationDefinition, planDefinition).Build()
 			if err != nil {
-				c.Println(messagePrompt+"Error generating combination:", err)
+				c.Println(msgPrompt+"Error generating combination:", err)
 				return
 			}
-			c.Println(messagePrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start), "\n")
+			c.Println(msgPrompt+"Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start), "\n")
 
 			start = time.Now()
 			if err := s.getExporter().Export(newPlan); err != nil {
-				c.Println(messagePrompt+"Error exporting plan:", err)
+				c.Println(msgPrompt+"Error exporting plan:", err)
 				return
 			}
 			newPlan = nil
-			c.Println(messagePrompt+"Plan exported in", time.Since(start), "\n")
+			c.Println(msgPrompt+"Plan exported in", time.Since(start), "\n")
 		},
 	}
 }

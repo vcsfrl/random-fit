@@ -20,12 +20,12 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 			c.Println("Definitions:")
 			definitions, err := s.getCombinationDefinitionManager().List()
 			if err != nil {
-				c.Println(messagePrompt+"Error listing definition:", err)
+				c.Println(msgPrompt+"Error listing definition:", err)
 				return
 			}
 
 			if len(definitions) == 0 {
-				c.Println(messagePrompt + msgNoDefinitions)
+				c.Println(msgPrompt + msgNoDefinitions)
 				return
 			}
 
@@ -41,19 +41,19 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		LongHelp: "Create a new definition.\nUsage: <shell> definition new <definition_name>",
 		Func: func(c *ishell.Context) {
 			if len(c.Args) == 0 {
-				c.Println(messagePrompt + "Error: definition name is required.")
+				c.Println(msgPrompt + "Error: definition name is required.")
 				return
 			}
 
 			err := s.getCombinationDefinitionManager().New(c.Args[0])
 			if err != nil {
-				c.Println(messagePrompt+"Error new definition:", err)
+				c.Println(msgPrompt+"Error new definition:", err)
 				return
 			}
-			c.Println(messagePrompt+"Definition created:", c.Args[0], "\n")
+			c.Println(msgPrompt+"Definition created:", c.Args[0], "\n")
 
 			if err := s.editCombinationDefinition(c.Args[0]); err != nil {
-				c.Println(messagePrompt+"Error editing definition:", err)
+				c.Println(msgPrompt+"Error editing definition:", err)
 				return
 			}
 		},
@@ -66,16 +66,16 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 		Func: func(c *ishell.Context) {
 			selectedDefinition, err := s.getSelectedDefinition(c)
 			if err != nil {
-				c.Println(messagePrompt+"Error getting definition:", err)
+				c.Println(msgPrompt+"Error getting definition:", err)
 				return
 			}
 
 			if err := s.editCombinationDefinition(selectedDefinition); err != nil {
-				c.Println(messagePrompt+"Error editing definition:", err)
+				c.Println(msgPrompt+"Error editing definition:", err)
 				return
 			}
 
-			c.Println(messagePrompt+"Definition edited:", selectedDefinition, "\n")
+			c.Println(msgPrompt+"Definition edited:", selectedDefinition, "\n")
 		},
 	}
 
@@ -87,28 +87,28 @@ func (s *Shell) combinationDefinitionCmd() *ishell.Cmd {
 			_ = c.ClearScreen()
 			selectedDefinition, err := s.getSelectedDefinition(c)
 			if err != nil {
-				c.Println(messagePrompt+"Error getting definition:", err)
+				c.Println(msgPrompt+"Error getting definition:", err)
 				return
 			}
 
 			viewCombination, err := s.getCombinationDefinitionManager().Build(selectedDefinition)
 			if err != nil {
-				c.Println(messagePrompt+"Error building definition:", err)
+				c.Println(msgPrompt+"Error building definition:", err)
 				return
 			}
 
-			c.Println(messagePrompt+"Combination:", viewCombination.Details)
-			c.Println(messagePrompt+"Definition ID:", viewCombination.DefinitionID)
+			c.Println(msgPrompt+"Combination:", viewCombination.Details)
+			c.Println(msgPrompt+"Definition ID:", viewCombination.DefinitionID)
 
 			for dataType, data := range viewCombination.Data {
-				c.Println(messagePrompt+"Definition view:", dataType)
-				c.Println(messagePrompt + separator + separator)
+				c.Println(msgPrompt+"Definition view:", dataType)
+				c.Println(msgPrompt + msgSeparator + msgSeparator)
 				err := s.printCombinationDefinition(c, data)
 				if err != nil {
-					c.Println(messagePrompt+"Error viewing data:", err)
+					c.Println(msgPrompt+"Error viewing data:", err)
 					return
 				}
-				c.Println(messagePrompt + separator + separator)
+				c.Println(msgPrompt + msgSeparator + msgSeparator)
 			}
 		},
 	}

@@ -9,10 +9,10 @@ import (
 	"os"
 )
 
-const prompt = ">>> "
-const messagePrompt = "-> "
-const separator = "=================="
-const welcomeMessage = "=== Random-fit ==="
+const shellPrompt = ">>> "
+const msgPrompt = "-> "
+const msgSeparator = "=================="
+const msgWelcomeMessage = "=== Random-fit ==="
 
 type Shell struct {
 	shell       *ishell.Shell
@@ -35,24 +35,16 @@ type Shell struct {
 }
 
 func New() *Shell {
-	newShell := BuildNew()
-	newShell.Init()
-
-	return newShell
-}
-
-func BuildNew() *Shell {
 	newShell := &Shell{}
 	newShell.stdin = os.Stdin
 	newShell.stdout = os.Stdout
 	newShell.stderr = os.Stderr
 	newShell.stdinWriter = os.Stdin
-	newShell.ctx, newShell.ctxCancel = context.WithCancel(context.Background())
 
 	datatFolder := os.Getenv("RF_DATA_FOLDER")
 	if datatFolder != "" {
-		if err := createFolder(datatFolder); err != nil {
-			newShell.shell.Println(messagePrompt+"Error creating data folder:", err)
+		if err := newShell.createFolder(datatFolder); err != nil {
+			newShell.shell.Println(msgPrompt+"Error creating data folder:", err)
 		}
 
 		newShell.definitionFolder = datatFolder + "/definition"
@@ -61,25 +53,72 @@ func BuildNew() *Shell {
 		newShell.storageFolder = datatFolder + "/storage"
 
 		// create folders if they do not exist
-		if err := createFolder(newShell.definitionFolder); err != nil {
-			newShell.shell.Println(messagePrompt+"Error creating definition folder:", err)
+		if err := newShell.createFolder(newShell.definitionFolder); err != nil {
+			newShell.shell.Println(msgPrompt+"Error creating definition folder:", err)
 		}
-		if err := createFolder(newShell.combinationFolder); err != nil {
-			newShell.shell.Println(messagePrompt+"Error creating combination folder:", err)
+		if err := newShell.createFolder(newShell.combinationFolder); err != nil {
+			newShell.shell.Println(msgPrompt+"Error creating combination folder:", err)
 		}
-		if err := createFolder(newShell.planFolder); err != nil {
-			newShell.shell.Println(messagePrompt+"Error creating plan folder:", err)
+		if err := newShell.createFolder(newShell.planFolder); err != nil {
+			newShell.shell.Println(msgPrompt+"Error creating plan folder:", err)
 		}
-		if err := createFolder(newShell.storageFolder); err != nil {
-			newShell.shell.Println(messagePrompt+"Error creating storage folder:", err)
+		if err := newShell.createFolder(newShell.storageFolder); err != nil {
+			newShell.shell.Println(msgPrompt+"Error creating storage folder:", err)
 		}
 	}
+
 	return newShell
 }
 
-func (s *Shell) Init() {
+func (s *Shell) Run() {
+	s.init()
+	s.shell.Println(msgSeparator)
+	s.shell.Println(msgWelcomeMessage)
+	s.shell.Println(msgSeparator, "\n")
+
+	s.runTrace()
+
+	defer func() {
+		// handle panic.
+		if err := recover(); err != nil {
+			s.shell.Println(msgPrompt+"Error:", err)
+		}
+		_ = s.Close()
+	}()
+
+	if len(os.Args) > 1 && os.Args[1] == "exec" {
+		err := s.shell.Process(os.Args[2:]...)
+		if err != nil {
+			s.shell.Println("Error:", err)
+		}
+	} else {
+		s.shell.Run()
+	}
+}
+
+func (s *Shell) SendCommand(command string) {
+	if _, err := io.WriteString(s.stdinWriter, command+"\n"); err != nil {
+		s.shell.Println(msgPrompt+"Error writing command to stdin:", err)
+	}
+}
+
+func (s *Shell) Close() error {
+	if s.ctxCancel != nil {
+		s.ctxCancel()
+	}
+
+	if s.shell != nil {
+		s.shell.Close()
+		return nil
+	}
+
+	return nil
+}
+
+func (s *Shell) init() {
+	s.ctx, s.ctxCancel = context.WithCancel(context.Background())
 	s.shell = ishell.NewWithConfig(&readline.Config{
-		Prompt:      prompt,
+		Prompt:      shellPrompt,
 		Stdin:       s.stdin,
 		StdinWriter: s.stdinWriter,
 		Stdout:      s.stdout,
@@ -95,52 +134,4 @@ func (s *Shell) Init() {
 	s.shell.AddCmd(s.planDefinitionCmd())
 	s.shell.AddCmd(s.generateCode())
 	s.shell.AddCmd(s.generateCombination())
-}
-
-func (s *Shell) Run() {
-	s.shell.Println(separator)
-	s.shell.Println(welcomeMessage)
-	s.shell.Println(separator, "\n")
-
-	s.runTrace()
-
-	defer func() {
-		// handle panic.
-		if err := recover(); err != nil {
-			s.shell.Println(messagePrompt+"Error:", err)
-		}
-		_ = s.Close()
-	}()
-
-	if len(os.Args) > 1 && os.Args[1] == "exec" {
-		err := s.shell.Process(os.Args[2:]...)
-		if err != nil {
-			s.shell.Println("Error:", err)
-		}
-	} else {
-		s.shell.Run()
-	}
-}
-
-func (s *Shell) Close() error {
-	s.ctxCancel()
-	s.shell.Close()
-
-	return nil
-}
-
-func (s *Shell) RunCommand(command string) {
-	if _, err := io.WriteString(s.stdinWriter, command+"\n"); err != nil {
-		s.shell.Println(messagePrompt+"Error writing command to stdin:", err)
-	}
-}
-
-func createFolder(folder string) error {
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		if err := os.MkdirAll(folder, 0755); err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
