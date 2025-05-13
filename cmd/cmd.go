@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/vcsfrl/random-fit/cmd/app"
 	"os"
 )
 
@@ -45,7 +44,7 @@ func NewCommand() (*cobra.Command, error) {
 
 	viper.SetConfigName("random-fit_config")
 	viper.SetEnvPrefix("RF")
-	if err := app.BindEnvConfig(rootCmd); err != nil {
+	if err := BindEnvConfig(rootCmd); err != nil {
 		return nil, err
 	}
 
