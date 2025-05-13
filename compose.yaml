@@ -15,7 +15,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
     ports:
-      - ${RF_DEBUGGER_TEST_PORT}:${RF_DEBUGGER_TEST_PORT}
+      - ${RF_DEBUGGER_PORT}:${RF_DEBUGGER_PORT}
     env_file:
       - .env
   random-fit:
@@ -27,6 +27,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
     ports:
-      - ${RF_DEBUGGER_TEST_PORT}:${RF_DEBUGGER_TEST_PORT}
+      - ${RF_DEBUGGER_PORT}:${RF_DEBUGGER_PORT}
     env_file:
       - .env
