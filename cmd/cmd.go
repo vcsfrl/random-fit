@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/vcsfrl/random-fit/cmd/internal"
 	"log"
+	"os"
+	"os/exec"
 )
 
 func NewCommand() (*cobra.Command, error) {
@@ -32,9 +35,52 @@ func NewCommand() (*cobra.Command, error) {
 		Use:   "new",
 		Short: "New Combination definition",
 		Run: func(cmd *cobra.Command, args []string) {
-			//internal.NewCombinationDefinition(cmd, NewConfig())
+			conf := NewConfig()
+
+			name := ""
+			if len(args) > 0 {
+				name = args[0]
+			}
+
+			if name == "" {
+				name, _ = cmd.Flags().GetString("name")
+			}
+
+			if name == "" {
+				cmd.PrintErrln("Error: name is required.")
+				return
+			}
+
+			cmd.Printf("Create new Combination definition: %s\n", name)
+			if err := createFolder(conf.DefinitionFolder()); err != nil {
+				cmd.PrintErrln("Error creating definition folder: ", err)
+				return
+			}
+
+			definitionManager := internal.NewCombinationStarDefinitionManager(conf.DefinitionFolder())
+			err := definitionManager.New(name)
+			if err != nil {
+				cmd.PrintErrln("Error: ", err)
+				return
+			}
+
+			cmd.Printf("Combination definition '%s' created.\n", name)
+
+			scriptName, err := definitionManager.GetScript(name)
+			if err != nil {
+				cmd.PrintErrln("Error getting script: ", err)
+				return
+			}
+
+			if err := editScript(scriptName, "python", cmd); err != nil {
+				cmd.PrintErrln("Error editing script: ", err)
+				return
+			}
+
 		},
 	}
+
+	newCombination.Flags().String("name", "", "")
 
 	definition.AddCommand(combination)
 	combination.AddCommand(newCombination)
@@ -62,6 +108,36 @@ func NewCommand() (*cobra.Command, error) {
 	}
 
 	return rootCmd, nil
+}
+
+func createFolder(folder string) error {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		if err := os.MkdirAll(folder, 0755); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func editScript(scriptName string, filetype string, cliCmd *cobra.Command) error {
+	if os.Getenv("EDITOR") == "" {
+		return fmt.Errorf("EDITOR environment variable is not set")
+	}
+	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
+	cmd.Stdin = cliCmd.InOrStdin()
+	cmd.Stdout = cliCmd.OutOrStdout()
+	cmd.Stderr = cliCmd.ErrOrStderr()
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

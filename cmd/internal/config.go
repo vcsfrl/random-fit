@@ -8,3 +8,15 @@ type Config struct {
 	K8sSharedFolder string
 	Editor          string
 }
+
+func (c *Config) CombinationFolder() string {
+	return c.DataFolder + "/combination"
+}
+
+func (c *Config) DefinitionFolder() string {
+	return c.DataFolder + "/definition"
+}
+
+func (c *Config) PlanFolder() string {
+	return c.DataFolder + "/plan"
+}
