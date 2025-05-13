@@ -105,6 +105,6 @@ func (suite *CommandsSuite) TestGenerateCode() {
 	suite.Contains(string(genData), string(templateData))
 }
 
-func (suite *CommandsSuite) TestDefinitionCombinationNew() {
+func (suite *CommandsSuite) TestDefinitionCombination_New() {
 
 }
