@@ -15,7 +15,6 @@ func NewCommand() (*cobra.Command, error) {
 		Long:  `Random Fit generates random training sessions.`,
 	}
 
-	// definition represents the runEvent command
 	var definition = &cobra.Command{
 		Use:   "definition",
 		Short: "Definition management",
@@ -24,6 +23,21 @@ func NewCommand() (*cobra.Command, error) {
 
 		},
 	}
+	var combination = &cobra.Command{
+		Use:   "combination",
+		Short: "Combination definition management",
+	}
+
+	var newCombination = &cobra.Command{
+		Use:   "new",
+		Short: "New Combination definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			//internal.NewCombinationDefinition(cmd, NewConfig())
+		},
+	}
+
+	definition.AddCommand(combination)
+	combination.AddCommand(newCombination)
 
 	var code = &cobra.Command{
 		Use:   "code",
@@ -38,7 +52,6 @@ func NewCommand() (*cobra.Command, error) {
 	}
 
 	code.AddCommand(codeGenerator)
-
 	rootCmd.AddCommand(definition)
 	rootCmd.AddCommand(code)
 

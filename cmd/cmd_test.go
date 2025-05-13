@@ -54,12 +54,15 @@ func (suite *CommandsSuite) TearDownTest() {
 
 func (suite *CommandsSuite) TestSubcommands() {
 	subcommands := suite.command.Commands()
-	var expectedSubcommandNames = []string{"definition", "code", "generate"}
+	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new"}
 	var subcommandNames []string
 	for _, cmd := range subcommands {
 		subcommandNames = append(subcommandNames, cmd.Name())
 		for _, subCmd := range cmd.Commands() {
 			subcommandNames = append(subcommandNames, subCmd.Name())
+			for _, subSubCmd := range subCmd.Commands() {
+				subcommandNames = append(subcommandNames, subSubCmd.Name())
+			}
 		}
 
 	}
