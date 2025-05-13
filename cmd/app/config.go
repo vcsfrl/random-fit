@@ -1,16 +1,24 @@
-package cmd
+package app
 
 import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/vcsfrl/random-fit/cmd/config"
 )
 
-func buildConfig(logger zerolog.Logger) *config.Config {
-	logger.Info().Msg("Initialize api config.")
+type Config struct {
+	TracePort       string
+	DebuggerPort    string
+	DataFolder      string
+	BaseFolder      string
+	K8sSharedFolder string
+	Editor          string
+}
 
-	var newConfig config.Config
+func NewConfig(logger zerolog.Logger) *Config {
+	logger.Info().Msg("Initialize api app.")
+
+	var newConfig Config
 	newConfig.TracePort = viper.Get("tracePort").(string)
 	newConfig.DebuggerPort = viper.Get("debuggerPort").(string)
 	newConfig.DataFolder = viper.Get("dataFolder").(string)
@@ -21,7 +29,7 @@ func buildConfig(logger zerolog.Logger) *config.Config {
 	return &newConfig
 }
 
-func bindEnvConfig(command *cobra.Command) error {
+func BindEnvConfig(command *cobra.Command) error {
 	command.Flags().String("trace-port", "40021", "Trace port")
 	if err := viper.BindPFlag("tracePort", command.Flags().Lookup("trace-port")); err != nil {
 		return err
