@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/vcsfrl/random-fit/cmd/internal"
 	"os"
 )
 
@@ -27,13 +28,12 @@ func NewCommand() (*cobra.Command, error) {
 	var code = &cobra.Command{
 		Use:   "code",
 		Short: "Code tools.",
-		Run: func(cmd *cobra.Command, args []string) {
-		},
 	}
 	var codeGenerator = &cobra.Command{
 		Use:   "generate",
 		Short: "Generate code.",
 		Run: func(cmd *cobra.Command, args []string) {
+			internal.GenerateCode(cmd, NewConfig())
 		},
 	}
 

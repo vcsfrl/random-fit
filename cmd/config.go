@@ -1,24 +1,13 @@
 package cmd
 
 import (
-	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/vcsfrl/random-fit/cmd/internal"
 )
 
-type Config struct {
-	TracePort       string
-	DebuggerPort    string
-	DataFolder      string
-	BaseFolder      string
-	K8sSharedFolder string
-	Editor          string
-}
-
-func NewConfig(logger zerolog.Logger) *Config {
-	logger.Info().Msg("Initialize api app.")
-
-	var newConfig Config
+func NewConfig() *internal.Config {
+	var newConfig internal.Config
 	newConfig.TracePort = viper.Get("tracePort").(string)
 	newConfig.DebuggerPort = viper.Get("debuggerPort").(string)
 	newConfig.DataFolder = viper.Get("dataFolder").(string)
