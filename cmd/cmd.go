@@ -31,6 +31,14 @@ func NewCommand() (*cobra.Command, error) {
 		Run: func(cmd *cobra.Command, args []string) {
 		},
 	}
+	var codeGenerator = &cobra.Command{
+		Use:   "generate",
+		Short: "Generate code.",
+		Run: func(cmd *cobra.Command, args []string) {
+		},
+	}
+
+	code.AddCommand(codeGenerator)
 
 	rootCmd.AddCommand(definition)
 	rootCmd.AddCommand(code)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
+	"slices"
 	"testing"
 )
 
@@ -34,14 +35,19 @@ func (suite *CommandsSuite) TearDownTest() {
 }
 
 func (suite *CommandsSuite) TestSubcommands() {
-	// Assert subcommands are present
 	subcommands := suite.command.Commands()
+	var expectedSubcommandNames = []string{"definition", "code", "generate"}
 	var subcommandNames []string
 	for _, cmd := range subcommands {
 		subcommandNames = append(subcommandNames, cmd.Name())
+		for _, subCmd := range cmd.Commands() {
+			subcommandNames = append(subcommandNames, subCmd.Name())
+		}
+
 	}
 
-	suite.Len(subcommandNames, 2)
-	suite.Contains(subcommandNames, "definition")
-	suite.Contains(subcommandNames, "code")
+	slices.Sort(subcommandNames)
+	slices.Sort(expectedSubcommandNames)
+
+	suite.Equal(expectedSubcommandNames, subcommandNames)
 }
