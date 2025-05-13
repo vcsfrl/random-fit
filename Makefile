@@ -16,12 +16,12 @@ shell: ## APP Shell.
 	docker compose run --remove-orphans random-fit_dev bash
 
 generate: ## APP Generate code.
-	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit/cmd
+	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit
 
 build: generate## APP Build.
 	docker compose run --remove-orphans random-fit_dev go build -o ./bin/random-fit ./cmd/main.go
 
-test: ## APP Test
+test: generate ## APP Test
 	docker compose run --remove-orphans random-fit_dev go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
 
 test-name: ##  Run test by name.

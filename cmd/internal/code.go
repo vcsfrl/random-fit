@@ -11,7 +11,7 @@ const definitionSkeleton = `package internal
 
 // This is a generated file. Do not edit!
 
-func Init() {
+func init() {
 	// definitionTemplate is a template for a definition file
 	definitionTemplate = {{.}}
 }`

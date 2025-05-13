@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/vcsfrl/random-fit/cmd/internal"
-	"os"
+	"log"
 )
 
 func NewCommand() (*cobra.Command, error) {
@@ -55,14 +55,12 @@ func NewCommand() (*cobra.Command, error) {
 func Execute() {
 	rootCmd, err := NewCommand()
 	if err != nil {
-		// TODO Handle error
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	err = rootCmd.Execute()
 	if err != nil {
-		// TODO Handle error
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 }
