@@ -1,25 +1,11 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/vcsfrl/random-fit/cmd/internal"
 	"log"
 )
-
-var errNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
-
-var msgNameMissing = "Name is required."
-var msgCombinationDefinition = "Combination Definition"
-var msgList = "List"
-var msgCreate = "Create"
-var msgEdit = "Edit"
-var msgDelete = "Delete"
-var msgDone = "DONE:"
-var msgEditScript = "Editing script"
-var msgRemoveScript = "Removing script"
-var msgNoItemsFound = "No items found!"
 
 func NewCommand() (*cobra.Command, error) {
 	// rootCmd represents the base command when called without any subcommands
