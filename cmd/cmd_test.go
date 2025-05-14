@@ -56,7 +56,7 @@ func (suite *CommandsSuite) TearDownTest() {
 
 func (suite *CommandsSuite) TestSubcommands() {
 	subcommands := suite.command.Commands()
-	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new", "edit"}
+	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new", "edit", "delete"}
 	var subcommandNames []string
 	for _, cmd := range subcommands {
 		subcommandNames = append(subcommandNames, cmd.Name())
@@ -123,9 +123,9 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
 	output = suite.buffer.String()
-	suite.Contains(output, msqCreate+" "+msgCombinationDefinition+" test1")
-	suite.Contains(output, msgDone+" "+msqCreate+" "+msgCombinationDefinition+" test1")
-	suite.Contains(output, msqEditScript+" "+scriptName)
+	suite.Contains(output, msgCreate+" "+msgCombinationDefinition+" test1")
+	suite.Contains(output, msgDone+" "+msgCreate+" "+msgCombinationDefinition+" test1")
+	suite.Contains(output, msgEditScript+" "+scriptName)
 	suite.Contains(output, errNoEnvEditor.Error())
 	scriptData, err := os.ReadFile(scriptName)
 	suite.NoError(err)
@@ -138,9 +138,9 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	// Check output
 	scriptName = filepath.Join(suite.testFolder, "definition", "test2.star")
 	output = suite.buffer.String()
-	suite.Contains(output, msqCreate+" "+msgCombinationDefinition+" test2")
-	suite.Contains(output, msgDone+" "+msqCreate+" "+msgCombinationDefinition+" test2")
-	suite.Contains(output, msqEditScript+" "+scriptName)
+	suite.Contains(output, msgCreate+" "+msgCombinationDefinition+" test2")
+	suite.Contains(output, msgDone+" "+msgCreate+" "+msgCombinationDefinition+" test2")
+	suite.Contains(output, msgEditScript+" "+scriptName)
 	suite.Contains(output, errNoEnvEditor.Error())
 	scriptData, err = os.ReadFile(scriptName)
 	suite.NoError(err)
@@ -163,6 +163,38 @@ func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
 	output = suite.buffer.String()
-	suite.Contains(output, msqEditScript+" "+scriptName)
+	suite.Contains(output, msgEditScript+" "+scriptName)
 
+	suite.Contains(output, errNoEnvEditor.Error())
+}
+
+func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
+	suite.command.SetArgs([]string{"definition", "combination", "delete"})
+	err := suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	output := suite.buffer.String()
+	suite.Contains(output, msgNameMissing)
+
+	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
+	output = suite.buffer.String()
+	suite.Contains(output, msgEditScript+" "+scriptName)
+
+	suite.command.SetArgs([]string{"definition", "combination", "delete", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+	// Check output
+	output = suite.buffer.String()
+	suite.Contains(output, msgDelete+" "+msgCombinationDefinition+" test1")
+	suite.Contains(output, msgRemoveScript+" "+scriptName)
+
+	// check if the file is deleted
+	_, err = os.Stat(scriptName)
+	suite.True(os.IsNotExist(err), "File should be deleted")
 }
