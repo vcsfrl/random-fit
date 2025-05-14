@@ -56,7 +56,7 @@ func (suite *CommandsSuite) TearDownTest() {
 
 func (suite *CommandsSuite) TestSubcommands() {
 	subcommands := suite.command.Commands()
-	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new"}
+	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new", "edit"}
 	var subcommandNames []string
 	for _, cmd := range subcommands {
 		subcommandNames = append(subcommandNames, cmd.Name())
@@ -145,4 +145,24 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	scriptData, err = os.ReadFile(scriptName)
 	suite.NoError(err)
 	suite.Contains(string(scriptData), "definition =")
+}
+
+func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
+	suite.command.SetArgs([]string{"definition", "combination", "edit"})
+	err := suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	output := suite.buffer.String()
+	suite.Contains(output, msgNameMissing)
+
+	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
+	output = suite.buffer.String()
+	suite.Contains(output, msqEditScript+" "+scriptName)
+
 }

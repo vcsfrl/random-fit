@@ -62,6 +62,7 @@ func NewCommand() (*cobra.Command, error) {
 			}
 
 			newCombination.Flags().String("name", "", "")
+			editCombination.Flags().String("name", "", "")
 
 			combination.AddCommand(newCombination)
 			combination.AddCommand(editCombination)

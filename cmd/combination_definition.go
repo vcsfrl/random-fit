@@ -61,7 +61,8 @@ func (c *CombinationDefinition) Edit() {
 		return
 	}
 
-	c.cmd.Println(msqEditScript, msgCombinationDefinition, name)
+	c.cmd.Println(msgEdit, msgCombinationDefinition, name)
+
 	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
 	scriptName, err := definitionManager.GetScript(name)
 	if err != nil {
@@ -69,6 +70,7 @@ func (c *CombinationDefinition) Edit() {
 		return
 	}
 
+	c.cmd.Println(msqEditScript, scriptName)
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
 		return
