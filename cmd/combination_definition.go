@@ -40,7 +40,7 @@ func (c *CombinationDefinition) New() {
 		return
 	}
 
-	c.cmd.Println(msgCombinationDefinition, msqCreated, name)
+	c.cmd.Println(msgDone, msqCreate, msgCombinationDefinition, name)
 	scriptName, err := definitionManager.GetScript(name)
 	if err != nil {
 		c.cmd.PrintErrln("Error getting script: ", err)
@@ -52,6 +52,28 @@ func (c *CombinationDefinition) New() {
 		c.cmd.PrintErrln("Error editing script: ", err)
 		return
 	}
+}
+
+func (c *CombinationDefinition) Edit() {
+	name := c.getNameArg()
+	if name == "" {
+		c.cmd.PrintErrln(msgNameMissing)
+		return
+	}
+
+	c.cmd.Println(msqEditScript, msgCombinationDefinition, name)
+	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
+	scriptName, err := definitionManager.GetScript(name)
+	if err != nil {
+		c.cmd.PrintErrln("Error getting script: ", err)
+		return
+	}
+
+	if err := c.editScript(scriptName, "python"); err != nil {
+		c.cmd.PrintErrln("Error editing script: ", err)
+		return
+	}
+
 }
 
 func createFolder(folder string) error {

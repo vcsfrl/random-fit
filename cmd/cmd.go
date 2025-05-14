@@ -13,7 +13,8 @@ var errNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
 var msgNameMissing = "Name is required."
 var msgCombinationDefinition = "Combination Definition"
 var msqCreate = "Create"
-var msqCreated = "Created"
+var msgEdit = "Edit"
+var msgDone = "DONE:"
 var msqEditScript = "Editing script"
 
 func NewCommand() (*cobra.Command, error) {
@@ -24,48 +25,68 @@ func NewCommand() (*cobra.Command, error) {
 		Long:  `Random Fit generates random training sessions.`,
 	}
 
-	var definition = &cobra.Command{
-		Use:   "definition",
-		Short: "Definition management",
-		Long:  `Manage definitions: combination, plan.`,
-		Run: func(cmd *cobra.Command, args []string) {
+	// Definition
+	{
+		var definition = &cobra.Command{
+			Use:   "definition",
+			Short: "Definition management",
+			Long:  `Manage definitions: combination, plan.`,
+			Run: func(cmd *cobra.Command, args []string) {
 
-		},
+			},
+		}
+
+		// Combination Definition
+		{
+			var combination = &cobra.Command{
+				Use:   "combination",
+				Short: "Combination Definition management",
+			}
+
+			var newCombination = &cobra.Command{
+				Use:   "new",
+				Short: "New Combination Definition",
+				Run: func(cmd *cobra.Command, args []string) {
+					conf := NewConfig()
+					NewCombinationDefinition(cmd, args, conf).New()
+				},
+			}
+
+			var editCombination = &cobra.Command{
+				Use:   "edit",
+				Short: "Edit Combination Definition",
+				Run: func(cmd *cobra.Command, args []string) {
+					conf := NewConfig()
+					NewCombinationDefinition(cmd, args, conf).Edit()
+				},
+			}
+
+			newCombination.Flags().String("name", "", "")
+
+			combination.AddCommand(newCombination)
+			combination.AddCommand(editCombination)
+			definition.AddCommand(combination)
+		}
+
+		rootCmd.AddCommand(definition)
 	}
-	var combination = &cobra.Command{
-		Use:   "combination",
-		Short: "Combination definition management",
+
+	{
+		var code = &cobra.Command{
+			Use:   "code",
+			Short: "Code tools.",
+		}
+		var codeGenerator = &cobra.Command{
+			Use:   "generate",
+			Short: "Generate code.",
+			Run: func(cmd *cobra.Command, args []string) {
+				internal.GenerateCode(cmd, NewConfig())
+			},
+		}
+
+		code.AddCommand(codeGenerator)
+		rootCmd.AddCommand(code)
 	}
-
-	var newCombination = &cobra.Command{
-		Use:   "new",
-		Short: "New Combination definition",
-		Run: func(cmd *cobra.Command, args []string) {
-			conf := NewConfig()
-			NewCombinationDefinition(cmd, args, conf).New()
-		},
-	}
-
-	newCombination.Flags().String("name", "", "")
-
-	definition.AddCommand(combination)
-	combination.AddCommand(newCombination)
-
-	var code = &cobra.Command{
-		Use:   "code",
-		Short: "Code tools.",
-	}
-	var codeGenerator = &cobra.Command{
-		Use:   "generate",
-		Short: "Generate code.",
-		Run: func(cmd *cobra.Command, args []string) {
-			internal.GenerateCode(cmd, NewConfig())
-		},
-	}
-
-	code.AddCommand(codeGenerator)
-	rootCmd.AddCommand(definition)
-	rootCmd.AddCommand(code)
 
 	viper.SetConfigName("random-fit_config")
 	viper.SetEnvPrefix("RF")
