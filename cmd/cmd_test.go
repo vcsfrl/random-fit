@@ -43,6 +43,8 @@ func (suite *CommandsSuite) SetupTest() {
 
 	// Set the environment variable
 	err = os.Setenv("RF_BASE_FOLDER", suite.testFolder)
+	err = os.Setenv("RF_DATA_FOLDER", suite.testFolder)
+	err = os.Setenv("EDITOR", "")
 	suite.NoError(err)
 }
 
@@ -106,5 +108,41 @@ func (suite *CommandsSuite) TestGenerateCode() {
 }
 
 func (suite *CommandsSuite) TestDefinitionCombination_New() {
+	suite.command.SetArgs([]string{"definition", "combination", "new"})
+	err := suite.command.Execute()
+	suite.NoError(err)
 
+	// Check output
+	output := suite.buffer.String()
+	suite.Contains(output, msgNameMissing)
+
+	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
+	output = suite.buffer.String()
+	suite.Contains(output, msqCreate+" "+msgCombinationDefinition+" test1")
+	suite.Contains(output, msgCombinationDefinition+" "+msqCreated+" test1")
+	suite.Contains(output, msqEditScript+" "+scriptName)
+	suite.Contains(output, errNoEnvEditor.Error())
+	scriptData, err := os.ReadFile(scriptName)
+	suite.NoError(err)
+	suite.Contains(string(scriptData), "definition =")
+
+	suite.command.SetArgs([]string{"definition", "combination", "new", "test2"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	scriptName = filepath.Join(suite.testFolder, "definition", "test2.star")
+	output = suite.buffer.String()
+	suite.Contains(output, msqCreate+" "+msgCombinationDefinition+" test2")
+	suite.Contains(output, msgCombinationDefinition+" "+msqCreated+" test2")
+	suite.Contains(output, msqEditScript+" "+scriptName)
+	suite.Contains(output, errNoEnvEditor.Error())
+	scriptData, err = os.ReadFile(scriptName)
+	suite.NoError(err)
+	suite.Contains(string(scriptData), "definition =")
 }

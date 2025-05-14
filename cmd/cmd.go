@@ -10,6 +10,14 @@ import (
 	"os/exec"
 )
 
+var errNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
+
+var msgNameMissing = "Name is required."
+var msgCombinationDefinition = "Combination Definition"
+var msqCreate = "Create"
+var msqCreated = "Created"
+var msqEditScript = "Editing script"
+
 func NewCommand() (*cobra.Command, error) {
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
@@ -47,11 +55,11 @@ func NewCommand() (*cobra.Command, error) {
 			}
 
 			if name == "" {
-				cmd.PrintErrln("Error: name is required.")
+				cmd.PrintErrln(msgNameMissing)
 				return
 			}
 
-			cmd.Printf("Create new Combination definition: %s\n", name)
+			cmd.Println(msqCreate, msgCombinationDefinition, name)
 			if err := createFolder(conf.DefinitionFolder()); err != nil {
 				cmd.PrintErrln("Error creating definition folder: ", err)
 				return
@@ -64,14 +72,14 @@ func NewCommand() (*cobra.Command, error) {
 				return
 			}
 
-			cmd.Printf("Combination definition '%s' created.\n", name)
-
+			cmd.Println(msgCombinationDefinition, msqCreated, name)
 			scriptName, err := definitionManager.GetScript(name)
 			if err != nil {
 				cmd.PrintErrln("Error getting script: ", err)
 				return
 			}
 
+			cmd.Println(msqEditScript, scriptName)
 			if err := editScript(scriptName, "python", cmd); err != nil {
 				cmd.PrintErrln("Error editing script: ", err)
 				return
@@ -122,7 +130,7 @@ func createFolder(folder string) error {
 
 func editScript(scriptName string, filetype string, cliCmd *cobra.Command) error {
 	if os.Getenv("EDITOR") == "" {
-		return fmt.Errorf("EDITOR environment variable is not set")
+		return errNoEnvEditor
 	}
 	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
 	cmd.Stdin = cliCmd.InOrStdin()
