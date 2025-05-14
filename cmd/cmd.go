@@ -12,12 +12,14 @@ var errNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
 
 var msgNameMissing = "Name is required."
 var msgCombinationDefinition = "Combination Definition"
+var msgList = "List"
 var msgCreate = "Create"
-var msgDelete = "Delete"
 var msgEdit = "Edit"
+var msgDelete = "Delete"
 var msgDone = "DONE:"
 var msgEditScript = "Editing script"
 var msgRemoveScript = "Removing script"
+var msgNoItemsFound = "No items found!"
 
 func NewCommand() (*cobra.Command, error) {
 	// rootCmd represents the base command when called without any subcommands
@@ -43,6 +45,11 @@ func NewCommand() (*cobra.Command, error) {
 			var combination = &cobra.Command{
 				Use:   "combination",
 				Short: "Combination Definition management",
+				Long:  `Manage combination definitions: list, new, edit, delete.`,
+				Run: func(cmd *cobra.Command, args []string) {
+					conf := NewConfig()
+					NewCombinationDefinition(cmd, args, conf).List()
+				},
 			}
 
 			var newCombination = &cobra.Command{

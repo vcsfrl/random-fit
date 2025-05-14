@@ -198,3 +198,31 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 	_, err = os.Stat(scriptName)
 	suite.True(os.IsNotExist(err), "File should be deleted")
 }
+
+func (suite *CommandsSuite) TestDefinitionCombination_List() {
+	suite.command.SetArgs([]string{"definition", "combination"})
+	err := suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	output := suite.buffer.String()
+	suite.Contains(output, msgCombinationDefinition+" "+msgList)
+	suite.Contains(output, msgNoItemsFound)
+
+	// Create a definition
+	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test2"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	suite.command.SetArgs([]string{"definition", "combination"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	output = suite.buffer.String()
+	suite.Contains(output, " - test1")
+	suite.Contains(output, " - test2")
+}

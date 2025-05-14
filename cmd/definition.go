@@ -45,3 +45,17 @@ func (b *BaseDefinition) getNameArg() string {
 
 	return name
 }
+
+func (b *BaseDefinition) createFolder(folder string) error {
+	return createFolder(folder)
+}
+
+func createFolder(folder string) error {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		if err := os.MkdirAll(folder, 0755); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

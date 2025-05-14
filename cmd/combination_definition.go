@@ -28,7 +28,7 @@ func (c *CombinationDefinition) New() {
 	}
 
 	c.cmd.Println(msgCreate, msgCombinationDefinition, name)
-	if err := createFolder(c.conf.DefinitionFolder()); err != nil {
+	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
 		c.cmd.PrintErrln("Error creating definition folder: ", err)
 		return
 	}
@@ -62,6 +62,10 @@ func (c *CombinationDefinition) Edit() {
 	}
 
 	c.cmd.Println(msgEdit, msgCombinationDefinition, name)
+	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
+		c.cmd.PrintErrln("Error creating definition folder: ", err)
+		return
+	}
 
 	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
 	scriptName, err := definitionManager.GetScript(name)
@@ -86,6 +90,10 @@ func (c *CombinationDefinition) Delete() {
 	}
 
 	c.cmd.Println(msgDelete, msgCombinationDefinition, name)
+	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
+		c.cmd.PrintErrln("Error creating definition folder: ", err)
+		return
+	}
 
 	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
 	scriptName, err := definitionManager.GetScript(name)
@@ -101,12 +109,26 @@ func (c *CombinationDefinition) Delete() {
 	}
 }
 
-func createFolder(folder string) error {
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		if err := os.MkdirAll(folder, 0755); err != nil {
-			return err
-		}
+func (c *CombinationDefinition) List() {
+	c.cmd.Println(msgCombinationDefinition, msgList)
+	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
+		c.cmd.PrintErrln("Error creating definition folder: ", err)
+		return
 	}
 
-	return nil
+	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
+	definitions, err := definitionManager.List()
+	if err != nil {
+		c.cmd.PrintErrln("Error listing definitions: ", err)
+		return
+	}
+
+	if len(definitions) == 0 {
+		c.cmd.Println(msgNoItemsFound)
+		return
+	}
+
+	for _, definition := range definitions {
+		c.cmd.Println(" - " + definition)
+	}
 }
