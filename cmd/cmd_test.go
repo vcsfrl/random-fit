@@ -331,3 +331,35 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 	_, err = os.Stat(scriptName)
 	suite.True(os.IsNotExist(err), "File should be deleted")
 }
+
+func (suite *CommandsSuite) TestGenerate_Combination() {
+	suite.command.SetArgs([]string{"generate", "combination"})
+	err := suite.command.Execute()
+	suite.NoError(err)
+
+	// check output
+	output := suite.buffer.String()
+	suite.Contains(output, msgCombinationDefinitionNameMissing)
+
+	suite.command.SetArgs([]string{"generate", "combination", "--combination", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// check output
+	output = suite.buffer.String()
+	suite.Contains(output, msgPlanDefinitionNameMissing)
+
+	// create combination definition
+	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "combination1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// create plan definition
+	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "plan1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	suite.command.SetArgs([]string{"generate", "combination", "--combination", "combination1", "--plan", "plan1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+}
