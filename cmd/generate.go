@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/cmd/internal"
+	"github.com/vcsfrl/random-fit/internal/plan"
+	"time"
 )
 
 func NewGenerator(cmd *cobra.Command, args []string, config *internal.Config) (*Generator, error) {
@@ -25,6 +26,7 @@ type Generator struct {
 
 	combinationDefinitionManager *internal.CombinationStarDefinitionManager
 	planDefinitionManager        *internal.PlanDefinitionManager
+	planExporter                 *plan.Exporter
 }
 
 func (g *Generator) Combination() {
@@ -40,7 +42,34 @@ func (g *Generator) Combination() {
 		return
 	}
 
-	fmt.Println(combinationDefinitionName, planDefinitionName)
+	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
+	if err != nil {
+		g.cmd.Println("Error getting combination definition:", err)
+		return
+	}
+	planDefinitionScript, err := g.planDefinitionManager.GetFile(planDefinitionName)
+	if err != nil {
+		g.cmd.Println("Error getting plan definition:", err)
+		return
+	}
+
+	// measure execution time
+	start := time.Now()
+	newPlan, err := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Build()
+	if err != nil {
+		g.cmd.Println("Error generating combination:", err)
+		return
+	}
+	g.cmd.Println("Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start))
+
+	start = time.Now()
+	if err := g.planExporter.Export(newPlan); err != nil {
+		g.cmd.Println("Error exporting plan:", err)
+		return
+	}
+	newPlan = nil
+	g.cmd.Println("Plan exported in", time.Since(start))
+
 }
 
 func (g *Generator) init() error {
@@ -51,6 +80,7 @@ func (g *Generator) init() error {
 
 	g.combinationDefinitionManager = internal.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())
 	g.planDefinitionManager = internal.NewPlanDefinitionManager(g.conf.PlanFolder())
+	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder())
 
 	return nil
 }
