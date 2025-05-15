@@ -75,6 +75,33 @@ func NewCommand() (*cobra.Command, error) {
 			definition.AddCommand(combination)
 		}
 
+		// Plan Definition
+		{
+			var plan = &cobra.Command{
+				Use:   "plan",
+				Short: "Plan Definition management",
+				Long:  `Manage plan definitions: list, new, edit, delete.`,
+				Run: func(cmd *cobra.Command, args []string) {
+					conf := NewConfig()
+					NewPlanDefinition(cmd, args, conf).List()
+				},
+			}
+
+			var newPlan = &cobra.Command{
+				Use:   "new",
+				Short: "New Plan Definition",
+				Run: func(cmd *cobra.Command, args []string) {
+					conf := NewConfig()
+					NewPlanDefinition(cmd, args, conf).New()
+				},
+			}
+
+			newPlan.Flags().String("name", "", "")
+
+			plan.AddCommand(newPlan)
+			definition.AddCommand(plan)
+		}
+
 		rootCmd.AddCommand(definition)
 	}
 

@@ -6,6 +6,7 @@ var errNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
 
 var msgNameMissing = "Name is required."
 var msgCombinationDefinition = "Combination Definition"
+var msgPlanDefinition = "Plan Definition"
 var msgList = "List"
 var msgCreate = "Create"
 var msgEdit = "Edit"
