@@ -8,16 +8,34 @@ import (
 
 type CombinationDefinition struct {
 	BaseDefinition
+
+	definitionManager *internal.CombinationStarDefinitionManager
 }
 
-func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *internal.Config) *CombinationDefinition {
-	return &CombinationDefinition{
+func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *internal.Config) (*CombinationDefinition, error) {
+	combinationDefinition := &CombinationDefinition{
 		BaseDefinition: BaseDefinition{
 			cmd:  cmd,
 			args: args,
 			conf: conf,
 		},
 	}
+
+	if err := combinationDefinition.init(); err != nil {
+		return nil, err
+	}
+
+	return combinationDefinition, nil
+}
+
+func (c *CombinationDefinition) init() error {
+	err := c.createFolder(c.conf.DefinitionFolder())
+	if err != nil {
+		c.cmd.PrintErrln("Error creating definition folder: ", err)
+		return err
+	}
+	c.definitionManager = internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
+	return nil
 }
 
 func (c *CombinationDefinition) New() {
@@ -28,20 +46,14 @@ func (c *CombinationDefinition) New() {
 	}
 
 	c.cmd.Println(msgCreate, msgCombinationDefinition, name)
-	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
-		c.cmd.PrintErrln("Error creating definition folder: ", err)
-		return
-	}
-
-	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
-	err := definitionManager.New(name)
+	err := c.definitionManager.New(name)
 	if err != nil {
 		c.cmd.PrintErrln("Error: ", err)
 		return
 	}
 
 	c.cmd.Println(msgDone, msgCreate, msgCombinationDefinition, name)
-	scriptName, err := definitionManager.GetScript(name)
+	scriptName, err := c.definitionManager.GetScript(name)
 	if err != nil {
 		c.cmd.PrintErrln("Error getting script: ", err)
 		return
@@ -62,13 +74,7 @@ func (c *CombinationDefinition) Edit() {
 	}
 
 	c.cmd.Println(msgEdit, msgCombinationDefinition, name)
-	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
-		c.cmd.PrintErrln("Error creating definition folder: ", err)
-		return
-	}
-
-	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
-	scriptName, err := definitionManager.GetScript(name)
+	scriptName, err := c.definitionManager.GetScript(name)
 	if err != nil {
 		c.cmd.PrintErrln("Error getting script: ", err)
 		return
@@ -90,13 +96,7 @@ func (c *CombinationDefinition) Delete() {
 	}
 
 	c.cmd.Println(msgDelete, msgCombinationDefinition, name)
-	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
-		c.cmd.PrintErrln("Error creating definition folder: ", err)
-		return
-	}
-
-	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
-	scriptName, err := definitionManager.GetScript(name)
+	scriptName, err := c.definitionManager.GetScript(name)
 	if err != nil {
 		c.cmd.PrintErrln("Error getting script: ", err)
 		return
@@ -111,13 +111,7 @@ func (c *CombinationDefinition) Delete() {
 
 func (c *CombinationDefinition) List() {
 	c.cmd.Println(msgCombinationDefinition, msgList)
-	if err := c.createFolder(c.conf.DefinitionFolder()); err != nil {
-		c.cmd.PrintErrln("Error creating definition folder: ", err)
-		return
-	}
-
-	definitionManager := internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
-	definitions, err := definitionManager.List()
+	definitions, err := c.definitionManager.List()
 	if err != nil {
 		c.cmd.PrintErrln("Error listing definitions: ", err)
 		return

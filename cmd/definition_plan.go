@@ -7,16 +7,35 @@ import (
 
 type PlanDefinition struct {
 	BaseDefinition
+
+	definitionManager *internal.PlanDefinitionManager
 }
 
-func NewPlanDefinition(cmd *cobra.Command, args []string, conf *internal.Config) *PlanDefinition {
-	return &PlanDefinition{
+func NewPlanDefinition(cmd *cobra.Command, args []string, conf *internal.Config) (*PlanDefinition, error) {
+	planDefinition := &PlanDefinition{
 		BaseDefinition: BaseDefinition{
 			cmd:  cmd,
 			args: args,
 			conf: conf,
 		},
 	}
+
+	if err := planDefinition.init(); err != nil {
+		return nil, err
+	}
+
+	return planDefinition, nil
+
+}
+
+func (p *PlanDefinition) init() error {
+	err := p.createFolder(p.conf.PlanFolder())
+	if err != nil {
+		p.cmd.PrintErrln("Error creating plan folder: ", err)
+		return err
+	}
+	p.definitionManager = internal.NewPlanDefinitionManager(p.conf.PlanFolder())
+	return nil
 }
 
 func (p *PlanDefinition) New() {
@@ -27,20 +46,14 @@ func (p *PlanDefinition) New() {
 	}
 
 	p.cmd.Println(msgCreate, msgPlanDefinition, name)
-	if err := p.createFolder(p.conf.PlanFolder()); err != nil {
-		p.cmd.PrintErrln("Error creating plan folder: ", err)
-		return
-	}
-
-	definitionManager := internal.NewPlanDefinitionManager(p.conf.PlanFolder())
-	err := definitionManager.New(name)
+	err := p.definitionManager.New(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error: ", err)
 		return
 	}
 
 	p.cmd.Println(msgDone, msgCreate, msgPlanDefinition, name)
-	scriptName, err := definitionManager.GetFile(name)
+	scriptName, err := p.definitionManager.GetFile(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error getting script: ", err)
 		return
@@ -55,13 +68,7 @@ func (p *PlanDefinition) New() {
 
 func (p *PlanDefinition) List() {
 	p.cmd.Println(msgPlanDefinition, msgList)
-	if err := p.createFolder(p.conf.PlanFolder()); err != nil {
-		p.cmd.PrintErrln("Error creating plan folder: ", err)
-		return
-	}
-
-	definitionManager := internal.NewPlanDefinitionManager(p.conf.PlanFolder())
-	planDefinitions, err := definitionManager.List()
+	planDefinitions, err := p.definitionManager.List()
 	if err != nil {
 		p.cmd.PrintErrln("Error: ", err)
 		return

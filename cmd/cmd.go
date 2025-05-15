@@ -33,8 +33,9 @@ func NewCommand() (*cobra.Command, error) {
 				Short: "Combination Definition management",
 				Long:  `Manage combination definitions: list, new, edit, delete.`,
 				Run: func(cmd *cobra.Command, args []string) {
-					conf := NewConfig()
-					NewCombinationDefinition(cmd, args, conf).List()
+					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+						combinationDefinition.List()
+					}
 				},
 			}
 
@@ -42,8 +43,9 @@ func NewCommand() (*cobra.Command, error) {
 				Use:   "new",
 				Short: "New Combination Definition",
 				Run: func(cmd *cobra.Command, args []string) {
-					conf := NewConfig()
-					NewCombinationDefinition(cmd, args, conf).New()
+					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+						combinationDefinition.New()
+					}
 				},
 			}
 
@@ -51,8 +53,9 @@ func NewCommand() (*cobra.Command, error) {
 				Use:   "edit",
 				Short: "Edit Combination Definition",
 				Run: func(cmd *cobra.Command, args []string) {
-					conf := NewConfig()
-					NewCombinationDefinition(cmd, args, conf).Edit()
+					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+						combinationDefinition.Edit()
+					}
 				},
 			}
 
@@ -60,8 +63,9 @@ func NewCommand() (*cobra.Command, error) {
 				Use:   "delete",
 				Short: "Delete Combination Definition",
 				Run: func(cmd *cobra.Command, args []string) {
-					conf := NewConfig()
-					NewCombinationDefinition(cmd, args, conf).Delete()
+					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+						combinationDefinition.Delete()
+					}
 				},
 			}
 
@@ -82,8 +86,9 @@ func NewCommand() (*cobra.Command, error) {
 				Short: "Plan Definition management",
 				Long:  `Manage plan definitions: list, new, edit, delete.`,
 				Run: func(cmd *cobra.Command, args []string) {
-					conf := NewConfig()
-					NewPlanDefinition(cmd, args, conf).List()
+					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+						planDefinition.List()
+					}
 				},
 			}
 
@@ -91,8 +96,9 @@ func NewCommand() (*cobra.Command, error) {
 				Use:   "new",
 				Short: "New Plan Definition",
 				Run: func(cmd *cobra.Command, args []string) {
-					conf := NewConfig()
-					NewPlanDefinition(cmd, args, conf).New()
+					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+						planDefinition.New()
+					}
 				},
 			}
 
