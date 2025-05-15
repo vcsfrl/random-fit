@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/cmd/internal"
+	"os"
 )
 
 type PlanDefinition struct {
@@ -104,4 +105,25 @@ func (p *PlanDefinition) Edit() {
 	}
 
 	p.cmd.Println(msgDone, msgEdit, msgPlanDefinition, name)
+}
+
+func (p *PlanDefinition) Delete() {
+	name := p.getNameArg()
+	if name == "" {
+		p.cmd.PrintErrln(msgNameMissing)
+		return
+	}
+
+	p.cmd.Println(msgDelete, msgPlanDefinition, name)
+	scriptName, err := p.definitionManager.GetFile(name)
+	if err != nil {
+		p.cmd.PrintErrln("Error getting script: ", err)
+		return
+	}
+
+	p.cmd.Println(msgRemoveScript, scriptName)
+	if err := os.Remove(scriptName); err != nil {
+		p.cmd.PrintErrln("Error removing script: ", err)
+		return
+	}
 }

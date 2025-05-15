@@ -56,7 +56,7 @@ func (suite *CommandsSuite) TearDownTest() {
 
 func (suite *CommandsSuite) TestSubcommands() {
 	subcommands := suite.command.Commands()
-	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new", "edit", "delete", "plan", "new", "edit"}
+	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new", "edit", "delete", "plan", "new", "edit", "delete"}
 	var subcommandNames []string
 	for _, cmd := range subcommands {
 		subcommandNames = append(subcommandNames, cmd.Name())
@@ -299,4 +299,35 @@ func (suite *CommandsSuite) TestDefinitionPlan_Edit() {
 	suite.Contains(output, msgEditScript+" "+scriptName)
 
 	suite.Contains(output, errNoEnvEditor.Error())
+}
+
+func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
+	suite.command.SetArgs([]string{"definition", "plan", "delete"})
+	err := suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	output := suite.buffer.String()
+	suite.Contains(output, msgNameMissing)
+
+	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
+	output = suite.buffer.String()
+	suite.Contains(output, msgEditScript+" "+scriptName)
+
+	suite.command.SetArgs([]string{"definition", "plan", "delete", "--name", "test1"})
+	err = suite.command.Execute()
+	suite.NoError(err)
+
+	// Check output
+	output = suite.buffer.String()
+	suite.Contains(output, msgDelete+" "+msgPlanDefinition+" test1")
+	suite.Contains(output, msgRemoveScript+" "+scriptName)
+	// check if the file is deleted
+	_, err = os.Stat(scriptName)
+	suite.True(os.IsNotExist(err), "File should be deleted")
 }
