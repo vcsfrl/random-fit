@@ -83,3 +83,25 @@ func (p *PlanDefinition) List() {
 		p.cmd.Println(" - " + plan)
 	}
 }
+
+func (p *PlanDefinition) Edit() {
+	name := p.getNameArg()
+	if name == "" {
+		p.cmd.PrintErrln(msgNameMissing)
+		return
+	}
+
+	p.cmd.Println(msgEdit, msgPlanDefinition, name)
+	scriptName, err := p.definitionManager.GetFile(name)
+	if err != nil {
+		p.cmd.PrintErrln("Error getting script: ", err)
+		return
+	}
+
+	if err := p.editScript(scriptName, "python"); err != nil {
+		p.cmd.PrintErrln("Error editing script: ", err)
+		return
+	}
+
+	p.cmd.Println(msgDone, msgEdit, msgPlanDefinition, name)
+}

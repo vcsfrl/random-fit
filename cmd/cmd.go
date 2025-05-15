@@ -102,9 +102,21 @@ func NewCommand() (*cobra.Command, error) {
 				},
 			}
 
+			var editPlan = &cobra.Command{
+				Use:   "edit",
+				Short: "Edit Plan Definition",
+				Run: func(cmd *cobra.Command, args []string) {
+					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+						planDefinition.Edit()
+					}
+				},
+			}
+
 			newPlan.Flags().String("name", "", "")
+			editPlan.Flags().String("name", "", "")
 
 			plan.AddCommand(newPlan)
+			plan.AddCommand(editPlan)
 			definition.AddCommand(plan)
 		}
 
