@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/cmd/internal"
 )
@@ -39,6 +40,7 @@ func (g *Generator) Combination() {
 		return
 	}
 
+	fmt.Println(combinationDefinitionName, planDefinitionName)
 }
 
 func (g *Generator) init() error {

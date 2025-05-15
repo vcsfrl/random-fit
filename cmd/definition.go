@@ -36,7 +36,7 @@ func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 func (b *BaseHandler) getArg(position int, flagName string) string {
 	arg := ""
 
-	if len(b.args) > 0 && len(b.args) <= position+1 {
+	if len(b.args) > 0 && len(b.args)-1 >= position {
 		arg = b.args[position]
 	}
 
