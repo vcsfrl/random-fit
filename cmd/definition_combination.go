@@ -7,14 +7,14 @@ import (
 )
 
 type CombinationDefinition struct {
-	BaseDefinition
+	BaseHandler
 
 	definitionManager *internal.CombinationStarDefinitionManager
 }
 
 func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *internal.Config) (*CombinationDefinition, error) {
 	combinationDefinition := &CombinationDefinition{
-		BaseDefinition: BaseDefinition{
+		BaseHandler: BaseHandler{
 			cmd:  cmd,
 			args: args,
 			conf: conf,
@@ -29,11 +29,11 @@ func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *internal.
 }
 
 func (c *CombinationDefinition) init() error {
-	err := c.createFolder(c.conf.DefinitionFolder())
+	err := c.initFolders()
 	if err != nil {
-		c.cmd.PrintErrln("Error creating definition folder: ", err)
 		return err
 	}
+
 	c.definitionManager = internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
 	return nil
 }

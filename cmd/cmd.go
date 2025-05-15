@@ -135,6 +135,30 @@ func NewCommand() (*cobra.Command, error) {
 		rootCmd.AddCommand(definition)
 	}
 
+	// Generate
+	{
+		var generate = &cobra.Command{
+			Use:   "generate",
+			Short: "Generate entities: combinations",
+		}
+
+		var generateCombination = &cobra.Command{
+			Use:   "combination",
+			Short: "Generate a combination",
+			Long:  `Generate a combination from a combination definition and a plan definition.`,
+			Run: func(cmd *cobra.Command, args []string) {
+				if generator, err := NewGenerator(cmd, args, NewConfig()); err == nil {
+					generator.Combination()
+				}
+			},
+		}
+
+		generateCombination.Flags().String("combination", "", "Combination definition name")
+		generateCombination.Flags().String("plan", "", "Plan definition name")
+		generate.AddCommand(generateCombination)
+		rootCmd.AddCommand(generate)
+	}
+
 	{
 		var code = &cobra.Command{
 			Use:   "code",

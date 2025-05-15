@@ -7,13 +7,13 @@ import (
 	"os/exec"
 )
 
-type BaseDefinition struct {
+type BaseHandler struct {
 	cmd  *cobra.Command
 	args []string
 	conf *internal.Config
 }
 
-func (b *BaseDefinition) editScript(scriptName string, filetype string) error {
+func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 	if os.Getenv("EDITOR") == "" {
 		return errNoEnvEditor
 	}
@@ -33,7 +33,7 @@ func (b *BaseDefinition) editScript(scriptName string, filetype string) error {
 	return nil
 }
 
-func (b *BaseDefinition) getNameArg() string {
+func (b *BaseHandler) getNameArg() string {
 	name := ""
 	if len(b.args) > 0 {
 		name = b.args[0]
@@ -46,7 +46,7 @@ func (b *BaseDefinition) getNameArg() string {
 	return name
 }
 
-func (b *BaseDefinition) createFolder(folder string) error {
+func (b *BaseHandler) createFolder(folder string) error {
 	return createFolder(folder)
 }
 
@@ -55,6 +55,34 @@ func createFolder(folder string) error {
 		if err := os.MkdirAll(folder, 0755); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (b *BaseHandler) initFolders() error {
+	err := b.createFolder(b.conf.DefinitionFolder())
+	if err != nil {
+		b.cmd.PrintErrln("Error creating definition folder: ", err)
+		return err
+	}
+
+	err = b.createFolder(b.conf.PlanFolder())
+	if err != nil {
+		b.cmd.PrintErrln("Error creating plan folder: ", err)
+		return err
+	}
+
+	err = b.createFolder(b.conf.CombinationFolder())
+	if err != nil {
+		b.cmd.PrintErrln("Error creating combination folder: ", err)
+		return err
+	}
+
+	err = b.createFolder(b.conf.StorageFolder())
+	if err != nil {
+		b.cmd.PrintErrln("Error creating storage folder: ", err)
+		return err
 	}
 
 	return nil

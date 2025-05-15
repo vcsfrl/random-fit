@@ -7,14 +7,14 @@ import (
 )
 
 type PlanDefinition struct {
-	BaseDefinition
+	BaseHandler
 
 	definitionManager *internal.PlanDefinitionManager
 }
 
 func NewPlanDefinition(cmd *cobra.Command, args []string, conf *internal.Config) (*PlanDefinition, error) {
 	planDefinition := &PlanDefinition{
-		BaseDefinition: BaseDefinition{
+		BaseHandler: BaseHandler{
 			cmd:  cmd,
 			args: args,
 			conf: conf,
@@ -30,11 +30,11 @@ func NewPlanDefinition(cmd *cobra.Command, args []string, conf *internal.Config)
 }
 
 func (p *PlanDefinition) init() error {
-	err := p.createFolder(p.conf.PlanFolder())
+	err := p.initFolders()
 	if err != nil {
-		p.cmd.PrintErrln("Error creating plan folder: ", err)
 		return err
 	}
+
 	p.definitionManager = internal.NewPlanDefinitionManager(p.conf.PlanFolder())
 	return nil
 }

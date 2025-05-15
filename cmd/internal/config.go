@@ -20,3 +20,7 @@ func (c *Config) DefinitionFolder() string {
 func (c *Config) PlanFolder() string {
 	return c.DataFolder + "/plan"
 }
+
+func (c *Config) StorageFolder() string {
+	return c.DataFolder + "/storage"
+}
