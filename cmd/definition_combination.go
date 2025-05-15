@@ -39,7 +39,7 @@ func (c *CombinationDefinition) init() error {
 }
 
 func (c *CombinationDefinition) New() {
-	name := c.getNameArg()
+	name := c.getArg(0, "name")
 	if name == "" {
 		c.cmd.PrintErrln(msgNameMissing)
 		return
@@ -67,7 +67,7 @@ func (c *CombinationDefinition) New() {
 }
 
 func (c *CombinationDefinition) Edit() {
-	name := c.getNameArg()
+	name := c.getArg(0, "name")
 	if name == "" {
 		c.cmd.PrintErrln(msgNameMissing)
 		return
@@ -89,7 +89,7 @@ func (c *CombinationDefinition) Edit() {
 }
 
 func (c *CombinationDefinition) Delete() {
-	name := c.getNameArg()
+	name := c.getArg(0, "name")
 	if name == "" {
 		c.cmd.PrintErrln(msgNameMissing)
 		return

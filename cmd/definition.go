@@ -33,17 +33,18 @@ func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 	return nil
 }
 
-func (b *BaseHandler) getNameArg() string {
-	name := ""
-	if len(b.args) > 0 {
-		name = b.args[0]
+func (b *BaseHandler) getArg(position int, flagName string) string {
+	arg := ""
+
+	if len(b.args) > 0 && len(b.args) <= position+1 {
+		arg = b.args[position]
 	}
 
-	if name == "" {
-		name, _ = b.cmd.Flags().GetString("name")
+	if arg == "" {
+		arg, _ = b.cmd.Flags().GetString(flagName)
 	}
 
-	return name
+	return arg
 }
 
 func (b *BaseHandler) createFolder(folder string) error {

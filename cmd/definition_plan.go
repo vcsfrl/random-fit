@@ -40,7 +40,7 @@ func (p *PlanDefinition) init() error {
 }
 
 func (p *PlanDefinition) New() {
-	name := p.getNameArg()
+	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(msgNameMissing)
 		return
@@ -86,7 +86,7 @@ func (p *PlanDefinition) List() {
 }
 
 func (p *PlanDefinition) Edit() {
-	name := p.getNameArg()
+	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(msgNameMissing)
 		return
@@ -108,7 +108,7 @@ func (p *PlanDefinition) Edit() {
 }
 
 func (p *PlanDefinition) Delete() {
-	name := p.getNameArg()
+	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(msgNameMissing)
 		return

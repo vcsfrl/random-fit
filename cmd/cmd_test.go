@@ -120,7 +120,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	err = suite.command.Execute()
 	suite.NoError(err)
 
-	// Check output
+	//// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
 	output = suite.buffer.String()
 	suite.Contains(output, msgCreate+" "+msgCombinationDefinition+" test1")

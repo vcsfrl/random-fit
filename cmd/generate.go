@@ -27,6 +27,17 @@ type Generator struct {
 }
 
 func (g *Generator) Combination() {
+	combinationDefinitionName := g.getArg(0, "combination")
+	if combinationDefinitionName == "" {
+		g.cmd.PrintErr(msgCombinationDefinitionNameMissing)
+		return
+	}
+
+	planDefinitionName := g.getArg(1, "plan")
+	if planDefinitionName == "" {
+		g.cmd.PrintErr(msgPlanDefinitionNameMissing)
+		return
+	}
 
 }
 
