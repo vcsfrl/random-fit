@@ -16,7 +16,9 @@ func NewGenerator(cmd *cobra.Command, args []string, config *internal.Config) (*
 		},
 	}
 
-	generator.init()
+	if err := generator.init(); err != nil {
+		return nil, err
+	}
 
 	return generator, nil
 }
