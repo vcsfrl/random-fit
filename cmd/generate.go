@@ -1,11 +1,16 @@
 package cmd
 
 import (
+	"context"
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/plan"
 	"github.com/vcsfrl/random-fit/internal/service"
+	"net/http"
 	"time"
 )
+
+import _ "github.com/mkevac/debugcharts"
 
 func NewGenerator(cmd *cobra.Command, args []string, config *service.Config) (*Generator, error) {
 	generator := &Generator{
@@ -32,7 +37,7 @@ type Generator struct {
 }
 
 func (g *Generator) Combination() {
-	g.cmd.Context().Done()
+	g.startMonitor()
 
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {
@@ -72,6 +77,26 @@ func (g *Generator) Combination() {
 		return
 	}
 	g.cmd.Println("Plan exported in", time.Since(start))
+}
+
+func (g *Generator) startMonitor() {
+	g.cmd.Println("Starting debug chart server on port", g.conf.DebugChartPort)
+	server := &http.Server{Addr: fmt.Sprintf("0.0.0.0:%s", g.conf.DebugChartPort)}
+	go func() {
+		if err := server.ListenAndServe(); err != nil {
+			g.cmd.Println("Error starting debug chart server:", err)
+		}
+	}()
+
+	go func() {
+		<-g.cmd.Context().Done()
+		if err := server.Shutdown(context.Background()); err != nil {
+			g.cmd.Println("Error shutting down server:", err)
+			return
+		}
+
+		g.cmd.Println("debug chart server shut down gracefully")
+	}()
 }
 
 func (g *Generator) init() error {

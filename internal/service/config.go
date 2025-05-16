@@ -3,6 +3,7 @@ package service
 type Config struct {
 	TracePort       string
 	DebuggerPort    string
+	DebugChartPort  string
 	DataFolder      string
 	BaseFolder      string
 	K8sSharedFolder string

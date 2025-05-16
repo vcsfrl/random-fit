@@ -10,6 +10,7 @@ func NewConfig() *service.Config {
 	var newConfig service.Config
 	newConfig.TracePort = viper.Get("tracePort").(string)
 	newConfig.DebuggerPort = viper.Get("debuggerPort").(string)
+	newConfig.DebugChartPort = viper.Get("debugChartPort").(string)
 	newConfig.DataFolder = viper.Get("dataFolder").(string)
 	newConfig.BaseFolder = viper.Get("baseFolder").(string)
 	newConfig.K8sSharedFolder = viper.Get("k8sSharedFolder").(string)
@@ -32,6 +33,14 @@ func BindEnvConfig(command *cobra.Command) error {
 		return err
 	}
 	if err := viper.BindEnv("debuggerPort", "RF_DEBUGGER_PORT"); err != nil {
+		return err
+	}
+
+	command.Flags().String("debug-chart-port", "40023", "Debug chart port")
+	if err := viper.BindPFlag("debugChartPort", command.Flags().Lookup("debug-chart-port")); err != nil {
+		return err
+	}
+	if err := viper.BindEnv("debugChartPort", "RF_DEBUG_CHART_PORT"); err != nil {
 		return err
 	}
 

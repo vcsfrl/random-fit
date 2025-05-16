@@ -32,12 +32,16 @@ type Group struct {
 	Combinations  []*combination.Combination
 }
 
-type Plan struct {
+type PlanDetails struct {
 	UUID         uuid.UUID
 	CreatedAt    time.Time
 	DefinitionID string
 	Details      string
-	UserGroups   map[string][]*Group
+}
+
+type Plan struct {
+	PlanDetails
+	UserGroups map[string][]*Group
 }
 
 func NewJsonDefinition(fileName string) (*Definition, error) {

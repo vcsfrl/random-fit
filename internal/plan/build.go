@@ -57,11 +57,13 @@ func (b *Builder) Build() (*Plan, error) {
 	}
 
 	plan := &Plan{
-		UUID:         uuidV7,
-		CreatedAt:    b.Now(),
-		DefinitionID: b.Definition.ID,
-		Details:      b.Definition.Details,
-		UserGroups:   make(map[string][]*Group),
+		PlanDetails: PlanDetails{
+			UUID:         uuidV7,
+			CreatedAt:    b.Now(),
+			DefinitionID: b.Definition.ID,
+			Details:      b.Definition.Details,
+		},
+		UserGroups: make(map[string][]*Group),
 	}
 
 	for _, user := range b.Definition.Users {
