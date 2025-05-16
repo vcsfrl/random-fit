@@ -1,4 +1,4 @@
-package internal
+package service
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	textTemplate "text/template"
 )
 
-const definitionSkeleton = `package internal
+const definitionSkeleton = `package service
 
 // This is a generated file. Do not edit!
 
@@ -22,7 +22,7 @@ func GenerateCode(c Printer, config *Config) {
 	t := textTemplate.Must(textTemplate.New("template.render_text").Parse(definitionSkeleton))
 
 	//create a file in shell/ folder
-	fileName := filepath.Join(config.BaseFolder, "cmd", "internal", "combination_definition_template.go")
+	fileName := filepath.Join(config.BaseFolder, "internal", "service", "combination_definition_template.go")
 	// remove the file if it exists
 	if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {
 		c.Println("Error:", err)

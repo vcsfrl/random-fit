@@ -77,7 +77,7 @@ func (suite *CommandsSuite) TestSubcommands() {
 
 func (suite *CommandsSuite) TestGenerateCode() {
 	// Create the code generation folder
-	suite.codeGenFolder = filepath.Join(suite.testFolder, "cmd", "internal")
+	suite.codeGenFolder = filepath.Join(suite.testFolder, "internal", "service")
 	err := createFolder(suite.codeGenFolder)
 	suite.NoError(err)
 

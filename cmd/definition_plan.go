@@ -2,17 +2,17 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/vcsfrl/random-fit/cmd/internal"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 )
 
 type PlanDefinition struct {
 	BaseHandler
 
-	definitionManager *internal.PlanDefinitionManager
+	definitionManager *service.PlanDefinitionManager
 }
 
-func NewPlanDefinition(cmd *cobra.Command, args []string, conf *internal.Config) (*PlanDefinition, error) {
+func NewPlanDefinition(cmd *cobra.Command, args []string, conf *service.Config) (*PlanDefinition, error) {
 	planDefinition := &PlanDefinition{
 		BaseHandler: BaseHandler{
 			cmd:  cmd,
@@ -35,7 +35,7 @@ func (p *PlanDefinition) init() error {
 		return err
 	}
 
-	p.definitionManager = internal.NewPlanDefinitionManager(p.conf.PlanFolder())
+	p.definitionManager = service.NewPlanDefinitionManager(p.conf.PlanFolder())
 	return nil
 }
 

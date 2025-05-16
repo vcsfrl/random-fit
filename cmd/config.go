@@ -3,11 +3,11 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/vcsfrl/random-fit/cmd/internal"
+	"github.com/vcsfrl/random-fit/internal/service"
 )
 
-func NewConfig() *internal.Config {
-	var newConfig internal.Config
+func NewConfig() *service.Config {
+	var newConfig service.Config
 	newConfig.TracePort = viper.Get("tracePort").(string)
 	newConfig.DebuggerPort = viper.Get("debuggerPort").(string)
 	newConfig.DataFolder = viper.Get("dataFolder").(string)

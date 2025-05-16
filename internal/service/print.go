@@ -1,4 +1,4 @@
-package internal
+package service
 
 type Printer interface {
 	// Print is a convenience method to Print to the defined output, fallback to Stderr if not set.

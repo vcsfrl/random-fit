@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/vcsfrl/random-fit/cmd/internal"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"log"
 )
 
@@ -168,7 +168,7 @@ func NewCommand() (*cobra.Command, error) {
 			Use:   "generate",
 			Short: "Generate code.",
 			Run: func(cmd *cobra.Command, args []string) {
-				internal.GenerateCode(cmd, NewConfig())
+				service.GenerateCode(cmd, NewConfig())
 			},
 		}
 

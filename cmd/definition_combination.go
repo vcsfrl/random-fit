@@ -2,17 +2,17 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/vcsfrl/random-fit/cmd/internal"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 )
 
 type CombinationDefinition struct {
 	BaseHandler
 
-	definitionManager *internal.CombinationStarDefinitionManager
+	definitionManager *service.CombinationStarDefinitionManager
 }
 
-func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *internal.Config) (*CombinationDefinition, error) {
+func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *service.Config) (*CombinationDefinition, error) {
 	combinationDefinition := &CombinationDefinition{
 		BaseHandler: BaseHandler{
 			cmd:  cmd,
@@ -34,7 +34,7 @@ func (c *CombinationDefinition) init() error {
 		return err
 	}
 
-	c.definitionManager = internal.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
+	c.definitionManager = service.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
 	return nil
 }
 

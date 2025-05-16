@@ -1,4 +1,4 @@
-package internal
+package service
 
 type Config struct {
 	TracePort       string

@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/vcsfrl/random-fit/cmd/internal"
 	"github.com/vcsfrl/random-fit/internal/plan"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"time"
 )
 
-func NewGenerator(cmd *cobra.Command, args []string, config *internal.Config) (*Generator, error) {
+func NewGenerator(cmd *cobra.Command, args []string, config *service.Config) (*Generator, error) {
 	generator := &Generator{
 		BaseHandler: BaseHandler{
 			cmd:  cmd,
@@ -26,8 +26,8 @@ func NewGenerator(cmd *cobra.Command, args []string, config *internal.Config) (*
 type Generator struct {
 	BaseHandler
 
-	combinationDefinitionManager *internal.CombinationStarDefinitionManager
-	planDefinitionManager        *internal.PlanDefinitionManager
+	combinationDefinitionManager *service.CombinationStarDefinitionManager
+	planDefinitionManager        *service.PlanDefinitionManager
 	planExporter                 *plan.Exporter
 }
 
@@ -80,8 +80,8 @@ func (g *Generator) init() error {
 		return err
 	}
 
-	g.combinationDefinitionManager = internal.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())
-	g.planDefinitionManager = internal.NewPlanDefinitionManager(g.conf.PlanFolder())
+	g.combinationDefinitionManager = service.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())
+	g.planDefinitionManager = service.NewPlanDefinitionManager(g.conf.PlanFolder())
 	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder())
 
 	return nil

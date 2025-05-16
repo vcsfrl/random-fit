@@ -27,7 +27,6 @@ go.work.sum
 .idea/
 /vendor
 
-/cmd/shell/combination_definition_template.go
-/cmd/internal/combination_definition_template.go
+/internal/service/combination_definition_template.go
 /k8s/processed-volumne.yaml
 

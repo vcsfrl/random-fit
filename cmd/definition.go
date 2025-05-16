@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/vcsfrl/random-fit/cmd/internal"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 	"os/exec"
 )
@@ -10,7 +10,7 @@ import (
 type BaseHandler struct {
 	cmd  *cobra.Command
 	args []string
-	conf *internal.Config
+	conf *service.Config
 }
 
 func (b *BaseHandler) editScript(scriptName string, filetype string) error {
