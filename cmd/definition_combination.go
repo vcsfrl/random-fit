@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/service"
-	"os"
 )
 
 type CombinationDefinition struct {
@@ -96,17 +95,13 @@ func (c *CombinationDefinition) Delete() {
 	}
 
 	c.cmd.Println(msgDelete, msgCombinationDefinition, name)
-	scriptName, err := c.definitionManager.GetScript(name)
+	err := c.definitionManager.Delete(name)
 	if err != nil {
-		c.cmd.PrintErrln("Error getting script: ", err)
+		c.cmd.PrintErrln("Error deleting script: ", err)
 		return
 	}
 
-	c.cmd.Println(msgRemoveScript, scriptName)
-	if err := os.Remove(scriptName); err != nil {
-		c.cmd.PrintErrln("Error removing script: ", err)
-		return
-	}
+	c.cmd.Println(msgDone, msgDelete, msgCombinationDefinition, name)
 }
 
 func (c *CombinationDefinition) List() {

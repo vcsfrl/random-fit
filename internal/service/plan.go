@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var ErrPlanManager = "plan manager error"
+var ErrPlanDefinitionManager = "plan definition manager error"
 
 type PlanDefinitionManager struct {
 	dataFolder string
@@ -20,7 +20,7 @@ func (m *PlanDefinitionManager) List() ([]string, error) {
 	result := make([]string, 0)
 	files, err := os.ReadDir(m.dataFolder)
 	if err != nil {
-		return nil, fmt.Errorf("%s: read data folder: %w", ErrPlanManager, err)
+		return nil, fmt.Errorf("%s: read data folder: %w", ErrPlanDefinitionManager, err)
 	}
 
 	for _, file := range files {
@@ -38,22 +38,22 @@ func (m *PlanDefinitionManager) New(plan string) error {
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
 
 	if _, err := os.Stat(planFilePath); !os.IsNotExist(err) {
-		return fmt.Errorf("%s: plan already exists", ErrPlanManager)
+		return fmt.Errorf("%s: plan already exists", ErrPlanDefinitionManager)
 	}
 
 	emptyPlan := m.getSamplePlanDefinition()
 	buff, err := json.Marshal(emptyPlan)
 	if err != nil {
-		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanManager, err)
+		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanDefinitionManager, err)
 	}
 
 	var prettyJSON bytes.Buffer
 	if err := json.Indent(&prettyJSON, buff, "", "  "); err != nil {
-		return fmt.Errorf("%s: indent json: %w", ErrPlanManager, err)
+		return fmt.Errorf("%s: indent json: %w", ErrPlanDefinitionManager, err)
 	}
 
 	if err := os.WriteFile(planFilePath, prettyJSON.Bytes(), 0644); err != nil {
-		return fmt.Errorf("%s: new plan: %w", ErrPlanManager, err)
+		return fmt.Errorf("%s: new plan: %w", ErrPlanDefinitionManager, err)
 	}
 
 	return nil
@@ -78,7 +78,7 @@ func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
 
 	if _, err := os.Stat(planFilePath); os.IsNotExist(err) {
-		return "", fmt.Errorf("%s: plan does not exist", ErrPlanManager)
+		return "", fmt.Errorf("%s: plan does not exist", ErrPlanDefinitionManager)
 	}
 
 	return planFilePath, nil

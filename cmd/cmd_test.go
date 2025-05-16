@@ -192,7 +192,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 	// Check output
 	output = suite.buffer.String()
 	suite.Contains(output, msgDelete+" "+msgCombinationDefinition+" test1")
-	suite.Contains(output, msgRemoveScript+" "+scriptName)
+	suite.Contains(output, msgDone+" "+msgDelete+" "+msgCombinationDefinition+" test1")
 
 	// check if the file is deleted
 	_, err = os.Stat(scriptName)
