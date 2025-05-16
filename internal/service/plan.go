@@ -84,6 +84,19 @@ func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
 	return planFilePath, nil
 }
 
+func (m *PlanDefinitionManager) Delete(name string) error {
+	scriptName, err := m.GetFile(name)
+	if err != nil {
+		return fmt.Errorf("%s: get script: %w", ErrPlanDefinitionManager, err)
+	}
+
+	if err := os.Remove(scriptName); err != nil {
+		return fmt.Errorf("%s: remove script: %w", ErrPlanDefinitionManager, err)
+	}
+
+	return nil
+}
+
 func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
 	return &PlanDefinitionManager{
 		dataFolder: folder,

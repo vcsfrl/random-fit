@@ -326,7 +326,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 	// Check output
 	output = suite.buffer.String()
 	suite.Contains(output, msgDelete+" "+msgPlanDefinition+" test1")
-	suite.Contains(output, msgRemoveScript+" "+scriptName)
+	suite.Contains(output, msgDone+" "+msgDelete+" "+msgPlanDefinition+" test1")
 	// check if the file is deleted
 	_, err = os.Stat(scriptName)
 	suite.True(os.IsNotExist(err), "File should be deleted")

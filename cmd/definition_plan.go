@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/service"
-	"os"
 )
 
 type PlanDefinition struct {
@@ -115,15 +114,11 @@ func (p *PlanDefinition) Delete() {
 	}
 
 	p.cmd.Println(msgDelete, msgPlanDefinition, name)
-	scriptName, err := p.definitionManager.GetFile(name)
+	err := p.definitionManager.Delete(name)
 	if err != nil {
-		p.cmd.PrintErrln("Error getting script: ", err)
+		p.cmd.PrintErrln("Error deleting paln definition: ", err)
 		return
 	}
 
-	p.cmd.Println(msgRemoveScript, scriptName)
-	if err := os.Remove(scriptName); err != nil {
-		p.cmd.PrintErrln("Error removing script: ", err)
-		return
-	}
+	p.cmd.Println(msgDone, msgDelete, msgPlanDefinition, name)
 }
