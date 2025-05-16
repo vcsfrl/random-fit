@@ -362,4 +362,42 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 	suite.command.SetArgs([]string{"generate", "combination", "--combination", "combination1", "--plan", "plan1"})
 	err = suite.command.Execute()
 	suite.NoError(err)
+
+	// get directories from test folder
+	containerFolder := filepath.Join(suite.testFolder, "combination", "user1", "ContainerName")
+	dirs, err := os.ReadDir(containerFolder)
+	suite.NoError(err)
+	suite.Len(dirs, 1)
+
+	// check combination was created
+	combinationMdFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.md")
+	combinationJsonFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.json")
+
+	_, err = os.Stat(combinationMdFile)
+	suite.NoError(err, "File should exist")
+	_, err = os.Stat(combinationJsonFile)
+	suite.NoError(err, "File should exist")
+
+	// check files content
+	combinationMdData, err := os.ReadFile(combinationMdFile)
+	suite.NoError(err)
+	suite.Contains(string(combinationMdData), "Sample")
+
+	combinationJsonData, err := os.ReadFile(combinationJsonFile)
+	suite.NoError(err)
+	suite.Contains(string(combinationJsonData), "Sample")
+
+	// check objects saved in storage
+	storageFolder := filepath.Join(suite.testFolder, "storage")
+
+	// get files from storage folder
+	storageFiles, err := os.ReadDir(storageFolder)
+	suite.NoError(err)
+	suite.Len(storageFiles, 1)
+	// check files content
+	storageFile := filepath.Join(storageFolder, storageFiles[0].Name())
+	storageData, err := os.ReadFile(storageFile)
+	suite.NoError(err)
+	suite.Contains(string(storageData), "Sample")
+
 }
