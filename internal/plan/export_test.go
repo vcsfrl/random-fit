@@ -175,6 +175,7 @@ func (suite *ExportSuite) TestExportObject() {
 
 	// open the file
 	file, err := os.Open(dataFile)
+	suite.NoError(err)
 
 	savedPlan := &Plan{}
 

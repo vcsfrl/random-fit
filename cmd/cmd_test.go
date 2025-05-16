@@ -43,7 +43,9 @@ func (suite *CommandsSuite) SetupTest() {
 
 	// Set the environment variable
 	err = os.Setenv("RF_BASE_FOLDER", suite.testFolder)
+	suite.NoError(err)
 	err = os.Setenv("RF_DATA_FOLDER", suite.testFolder)
+	suite.NoError(err)
 	err = os.Setenv("EDITOR", "")
 	suite.NoError(err)
 }

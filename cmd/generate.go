@@ -32,6 +32,8 @@ type Generator struct {
 }
 
 func (g *Generator) Combination() {
+	g.cmd.Context().Done()
+
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {
 		g.cmd.PrintErr(msgCombinationDefinitionNameMissing)
@@ -69,9 +71,7 @@ func (g *Generator) Combination() {
 		g.cmd.Println("Error exporting plan:", err)
 		return
 	}
-	newPlan = nil
 	g.cmd.Println("Plan exported in", time.Since(start))
-
 }
 
 func (g *Generator) init() error {
