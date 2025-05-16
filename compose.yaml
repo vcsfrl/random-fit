@@ -29,5 +29,6 @@ services:
     user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
     ports:
       - ${RF_DEBUGGER_PORT}:${RF_DEBUGGER_PORT}
+      - ${RF_DEBUG_CHART_PORT}:${RF_DEBUG_CHART_PORT}
     env_file:
       - .env

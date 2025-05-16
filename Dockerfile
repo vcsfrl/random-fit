@@ -20,7 +20,7 @@ USER $username
 RUN go mod tidy
 RUN go mod vendor
 RUN go generate github.com/vcsfrl/random-fit/cmd;
-RUN go build -o ./bin/app ./cmd/main.go;
+RUN go build -o ./bin/app ./main.go;
 
 FROM base AS prod
 USER root:root

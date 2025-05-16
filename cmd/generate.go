@@ -37,8 +37,6 @@ type Generator struct {
 }
 
 func (g *Generator) Combination() {
-	g.startMonitor()
-
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {
 		g.cmd.PrintErr(msgCombinationDefinitionNameMissing)
@@ -50,6 +48,9 @@ func (g *Generator) Combination() {
 		g.cmd.PrintErr(msgPlanDefinitionNameMissing)
 		return
 	}
+
+	g.cmd.Println("Generating plan with combination definition ", combinationDefinitionName, "and plan definition", planDefinitionName)
+	g.startMonitor()
 
 	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
 	if err != nil {
