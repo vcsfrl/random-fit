@@ -72,9 +72,11 @@ func (b *Builder) Build() (*Plan, error) {
 		// Create groups
 		for i := 0; i < b.Definition.RecurrentGroups; i++ {
 			group := &Group{
-				Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
-				Combinations:  make([]*combination.Combination, 0),
-				ContainerName: b.Definition.ContainerName,
+				GroupDetails: GroupDetails{
+					Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
+					ContainerName: b.Definition.ContainerName,
+				},
+				Combinations: make([]*combination.Combination, 0),
 			}
 			for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
 				newCombination, err := b.CombinationBuilder.Build()

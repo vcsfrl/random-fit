@@ -26,10 +26,13 @@ type UserData struct {
 	NrOfGroupCombinations    int
 }
 
-type Group struct {
+type GroupDetails struct {
 	ContainerName []string
 	Details       string
-	Combinations  []*combination.Combination
+}
+type Group struct {
+	GroupDetails
+	Combinations []*combination.Combination
 }
 
 type PlanDetails struct {
@@ -42,6 +45,12 @@ type PlanDetails struct {
 type Plan struct {
 	PlanDetails
 	UserGroups map[string][]*Group
+}
+
+type PlanCombination struct {
+	PlanDetails
+	GroupDetails
+	Combination *combination.Combination
 }
 
 func NewJsonDefinition(fileName string) (*Definition, error) {
