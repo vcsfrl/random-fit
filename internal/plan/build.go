@@ -75,6 +75,7 @@ func (b *Builder) Build() (*Plan, error) {
 				GroupDetails: GroupDetails{
 					Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
 					ContainerName: b.Definition.ContainerName,
+					User:          user,
 				},
 				Combinations: make([]*combination.Combination, 0),
 			}
@@ -94,4 +95,45 @@ func (b *Builder) Build() (*Plan, error) {
 	}
 
 	return plan, nil
+}
+
+func (b *Builder) Generate() chan *PlanCombination {
+	generator := make(chan *PlanCombination, 1000)
+
+	uuidV7, err := b.UuidV7()
+	if err != nil {
+		generator <- &PlanCombination{Err: fmt.Errorf("%w: error creating uuid v7: %w", ErrPlanBuild, err)}
+		close(generator)
+		return generator
+	}
+
+	go func() {
+		for _, user := range b.Definition.Users {
+			// Create groups
+			for i := 0; i < b.Definition.RecurrentGroups; i++ {
+				for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
+					newCombination, err := b.CombinationBuilder.Build()
+					planCombination := &PlanCombination{
+						PlanDetails: PlanDetails{
+							UUID:         uuidV7,
+							CreatedAt:    b.Now(),
+							DefinitionID: b.Definition.ID,
+							Details:      b.Definition.Details,
+						},
+						GroupDetails: GroupDetails{
+							Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
+							ContainerName: b.Definition.ContainerName,
+							User:          user,
+						},
+						Combination: newCombination,
+						Err:         err,
+					}
+
+					generator <- planCombination
+				}
+			}
+		}
+	}()
+
+	return generator
 }

@@ -29,6 +29,7 @@ type UserData struct {
 type GroupDetails struct {
 	ContainerName []string
 	Details       string
+	User          string
 }
 type Group struct {
 	GroupDetails
@@ -51,6 +52,7 @@ type PlanCombination struct {
 	PlanDetails
 	GroupDetails
 	Combination *combination.Combination
+	Err         error
 }
 
 func NewJsonDefinition(fileName string) (*Definition, error) {
