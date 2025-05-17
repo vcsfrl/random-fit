@@ -1,10 +1,15 @@
 package cmd
 
 import (
+	"context"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/vcsfrl/random-fit/internal/service"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func NewCommand() (*cobra.Command, error) {
@@ -187,12 +192,22 @@ func NewCommand() (*cobra.Command, error) {
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 func Execute() {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	go func() {
+		<-ctx.Done()
+
+		time.Sleep(1 * time.Second)
+		os.Exit(0)
+	}()
+
 	rootCmd, err := NewCommand()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = rootCmd.Execute()
+	err = rootCmd.ExecuteContext(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

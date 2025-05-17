@@ -1,27 +1,7 @@
 services:
-  random-fit_dev:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: base
-      args:
-        - username=${CONTAINER_USERNAME}
-        - exec_user_id=${CONTAINER_EXEC_USER_ID}
-    container_name: random-fit_app
-    image: random-fit_app
-    restart: "unless-stopped"
-    volumes:
-      - .:/srv/random-fit:shared
-      - /etc/localtime:/etc/localtime:ro
-    user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
-    ports:
-      - ${RF_DEBUGGER_PORT}:${RF_DEBUGGER_PORT}
-      - ${RF_DEBUG_CHART_PORT}:${RF_DEBUG_CHART_PORT}
-    env_file:
-      - .env
-  random-fit:
+  random-fit: &random-fit
     container_name: random-fit
-    image: vcsfrl/random-fit:v1.0.1
+    image: vcsfrl/random-fit:v1.0.0
     restart: "unless-stopped"
     volumes:
       - ./data:/srv/random-fit/data:shared
@@ -32,3 +12,21 @@ services:
       - ${RF_DEBUG_CHART_PORT}:${RF_DEBUG_CHART_PORT}
     env_file:
       - .env
+  random-fit_dev:
+    <<: *random-fit
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: base
+      args:
+        - username=${CONTAINER_USERNAME}
+        - exec_user_id=${CONTAINER_EXEC_USER_ID}
+    container_name: random-fit_dev
+    image: random-fit_dev
+    restart: "no"
+    volumes:
+      - .:/srv/random-fit:shared
+      - /etc/localtime:/etc/localtime:ro
+    command:
+      - sleep
+      - "999999999"

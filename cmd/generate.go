@@ -85,7 +85,7 @@ func (g *Generator) startMonitor() {
 	server := &http.Server{Addr: fmt.Sprintf("0.0.0.0:%s", g.conf.DebugChartPort)}
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
-			g.cmd.Println("Error starting debug chart server:", err)
+			g.cmd.Println("Error debug chart server:", err)
 		}
 	}()
 
@@ -96,7 +96,7 @@ func (g *Generator) startMonitor() {
 			return
 		}
 
-		g.cmd.Println("debug chart server shut down gracefully")
+		g.cmd.Println("Debug chart server shut down gracefully.")
 	}()
 }
 

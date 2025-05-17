@@ -13,7 +13,10 @@ install: ## APP Build.
 	docker compose build;
 
 shell: ## APP Shell.
-	docker compose run --remove-orphans random-fit_dev bash
+	docker compose up random-fit_dev -d
+	docker compose exec random-fit_dev bash
+	docker compose down --remove-orphans
+
 
 generate: ## APP Generate code.
 	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit
@@ -34,7 +37,7 @@ lint: ## Run linter.
 	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.0.2 golangci-lint run
 
 build-docker-image:
-	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.1 --target prod .
+	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.0 --target prod .
 	#docker run --rm -it --entrypoint bash vcsfrl/random-fit:v1.0.0
 	#docker tag <image hash> <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
 	#docker push <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
