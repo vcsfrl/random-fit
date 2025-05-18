@@ -134,6 +134,8 @@ func (b *Builder) Generate() chan *PlannedCombination {
 				}
 			}
 		}
+
+		close(generator)
 	}()
 
 	return generator

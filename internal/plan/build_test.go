@@ -58,6 +58,44 @@ func (suite *BuildSuite) TestBuild() {
 	suite.Equal(mockBuilder.Calls, definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users))
 }
 
+func (suite *BuildSuite) TestGenerate() {
+	definition := &Definition{
+		ID:      "test",
+		Details: "Test",
+		Users:   []string{"user-1", "user-2"},
+		UserData: UserData{
+			ContainerName:            []string{"test1"},
+			RecurrentGroupNamePrefix: "Test",
+			RecurrentGroups:          4,
+			NrOfGroupCombinations:    3,
+		},
+	}
+
+	// Mock the combination builder
+	mockBuilder := &MockCombinationBuilder{}
+	generator := NewBuilder(definition, mockBuilder).Generate()
+	suite.NotNil(generator)
+
+	data := []PlannedCombination{}
+	for genCombination := range generator {
+		data = append(data, *genCombination)
+	}
+
+	suite.Equal(definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users), len(data))
+	suite.Equal(definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users), mockBuilder.Calls)
+
+	suite.NoError(data[0].Err)
+	suite.Equal(definition.ID, data[0].Plan.DefinitionID)
+	suite.Equal(definition.Details, data[0].Plan.Details)
+	suite.NotNil(data[0].Plan.UUID)
+	suite.NotNil(data[0].Plan.CreatedAt)
+	suite.Equal(definition.RecurrentGroupNamePrefix+"-1", data[0].Group.Details)
+	suite.Equal(definition.UserData.ContainerName, data[0].Group.ContainerName)
+	suite.Equal(definition.Users[0], data[0].Group.User)
+	suite.Equal(1, data[0].GroupSerialId)
+	suite.NotNil(data[0].Combination)
+}
+
 type MockCombinationBuilder struct {
 	Calls int
 }
