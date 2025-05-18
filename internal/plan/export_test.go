@@ -54,8 +54,8 @@ func (suite *ExportSuite) SetupTest() {
 		Details: "Test definition",
 		Users:   []string{"user-1"},
 		UserData: UserData{
-			ContainerName:            []string{"Group-Container", "_date"},
-			RecurrentGroupNamePrefix: "Recurrent-Group",
+			ContainerName:            []string{"GroupCombination-Container", "_date"},
+			RecurrentGroupNamePrefix: "Recurrent-GroupCombination",
 			RecurrentGroups:          4,
 			NrOfGroupCombinations:    3,
 		},
@@ -104,10 +104,10 @@ func (suite *ExportSuite) TestExport() {
 	suite.True(suite.fileExists(userFolder))
 
 	// Check if the group folder exists
-	groupContainer := filepath.Join(userFolder, "Group-Container", "2010-01-02-03-04")
+	groupContainer := filepath.Join(userFolder, "GroupCombination-Container", "2010-01-02-03-04")
 	suite.True(suite.fileExists(groupContainer))
 	for i := 1; i <= 4; i++ {
-		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-Group-%d", i))
+		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-GroupCombination-%d", i))
 		suite.True(suite.fileExists(groupFolder))
 
 		extensions := []string{"json", "md"}
@@ -137,7 +137,7 @@ func (suite *ExportSuite) TestExport() {
 }
 
 func (suite *ExportSuite) TestExportNoDateInContainer() {
-	suite.planDefinition.ContainerName = []string{"Group-Container"}
+	suite.planDefinition.ContainerName = []string{"GroupCombination-Container"}
 	plan, err := suite.planBuilder.Build()
 	suite.NoError(err)
 	suite.NotNil(plan)
@@ -151,11 +151,11 @@ func (suite *ExportSuite) TestExportNoDateInContainer() {
 	suite.True(suite.fileExists(userFolder))
 
 	// Check if the group folder exists.
-	groupContainer := filepath.Join(userFolder, "Group-Container")
+	groupContainer := filepath.Join(userFolder, "GroupCombination-Container")
 	suite.True(suite.fileExists(groupContainer))
 
 	// Check that the date was not included in the container name.
-	groupContainer = filepath.Join(userFolder, "Group-Container", "2010-01-02-03-04")
+	groupContainer = filepath.Join(userFolder, "GroupCombination-Container", "2010-01-02-03-04")
 	suite.False(suite.fileExists(groupContainer))
 
 }
@@ -177,7 +177,7 @@ func (suite *ExportSuite) TestExportObject() {
 	file, err := os.Open(dataFile)
 	suite.NoError(err)
 
-	savedPlan := &Plan{}
+	savedPlan := &UserPlan{}
 
 	decoder := gob.NewDecoder(file)
 	err = decoder.Decode(savedPlan)

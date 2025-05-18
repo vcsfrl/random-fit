@@ -13,6 +13,7 @@ install: ## APP Build.
 	docker compose build;
 
 shell: ## APP Shell.
+	docker compose down --remove-orphans
 	docker compose up random-fit_dev -d
 	docker compose exec random-fit_dev bash
 	docker compose down --remove-orphans

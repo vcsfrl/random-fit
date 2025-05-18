@@ -50,29 +50,29 @@ func NewBuilder(definition *Definition, builder combination.Builder) *Builder {
 	}
 }
 
-func (b *Builder) Build() (*Plan, error) {
+func (b *Builder) Build() (*UserPlan, error) {
 	uuidV7, err := b.UuidV7()
 	if err != nil {
 		return nil, err
 	}
 
-	plan := &Plan{
-		PlanDetails: PlanDetails{
+	plan := &UserPlan{
+		Plan: Plan{
 			UUID:         uuidV7,
 			CreatedAt:    b.Now(),
 			DefinitionID: b.Definition.ID,
 			Details:      b.Definition.Details,
 		},
-		UserGroups: make(map[string][]*Group),
+		UserGroups: make(map[string][]*GroupCombination),
 	}
 
 	for _, user := range b.Definition.Users {
-		userGroups := make([]*Group, 0)
+		userGroups := make([]*GroupCombination, 0)
 
 		// Create groups
 		for i := 0; i < b.Definition.RecurrentGroups; i++ {
-			group := &Group{
-				GroupDetails: GroupDetails{
+			group := &GroupCombination{
+				Group: Group{
 					Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
 					ContainerName: b.Definition.ContainerName,
 					User:          user,
@@ -97,12 +97,12 @@ func (b *Builder) Build() (*Plan, error) {
 	return plan, nil
 }
 
-func (b *Builder) Generate() chan *PlanCombination {
-	generator := make(chan *PlanCombination, 1000)
+func (b *Builder) Generate() chan *PlannedCombination {
+	generator := make(chan *PlannedCombination, 1000)
 
 	uuidV7, err := b.UuidV7()
 	if err != nil {
-		generator <- &PlanCombination{Err: fmt.Errorf("%w: error creating uuid v7: %w", ErrPlanBuild, err)}
+		generator <- &PlannedCombination{Err: fmt.Errorf("%w: error creating uuid v7: %w", ErrPlanBuild, err)}
 		close(generator)
 		return generator
 	}
@@ -113,20 +113,21 @@ func (b *Builder) Generate() chan *PlanCombination {
 			for i := 0; i < b.Definition.RecurrentGroups; i++ {
 				for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
 					newCombination, err := b.CombinationBuilder.Build()
-					planCombination := &PlanCombination{
-						PlanDetails: PlanDetails{
+					planCombination := &PlannedCombination{
+						Plan: Plan{
 							UUID:         uuidV7,
 							CreatedAt:    b.Now(),
 							DefinitionID: b.Definition.ID,
 							Details:      b.Definition.Details,
 						},
-						GroupDetails: GroupDetails{
+						Group: Group{
 							Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
 							ContainerName: b.Definition.ContainerName,
 							User:          user,
 						},
-						Combination: newCombination,
-						Err:         err,
+						Combination:   newCombination,
+						GroupSerialId: j + 1,
+						Err:           err,
 					}
 
 					generator <- planCombination

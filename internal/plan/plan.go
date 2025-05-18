@@ -26,33 +26,34 @@ type UserData struct {
 	NrOfGroupCombinations    int
 }
 
-type GroupDetails struct {
+type Group struct {
 	ContainerName []string
 	Details       string
 	User          string
 }
-type Group struct {
-	GroupDetails
+type GroupCombination struct {
+	Group
 	Combinations []*combination.Combination
 }
 
-type PlanDetails struct {
+type Plan struct {
 	UUID         uuid.UUID
 	CreatedAt    time.Time
 	DefinitionID string
 	Details      string
 }
 
-type Plan struct {
-	PlanDetails
-	UserGroups map[string][]*Group
+type UserPlan struct {
+	Plan
+	UserGroups map[string][]*GroupCombination
 }
 
-type PlanCombination struct {
-	PlanDetails
-	GroupDetails
-	Combination *combination.Combination
-	Err         error
+type PlannedCombination struct {
+	Plan
+	Group
+	Combination   *combination.Combination
+	GroupSerialId int
+	Err           error
 }
 
 func NewJsonDefinition(fileName string) (*Definition, error) {

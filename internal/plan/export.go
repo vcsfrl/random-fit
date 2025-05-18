@@ -23,10 +23,10 @@ func NewExporter(outputDir string, storageDir string) *Exporter {
 	}
 }
 
-func (e *Exporter) Export(plan *Plan) error {
+func (e *Exporter) Export(plan *UserPlan) error {
 	for userID, groups := range plan.UserGroups {
 		for _, group := range groups {
-			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan, group), group.Details), " ", "_")
+			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan.Plan, group.Group), group.Details), " ", "_")
 			if err := os.MkdirAll(groupFolder, 0755); err != nil {
 				return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
 			}
@@ -49,7 +49,29 @@ func (e *Exporter) Export(plan *Plan) error {
 	return nil
 }
 
-func (e *Exporter) containerFolder(plan *Plan, group *Group) string {
+func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
+	for planCombination := range generator {
+		if planCombination.Err != nil {
+			return fmt.Errorf("error generating plan: %s", planCombination.Err)
+		}
+
+		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
+		if err := os.MkdirAll(groupFolder, 0755); err != nil {
+			return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
+		}
+
+		// Create a file for each combination by type
+		for _, data := range planCombination.Combination.Data {
+			if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (e *Exporter) containerFolder(plan Plan, group Group) string {
 	if len(group.ContainerName) == 0 {
 		return plan.DefinitionID
 	}
@@ -67,7 +89,7 @@ func (e *Exporter) containerFolder(plan *Plan, group *Group) string {
 	return folder
 }
 
-func (e *Exporter) exportObject(plan *Plan) error {
+func (e *Exporter) exportObject(plan *UserPlan) error {
 	// save the plan to storage
 	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s.gob", plan.UUID.String()))
 	//open the file

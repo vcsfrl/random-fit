@@ -70,14 +70,14 @@ func (g *Generator) Combination() {
 		g.cmd.Println("Error generating combination:", err)
 		return
 	}
-	g.cmd.Println("Plan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start))
+	g.cmd.Println("UserPlan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start))
 
 	start = time.Now()
 	if err := g.planExporter.Export(newPlan); err != nil {
 		g.cmd.Println("Error exporting plan:", err)
 		return
 	}
-	g.cmd.Println("Plan exported in", time.Since(start))
+	g.cmd.Println("UserPlan exported in", time.Since(start))
 }
 
 func (g *Generator) startMonitor() {
