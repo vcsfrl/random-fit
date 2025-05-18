@@ -94,6 +94,20 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Equal(definition.Users[0], data[0].Group.User)
 	suite.Equal(1, data[0].GroupSerialId)
 	suite.NotNil(data[0].Combination)
+	suite.Equal("test-1", data[0].Combination.Details)
+
+	lastIndex := len(data) - 1
+	suite.NoError(data[lastIndex].Err)
+	suite.Equal(definition.ID, data[lastIndex].Plan.DefinitionID)
+	suite.Equal(definition.Details, data[lastIndex].Plan.Details)
+	suite.NotNil(data[lastIndex].Plan.UUID)
+	suite.NotNil(data[lastIndex].Plan.CreatedAt)
+	suite.Equal(definition.RecurrentGroupNamePrefix+"-4", data[lastIndex].Group.Details)
+	suite.Equal(definition.UserData.ContainerName, data[lastIndex].Group.ContainerName)
+	suite.Equal(definition.Users[1], data[lastIndex].Group.User)
+	suite.Equal(3, data[lastIndex].GroupSerialId)
+	suite.NotNil(data[lastIndex].Combination)
+	suite.Equal("test-24", data[lastIndex].Combination.Details)
 }
 
 type MockCombinationBuilder struct {
