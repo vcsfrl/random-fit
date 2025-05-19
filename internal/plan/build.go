@@ -106,6 +106,7 @@ func (b *Builder) Generate() chan *PlannedCombination {
 		close(generator)
 		return generator
 	}
+	createdAt := b.Now()
 
 	go func() {
 		for _, user := range b.Definition.Users {
@@ -116,7 +117,7 @@ func (b *Builder) Generate() chan *PlannedCombination {
 					planCombination := &PlannedCombination{
 						Plan: Plan{
 							UUID:         uuidV7,
-							CreatedAt:    b.Now(),
+							CreatedAt:    createdAt,
 							DefinitionID: b.Definition.ID,
 							Details:      b.Definition.Details,
 						},
