@@ -253,6 +253,31 @@ func (suite *ExportSuite) TestExportObjectInFolder() {
 	// Check if the user folder exists
 	userFolder := filepath.Join(suite.combinationFolder, "user-1")
 	suite.True(suite.fileExists(userFolder))
+
+	//get files from storage folder
+	files, err := os.ReadDir(suite.storageFolder)
+	suite.NoError(err)
+	suite.NotEmpty(files)
+
+	suite.Len(files, 12)
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		suite.Contains(file.Name(), suite.planDefinition.Users[0])
+		suite.Contains(file.Name(), ".gob")
+
+		// get file content
+		dataFile := filepath.Join(suite.storageFolder, file.Name())
+		suite.True(suite.fileExists(dataFile))
+		// open the file
+		data, err := os.ReadFile(dataFile)
+		suite.NoError(err)
+		suite.NotEmpty(data)
+		suite.Contains(string(data), "Lotto Number Picks")
+		suite.Contains(string(data), "Lotto Numbers for User 1")
+		suite.Contains(string(data), "Lucky Number")
+	}
 }
 
 func (suite *ExportSuite) fileExists(path string) (bool, error) {
