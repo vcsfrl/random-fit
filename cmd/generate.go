@@ -65,15 +65,12 @@ func (g *Generator) Combination() {
 
 	// measure execution time
 	start := time.Now()
-	newPlan, err := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Build()
-	if err != nil {
-		g.cmd.Println("Error generating combination:", err)
-		return
-	}
+	newPlan := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate()
+
 	g.cmd.Println("UserPlan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start))
 
 	start = time.Now()
-	if err := g.planExporter.Export(newPlan); err != nil {
+	if err := g.planExporter.ExportGenerator(newPlan); err != nil {
 		g.cmd.Println("Error exporting plan:", err)
 		return
 	}
