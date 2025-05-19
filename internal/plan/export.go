@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 var ErrExport = fmt.Errorf("error exporting plan")
@@ -50,27 +51,45 @@ func (e *Exporter) Export(plan *UserPlan) error {
 }
 
 func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
-	for planCombination := range generator {
-		if planCombination.Err != nil {
-			return fmt.Errorf("error generating plan: %s", planCombination.Err)
-		}
 
-		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
-		if err := os.MkdirAll(groupFolder, 0755); err != nil {
-			return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
-		}
+	wg := sync.WaitGroup{}
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
 
-		// Create a file for each combination by type
-		for _, data := range planCombination.Combination.Data {
-			if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
-				return err
+		// TODO: add logging
+		// TODO: add error handling
+		// TODO: add parameters from ENV
+		// TODO: use worker pool
+		go func() error {
+			for planCombination := range generator {
+				if planCombination.Err != nil {
+					return fmt.Errorf("error generating plan: %s", planCombination.Err)
+				}
+
+				groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
+				if err := os.MkdirAll(groupFolder, 0755); err != nil {
+					return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
+				}
+
+				// Create a file for each combination by type
+				for _, data := range planCombination.Combination.Data {
+					if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
+						return err
+					}
+				}
+
+				if err := e.exportObjectInFolder(planCombination); err != nil {
+					return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+				}
 			}
-		}
 
-		if err := e.exportObjectInFolder(planCombination); err != nil {
-			return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
-		}
+			wg.Done()
+			return nil
+		}()
 	}
+
+	// Wait for all workers to finish
+	wg.Wait()
 
 	return nil
 }
