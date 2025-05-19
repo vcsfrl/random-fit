@@ -136,6 +136,51 @@ func (suite *ExportSuite) TestExport() {
 	}
 }
 
+func (suite *ExportSuite) TestExportGenerate() {
+	planGenerator := suite.planBuilder.Generate()
+	suite.NotNil(planGenerator)
+
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	err := exporter.ExportGenerator(planGenerator)
+	suite.NoError(err)
+
+	// Check if the user folder exists
+	userFolder := filepath.Join(suite.combinationFolder, "user-1")
+	suite.True(suite.fileExists(userFolder))
+
+	// Check if the group folder exists
+	groupContainer := filepath.Join(userFolder, "GroupCombination-Container", "2010-01-02-03-04")
+	suite.True(suite.fileExists(groupContainer))
+	for i := 1; i <= 4; i++ {
+		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-GroupCombination-%d", i))
+		suite.True(suite.fileExists(groupFolder))
+
+		extensions := []string{"json", "md"}
+
+		// Check if the group combinations exist
+		for j := 1; j <= 3; j++ {
+			for _, ext := range extensions {
+				groupCombination := filepath.Join(groupFolder, fmt.Sprintf("Lotto_Number_Picks_%d.%s", j, ext))
+				exists, err := suite.fileExists(groupCombination)
+				suite.NoError(err)
+				suite.True(exists, fmt.Sprintf("File %s does not exist", groupCombination))
+
+				// Check if the file is not empty
+				fileInfo, err := os.Stat(groupCombination)
+				suite.NoError(err)
+				suite.True(fileInfo.Size() > 0, fmt.Sprintf("File %s is empty", groupCombination))
+
+				// Check if file contains a specific string
+				file, err := os.ReadFile(groupCombination)
+				suite.NoError(err)
+				suite.Contains(string(file), "Lotto Number Picks")
+				suite.Contains(string(file), "Lotto Numbers for User 1")
+				suite.Contains(string(file), "6/49 and Lucky Number")
+			}
+		}
+	}
+}
+
 func (suite *ExportSuite) TestExportNoDateInContainer() {
 	suite.planDefinition.ContainerName = []string{"GroupCombination-Container"}
 	plan, err := suite.planBuilder.Build()
@@ -195,6 +240,19 @@ func (suite *ExportSuite) TestExportObject() {
 
 	err = file.Close()
 	suite.NoError(err)
+}
+
+func (suite *ExportSuite) TestExportObjectInFolder() {
+	planGenerator := suite.planBuilder.Generate()
+	suite.NotNil(planGenerator)
+
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	err := exporter.ExportGenerator(planGenerator)
+	suite.NoError(err)
+
+	// Check if the user folder exists
+	userFolder := filepath.Join(suite.combinationFolder, "user-1")
+	suite.True(suite.fileExists(userFolder))
 }
 
 func (suite *ExportSuite) fileExists(path string) (bool, error) {

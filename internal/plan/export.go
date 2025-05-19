@@ -66,6 +66,10 @@ func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
 				return err
 			}
 		}
+
+		if err := e.exportObjectInFolder(planCombination); err != nil {
+			return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+		}
 	}
 
 	return nil
@@ -92,6 +96,27 @@ func (e *Exporter) containerFolder(plan Plan, group Group) string {
 func (e *Exporter) exportObject(plan *UserPlan) error {
 	// save the plan to storage
 	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s.gob", plan.UUID.String()))
+	//open the file
+	file, err := os.Create(storageFile)
+	if err != nil {
+		return fmt.Errorf("%w: error creating storage file: %s", ErrExport, err)
+	}
+
+	defer func() {
+		_ = file.Close()
+	}()
+
+	encoder := gob.NewEncoder(file)
+	if err := encoder.Encode(plan); err != nil {
+		return fmt.Errorf("%w: error encoding plan object: %s", ErrExport, err)
+	}
+
+	return nil
+}
+
+func (e *Exporter) exportObjectInFolder(plan *PlannedCombination) error {
+	// save the plan to storage
+	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s_%s_%s.gob", plan.User, plan.UUID.String(), plan.Combination.UUID.String()))
 	//open the file
 	file, err := os.Create(storageFile)
 	if err != nil {
