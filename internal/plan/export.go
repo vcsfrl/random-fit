@@ -12,9 +12,13 @@ import (
 
 var ErrExport = fmt.Errorf("error exporting plan")
 
+const defaultWorkers = 2
+
 type Exporter struct {
 	OutputDir  string
 	StorageDir string
+
+	workers int
 }
 
 func NewExporter(outputDir string, storageDir string) *Exporter {
@@ -51,9 +55,8 @@ func (e *Exporter) Export(plan *UserPlan) error {
 }
 
 func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
-
 	wg := sync.WaitGroup{}
-	for i := 0; i < 3; i++ {
+	for i := 0; i < e.nrWorkers(); i++ {
 		wg.Add(1)
 
 		// TODO: add logging
@@ -92,6 +95,14 @@ func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
 	wg.Wait()
 
 	return nil
+}
+
+func (e *Exporter) nrWorkers() int {
+	if e.workers == 0 {
+		return defaultWorkers
+	}
+
+	return e.workers
 }
 
 func (e *Exporter) containerFolder(plan Plan, group Group) string {

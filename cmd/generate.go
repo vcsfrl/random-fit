@@ -64,17 +64,14 @@ func (g *Generator) Combination() {
 	}
 
 	// measure execution time
-	start := time.Now()
 	newPlan := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate()
 
-	g.cmd.Println("UserPlan generated with", combinationDefinitionName, "and", planDefinitionName, "in", time.Since(start))
-
-	start = time.Now()
+	start := time.Now()
 	if err := g.planExporter.ExportGenerator(newPlan); err != nil {
 		g.cmd.Println("Error exporting plan:", err)
 		return
 	}
-	g.cmd.Println("UserPlan exported in", time.Since(start))
+	g.cmd.Println("UserPlan generated and exported in", time.Since(start))
 }
 
 func (g *Generator) startMonitor() {
