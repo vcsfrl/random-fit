@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
@@ -95,7 +96,7 @@ func (suite *ExportSuite) TestExport() {
 	suite.NoError(err)
 	suite.NotNil(plan)
 
-	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder, zerolog.Nop())
 	err = exporter.Export(plan)
 	suite.NoError(err)
 
@@ -140,7 +141,7 @@ func (suite *ExportSuite) TestExportGenerate() {
 	planGenerator := suite.planBuilder.Generate()
 	suite.NotNil(planGenerator)
 
-	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder, zerolog.Nop())
 	err := exporter.ExportGenerator(planGenerator)
 	suite.NoError(err)
 
@@ -187,7 +188,7 @@ func (suite *ExportSuite) TestExportNoDateInContainer() {
 	suite.NoError(err)
 	suite.NotNil(plan)
 
-	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder, zerolog.Nop())
 	err = exporter.Export(plan)
 	suite.NoError(err)
 
@@ -210,7 +211,7 @@ func (suite *ExportSuite) TestExportObject() {
 	suite.NoError(err)
 	suite.NotNil(plan)
 
-	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder, zerolog.Nop())
 	err = exporter.Export(plan)
 	suite.NoError(err)
 
@@ -246,7 +247,7 @@ func (suite *ExportSuite) TestExportObjectInFolder() {
 	planGenerator := suite.planBuilder.Generate()
 	suite.NotNil(planGenerator)
 
-	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder, zerolog.Nop())
 	err := exporter.ExportGenerator(planGenerator)
 	suite.NoError(err)
 

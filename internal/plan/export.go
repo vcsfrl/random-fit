@@ -3,6 +3,7 @@ package plan
 import (
 	"encoding/gob"
 	"fmt"
+	"github.com/rs/zerolog"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"os"
 	"path/filepath"
@@ -19,12 +20,15 @@ type Exporter struct {
 	StorageDir string
 
 	workers int
+	logger  zerolog.Logger
 }
 
-func NewExporter(outputDir string, storageDir string) *Exporter {
+func NewExporter(outputDir string, storageDir string, logger zerolog.Logger) *Exporter {
 	return &Exporter{
 		OutputDir:  outputDir,
 		StorageDir: storageDir,
+		workers:    defaultWorkers,
+		logger:     logger,
 	}
 }
 
@@ -63,31 +67,35 @@ func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
 		// TODO: add error handling
 		// TODO: add parameters from ENV
 		// TODO: use worker pool
-		go func() error {
+		go func() {
+			defer wg.Done()
+
 			for planCombination := range generator {
 				if planCombination.Err != nil {
-					return fmt.Errorf("error generating plan: %s", planCombination.Err)
+					e.logger.Error().Err(fmt.Errorf("%w: error generating plan: %s", ErrExport, planCombination.Err))
+					return
 				}
 
 				groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
 				if err := os.MkdirAll(groupFolder, 0755); err != nil {
-					return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
+
+					e.logger.Error().Err(fmt.Errorf("%w: error creating group folder: %s", ErrExport, err))
+					return
 				}
 
 				// Create a file for each combination by type
 				for _, data := range planCombination.Combination.Data {
 					if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
-						return err
+						e.logger.Error().Err(fmt.Errorf("%w: error saving file: %s", ErrExport, err))
+						return
 					}
 				}
 
 				if err := e.exportObjectInFolder(planCombination); err != nil {
-					return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+					e.logger.Error().Err(fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err))
+					return
 				}
 			}
-
-			wg.Done()
-			return nil
 		}()
 	}
 

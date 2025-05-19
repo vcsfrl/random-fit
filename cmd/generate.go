@@ -99,10 +99,11 @@ func (g *Generator) init() error {
 	if err != nil {
 		return err
 	}
+	logger := NewLogger()
 
 	g.combinationDefinitionManager = service.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())
 	g.planDefinitionManager = service.NewPlanDefinitionManager(g.conf.PlanFolder())
-	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder())
+	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder(), logger)
 
 	return nil
 }
