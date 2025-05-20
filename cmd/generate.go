@@ -52,7 +52,6 @@ func (g *Generator) Combination() {
 	}
 
 	g.cmd.Println("Generating plan with combination definition ", combinationDefinitionName, "and plan definition", planDefinitionName)
-	g.startMonitor()
 
 	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
 	if err != nil {
@@ -64,6 +63,8 @@ func (g *Generator) Combination() {
 		g.cmd.PrintErrln("Error getting plan definition:", err)
 		return
 	}
+
+	g.startMonitor()
 
 	// measure execution time
 	newPlan := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate()
