@@ -60,15 +60,16 @@ func (e *Exporter) Export(plan *UserPlan) error {
 
 func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
 	wg := sync.WaitGroup{}
+
+	e.logger.Info().Msgf("Starting %d workers to export plans", e.nrWorkers())
 	for i := 0; i < e.nrWorkers(); i++ {
 		wg.Add(1)
-
-		// TODO: add logging
-		// TODO: add error handling
-		// TODO: add parameters from ENV
-		// TODO: use worker pool
-		go func() {
-			defer wg.Done()
+		e.logger.Info().Msgf("Starting worker %d", i)
+		go func(i int) {
+			defer func() {
+				e.logger.Info().Msgf("Finished worker %d", i)
+				wg.Done()
+			}()
 
 			for planCombination := range generator {
 				if planCombination.Err != nil {
@@ -91,12 +92,12 @@ func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
 					}
 				}
 
-				if err := e.exportObjectInFolder(planCombination); err != nil {
+				if err := e.exportPlannedCombinationObject(planCombination); err != nil {
 					e.logger.Error().Err(fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err))
 					return
 				}
 			}
-		}()
+		}(i)
 	}
 
 	// Wait for all workers to finish
@@ -152,7 +153,7 @@ func (e *Exporter) exportObject(plan *UserPlan) error {
 	return nil
 }
 
-func (e *Exporter) exportObjectInFolder(plan *PlannedCombination) error {
+func (e *Exporter) exportPlannedCombinationObject(plan *PlannedCombination) error {
 	// save the plan to storage
 	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s_%s_%s.gob", plan.User, plan.UUID.String(), plan.Combination.UUID.String()))
 	//open the file

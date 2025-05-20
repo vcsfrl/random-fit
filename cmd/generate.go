@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/plan"
 	"github.com/vcsfrl/random-fit/internal/service"
@@ -34,18 +35,19 @@ type Generator struct {
 	combinationDefinitionManager *service.CombinationStarDefinitionManager
 	planDefinitionManager        *service.PlanDefinitionManager
 	planExporter                 *plan.Exporter
+	logger                       zerolog.Logger
 }
 
 func (g *Generator) Combination() {
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {
-		g.cmd.PrintErr(msgCombinationDefinitionNameMissing)
+		g.cmd.PrintErrln(msgCombinationDefinitionNameMissing)
 		return
 	}
 
 	planDefinitionName := g.getArg(1, "plan")
 	if planDefinitionName == "" {
-		g.cmd.PrintErr(msgPlanDefinitionNameMissing)
+		g.cmd.PrintErrln(msgPlanDefinitionNameMissing)
 		return
 	}
 
@@ -54,12 +56,12 @@ func (g *Generator) Combination() {
 
 	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
 	if err != nil {
-		g.cmd.Println("Error getting combination definition:", err)
+		g.cmd.PrintErrln("Error getting combination definition:", err)
 		return
 	}
 	planDefinitionScript, err := g.planDefinitionManager.GetFile(planDefinitionName)
 	if err != nil {
-		g.cmd.Println("Error getting plan definition:", err)
+		g.cmd.PrintErrln("Error getting plan definition:", err)
 		return
 	}
 
@@ -71,26 +73,27 @@ func (g *Generator) Combination() {
 		g.cmd.Println("Error exporting plan:", err)
 		return
 	}
+	g.logger.Info().Dur("duration", time.Since(start)).Msg("UserPlan generated and exported")
 	g.cmd.Println("UserPlan generated and exported in", time.Since(start))
 }
 
 func (g *Generator) startMonitor() {
-	g.cmd.Println("Starting debug chart server on port", g.conf.DebugChartPort)
+	g.logger.Info().Msgf("Starting debug chart server on port %s", g.conf.DebugChartPort)
 	server := &http.Server{Addr: fmt.Sprintf("0.0.0.0:%s", g.conf.DebugChartPort)}
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
-			g.cmd.Println("Error debug chart server:", err)
+			g.logger.Error().Err(err).Msg("Error starting debug chart server.")
 		}
 	}()
 
 	go func() {
 		<-g.cmd.Context().Done()
 		if err := server.Shutdown(context.Background()); err != nil {
-			g.cmd.Println("Error shutting down server:", err)
+			g.logger.Error().Err(err).Msg("Error shutting down debug chart server.")
 			return
 		}
 
-		g.cmd.Println("Debug chart server shut down gracefully.")
+		g.logger.Info().Msg("Debug chart server shut down gracefully.")
 	}()
 }
 
@@ -99,11 +102,11 @@ func (g *Generator) init() error {
 	if err != nil {
 		return err
 	}
-	logger := NewLogger()
+	g.logger = NewLogger()
 
 	g.combinationDefinitionManager = service.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())
 	g.planDefinitionManager = service.NewPlanDefinitionManager(g.conf.PlanFolder())
-	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder(), logger)
+	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder(), g.logger)
 
 	return nil
 }
