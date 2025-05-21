@@ -11,7 +11,7 @@ spec:
             claimName: random-fit-pvc
       containers:
         - name: random-fit
-          image: localhost:32000/vcsfrl/random-fit:v1.0.1
+          image: localhost:32000/vcsfrl/random-fit:v1.0.0
 #          command: ["/srv/random-fit/bin/app", "exec", "generate-combination", "_definition_name", "_plan_name"]
           command: ["sleep", "36000"]
           volumeMounts:
@@ -38,6 +38,16 @@ spec:
                 configMapKeyRef:
                   name: random-fit-config
                   key: rf_data_folder
+            - name: RF_TRACE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: rf_trace_port
+            - name: RF_DEBUG_CHART_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: random-fit-config
+                  key: rf_debug_chart_port
             - name: EDITOR
               valueFrom:
                 configMapKeyRef:

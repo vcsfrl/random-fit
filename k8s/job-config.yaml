@@ -7,4 +7,6 @@ data:
   container_username: "app"
   rf_base_folder: "/srv/random-fit"
   rf_data_folder: "/srv/random-fit/data"
+  rf_trace_port: "40022"
+  rf_debug_chart_port: "40023"
   editor: "micro"
