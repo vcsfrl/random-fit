@@ -55,7 +55,7 @@ func (g *Generator) Combination() {
 		return
 	}
 
-	g.cmd.Println("Generating plan with combination definition ", combinationDefinitionName, "and plan definition", planDefinitionName)
+	g.cmd.Println("Generating plan with combination definition", combinationDefinitionName, "and plan definition", planDefinitionName)
 
 	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
 	if err != nil {
@@ -94,8 +94,11 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 			}()
 
 			if err := g.planExporter.ExportGenerator(planGenerator); err != nil {
+				g.logger.Error().Err(err).Msgf("Error exporting plan in worker %d", i)
 				g.cmd.Println("Error exporting plan:", err)
 			}
+
+			g.logger.Info().Msgf("Worker %d finished exporting plan", i)
 		}(i)
 	}
 
