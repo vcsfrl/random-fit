@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 )
@@ -193,12 +194,18 @@ func NewCommand() (*cobra.Command, error) {
 // Execute adds all child commands to the root command and sets flags appropriately.
 func Execute() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+	wg := &sync.WaitGroup{}
+	defer func() {
+		stop()
+		wg.Wait()
+	}()
 
+	wg.Add(1)
 	go func() {
 		<-ctx.Done()
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(200 * time.Millisecond)
+		wg.Done()
 		os.Exit(0)
 	}()
 
