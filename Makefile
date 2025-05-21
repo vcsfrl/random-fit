@@ -44,4 +44,4 @@ build-docker-image:
 	#docker push <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
 
 run: ## Run the app.
-	docker compose run random-fit
+	docker compose run --remove-orphans random-fit
