@@ -114,7 +114,7 @@ func (b *Builder) Generate() chan *PlannedCombination {
 			for i := 0; i < b.Definition.RecurrentGroups; i++ {
 				for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
 					newCombination, err := b.CombinationBuilder.Build()
-					planCombination := &PlannedCombination{
+					plannedCombination := &PlannedCombination{
 						Plan: Plan{
 							UUID:         uuidV7,
 							CreatedAt:    createdAt,
@@ -131,7 +131,7 @@ func (b *Builder) Generate() chan *PlannedCombination {
 						Err:           err,
 					}
 
-					generator <- planCombination
+					generator <- plannedCombination
 				}
 			}
 		}

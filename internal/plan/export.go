@@ -3,32 +3,25 @@ package plan
 import (
 	"encoding/gob"
 	"fmt"
-	"github.com/rs/zerolog"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 )
 
 var ErrExport = fmt.Errorf("error exporting plan")
-
-const defaultWorkers = 2
 
 type Exporter struct {
 	OutputDir  string
 	StorageDir string
 
 	workers int
-	logger  zerolog.Logger
 }
 
-func NewExporter(outputDir string, storageDir string, logger zerolog.Logger) *Exporter {
+func NewExporter(outputDir string, storageDir string) *Exporter {
 	return &Exporter{
 		OutputDir:  outputDir,
 		StorageDir: storageDir,
-		workers:    defaultWorkers,
-		logger:     logger,
 	}
 }
 
@@ -59,59 +52,29 @@ func (e *Exporter) Export(plan *UserPlan) error {
 }
 
 func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
-	wg := sync.WaitGroup{}
+	for planCombination := range generator {
+		if planCombination.Err != nil {
+			return fmt.Errorf("%w: error generating plan: %s", ErrExport, planCombination.Err)
+		}
 
-	e.logger.Info().Msgf("Starting %d workers to export plans", e.nrWorkers())
-	for i := 0; i < e.nrWorkers(); i++ {
-		wg.Add(1)
-		e.logger.Info().Msgf("Starting worker %d", i)
-		go func(i int) {
-			defer func() {
-				e.logger.Info().Msgf("Finished worker %d", i)
-				wg.Done()
-			}()
+		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
+		if err := os.MkdirAll(groupFolder, 0755); err != nil {
+			return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
+		}
 
-			for planCombination := range generator {
-				if planCombination.Err != nil {
-					e.logger.Error().Err(fmt.Errorf("%w: error generating plan: %s", ErrExport, planCombination.Err))
-					return
-				}
-
-				groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
-				if err := os.MkdirAll(groupFolder, 0755); err != nil {
-
-					e.logger.Error().Err(fmt.Errorf("%w: error creating group folder: %s", ErrExport, err))
-					return
-				}
-
-				// Create a file for each combination by type
-				for _, data := range planCombination.Combination.Data {
-					if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
-						e.logger.Error().Err(fmt.Errorf("%w: error saving file: %s", ErrExport, err))
-						return
-					}
-				}
-
-				if err := e.exportPlannedCombinationObject(planCombination); err != nil {
-					e.logger.Error().Err(fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err))
-					return
-				}
+		// Create a file for each combination by type
+		for _, data := range planCombination.Combination.Data {
+			if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
+				return fmt.Errorf("%w: error saving file: %s", ErrExport, err)
 			}
-		}(i)
-	}
+		}
 
-	// Wait for all workers to finish
-	wg.Wait()
+		if err := e.exportPlannedCombinationObject(planCombination); err != nil {
+			return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+		}
+	}
 
 	return nil
-}
-
-func (e *Exporter) nrWorkers() int {
-	if e.workers == 0 {
-		return defaultWorkers
-	}
-
-	return e.workers
 }
 
 func (e *Exporter) containerFolder(plan Plan, group Group) string {
