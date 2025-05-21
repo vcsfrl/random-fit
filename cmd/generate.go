@@ -70,7 +70,7 @@ func (g *Generator) Combination() {
 
 	g.startMonitor()
 
-	planGenerator := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate()
+	planGenerator := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate(context.Background())
 
 	start := time.Now()
 	if g.export(planGenerator) {
@@ -93,7 +93,7 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 				wg.Done()
 			}()
 
-			if err := g.planExporter.ExportGenerator(planGenerator); err != nil {
+			if err := g.planExporter.ExportGenerator(g.cmd.Context(), planGenerator); err != nil {
 				g.logger.Error().Err(err).Msgf("Error exporting plan in worker %d", i)
 				g.cmd.Println("Error exporting plan:", err)
 			}

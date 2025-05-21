@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"context"
 	"encoding/gob"
 	"errors"
 	"fmt"
@@ -137,11 +138,11 @@ func (suite *ExportSuite) TestExport() {
 }
 
 func (suite *ExportSuite) TestExportGenerate() {
-	planGenerator := suite.planBuilder.Generate()
+	planGenerator := suite.planBuilder.Generate(context.Background())
 	suite.NotNil(planGenerator)
 
 	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
-	err := exporter.ExportGenerator(planGenerator)
+	err := exporter.ExportGenerator(context.Background(), planGenerator)
 	suite.NoError(err)
 
 	// Check if the user folder exists
@@ -243,11 +244,11 @@ func (suite *ExportSuite) TestExportObject() {
 }
 
 func (suite *ExportSuite) TestExportObjectInFolder() {
-	planGenerator := suite.planBuilder.Generate()
+	planGenerator := suite.planBuilder.Generate(context.Background())
 	suite.NotNil(planGenerator)
 
 	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
-	err := exporter.ExportGenerator(planGenerator)
+	err := exporter.ExportGenerator(context.Background(), planGenerator)
 	suite.NoError(err)
 
 	// Check if the user folder exists
@@ -278,6 +279,20 @@ func (suite *ExportSuite) TestExportObjectInFolder() {
 		suite.Contains(string(data), "Lotto Numbers for User 1")
 		suite.Contains(string(data), "Lucky Number")
 	}
+}
+
+func (suite *ExportSuite) TestExportObjectInFolderCancelContext() {
+	planGenerator := suite.planBuilder.Generate(context.Background())
+	suite.NotNil(planGenerator)
+
+	exporter := NewExporter(suite.combinationFolder, suite.storageFolder)
+	background := context.Background()
+	ctx, cancel := context.WithCancel(background)
+	cancel()
+
+	err := exporter.ExportGenerator(ctx, planGenerator)
+	suite.Error(err)
+	suite.Equal(ErrExportTerminated, err)
 }
 
 func (suite *ExportSuite) fileExists(path string) (bool, error) {

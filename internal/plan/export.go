@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"context"
 	"encoding/gob"
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/combination"
@@ -10,6 +11,7 @@ import (
 )
 
 var ErrExport = fmt.Errorf("error exporting plan")
+var ErrExportTerminated = fmt.Errorf("%w: export terminated", ErrExport)
 
 type Exporter struct {
 	OutputDir  string
@@ -51,8 +53,16 @@ func (e *Exporter) Export(plan *UserPlan) error {
 	return nil
 }
 
-func (e *Exporter) ExportGenerator(generator chan *PlannedCombination) error {
+func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedCombination) error {
 	for planCombination := range generator {
+		select {
+		case <-ctx.Done():
+
+			return ErrExportTerminated
+		default:
+			// continue
+		}
+
 		if planCombination.Err != nil {
 			return fmt.Errorf("%w: error generating plan: %s", ErrExport, planCombination.Err)
 		}

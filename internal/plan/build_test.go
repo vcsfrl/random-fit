@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"context"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
@@ -73,7 +74,7 @@ func (suite *BuildSuite) TestGenerate() {
 
 	// Mock the combination builder
 	mockBuilder := &MockCombinationBuilder{}
-	generator := NewBuilder(definition, mockBuilder).Generate()
+	generator := NewBuilder(definition, mockBuilder).Generate(context.Background())
 	suite.NotNil(generator)
 
 	data := []PlannedCombination{}
@@ -108,6 +109,32 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Equal(3, data[lastIndex].GroupSerialId)
 	suite.NotNil(data[lastIndex].Combination)
 	suite.Equal("test-24", data[lastIndex].Combination.Details)
+}
+func (suite *BuildSuite) TestGenerateCancelContext() {
+	definition := &Definition{
+		ID:      "test",
+		Details: "Test",
+		Users:   []string{"user-1", "user-2"},
+		UserData: UserData{
+			ContainerName:            []string{"test1"},
+			RecurrentGroupNamePrefix: "Test",
+			RecurrentGroups:          4,
+			NrOfGroupCombinations:    3,
+		},
+	}
+
+	// Mock the combination builder
+	mockBuilder := &MockCombinationBuilder{}
+	background := context.Background()
+	ctx, cancel := context.WithCancel(background)
+	cancel()
+
+	generator := NewBuilder(definition, mockBuilder).Generate(ctx)
+	suite.NotNil(generator)
+
+	item := <-generator
+
+	suite.Equal(ErrPlanBuildTerminated, item.Err)
 }
 
 type MockCombinationBuilder struct {

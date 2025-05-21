@@ -1,6 +1,7 @@
 package plan
 
 import (
+	"context"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/combination"
@@ -8,6 +9,7 @@ import (
 )
 
 var ErrPlanBuild = fmt.Errorf("error building plan")
+var ErrPlanBuildTerminated = fmt.Errorf("%w: build terminated", ErrPlanBuild)
 
 type Builder struct {
 	Definition         *Definition
@@ -97,7 +99,7 @@ func (b *Builder) Build() (*UserPlan, error) {
 	return plan, nil
 }
 
-func (b *Builder) Generate() chan *PlannedCombination {
+func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 	generator := make(chan *PlannedCombination, 1000)
 
 	uuidV7, err := b.UuidV7()
@@ -109,10 +111,19 @@ func (b *Builder) Generate() chan *PlannedCombination {
 	createdAt := b.Now()
 
 	go func() {
+		defer close(generator)
 		for _, user := range b.Definition.Users {
 			// Create groups
 			for i := 0; i < b.Definition.RecurrentGroups; i++ {
 				for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
+					select {
+					case <-ctx.Done():
+						generator <- &PlannedCombination{Err: ErrPlanBuildTerminated}
+						return
+					default:
+						// continue
+					}
+
 					newCombination, err := b.CombinationBuilder.Build()
 					plannedCombination := &PlannedCombination{
 						Plan: Plan{
@@ -135,8 +146,6 @@ func (b *Builder) Generate() chan *PlannedCombination {
 				}
 			}
 		}
-
-		close(generator)
 	}()
 
 	return generator
