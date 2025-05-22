@@ -16,8 +16,6 @@ var ErrExportTerminated = fmt.Errorf("%w: export terminated", ErrExport)
 type Exporter struct {
 	OutputDir  string
 	StorageDir string
-
-	workers int
 }
 
 func NewExporter(outputDir string, storageDir string) *Exporter {

@@ -260,7 +260,7 @@ func (suite *ExportSuite) TestExportObjectInFolder() {
 	suite.NoError(err)
 	suite.NotEmpty(files)
 
-	suite.Len(files, suite.planDefinition.UserData.RecurrentGroups*suite.planDefinition.UserData.NrOfGroupCombinations)
+	suite.Len(files, suite.planDefinition.RecurrentGroups*suite.planDefinition.NrOfGroupCombinations)
 	for _, file := range files {
 		if file.IsDir() {
 			continue
