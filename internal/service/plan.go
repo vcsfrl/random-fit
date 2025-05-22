@@ -49,7 +49,7 @@ func (m *PlanDefinitionManager) New(plan string) error {
 		return fmt.Errorf("%s: plan already exists", ErrPlanDefinitionManager)
 	}
 
-	emptyPlan := m.getSamplePlanDefinition()
+	emptyPlan := m.GetSamplePlanDefinition()
 
 	buff, err := json.Marshal(emptyPlan)
 	if err != nil {
@@ -92,7 +92,7 @@ func (m *PlanDefinitionManager) Delete(name string) error {
 	return nil
 }
 
-func (m *PlanDefinitionManager) getSamplePlanDefinition() *rfPlan.Definition {
+func (m *PlanDefinitionManager) GetSamplePlanDefinition() *rfPlan.Definition {
 	return &rfPlan.Definition{
 		ID:      "definition",
 		Details: "Definition",

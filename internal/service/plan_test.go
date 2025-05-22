@@ -1,4 +1,4 @@
-package service
+package service_test
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 	"path/filepath"
 	"testing"
@@ -19,7 +20,7 @@ type StarPlanManagerSuite struct {
 	suite.Suite
 	testFolder string
 
-	planDefinitionManager *PlanDefinitionManager
+	planDefinitionManager *service.PlanDefinitionManager
 }
 
 func (suite *StarPlanManagerSuite) SetupTest() {
@@ -29,7 +30,7 @@ func (suite *StarPlanManagerSuite) SetupTest() {
 	err := os.MkdirAll(suite.testFolder, 0755)
 	suite.NoError(err)
 
-	suite.planDefinitionManager = NewPlanDefinitionManager(suite.testFolder)
+	suite.planDefinitionManager = service.NewPlanDefinitionManager(suite.testFolder)
 }
 
 func (suite *StarPlanManagerSuite) TearDownTest() {
@@ -84,7 +85,7 @@ func (suite *StarPlanManagerSuite) TestNew() {
 
 	err = json.Unmarshal(data, resultPlanDefinition)
 	suite.NoError(err)
-	suite.Equal(suite.planDefinitionManager.getSamplePlanDefinition(), resultPlanDefinition)
+	suite.Equal(suite.planDefinitionManager.GetSamplePlanDefinition(), resultPlanDefinition)
 }
 
 func (suite *StarPlanManagerSuite) TestGetFile() {
