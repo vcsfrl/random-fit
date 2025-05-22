@@ -1,4 +1,4 @@
-package plan
+package plan_test
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
+	planModel "github.com/vcsfrl/random-fit/internal/plan"
 	"testing"
 	"time"
 )
@@ -19,11 +20,11 @@ type BuildSuite struct {
 }
 
 func (suite *BuildSuite) TestBuild() {
-	definition := &Definition{
+	definition := &planModel.Definition{
 		ID:      "test",
 		Details: "Test",
 		Users:   []string{"user-1", "user-2"},
-		UserData: UserData{
+		UserData: planModel.UserData{
 			RecurrentGroupNamePrefix: "Test",
 			RecurrentGroups:          4,
 			NrOfGroupCombinations:    3,
@@ -32,7 +33,7 @@ func (suite *BuildSuite) TestBuild() {
 
 	// Mock the combination builder
 	mockBuilder := &MockCombinationBuilder{}
-	plan, err := NewBuilder(definition, mockBuilder).Build()
+	plan, err := planModel.NewBuilder(definition, mockBuilder).Build()
 	suite.NoError(err)
 	suite.NotNil(plan)
 
@@ -60,11 +61,11 @@ func (suite *BuildSuite) TestBuild() {
 }
 
 func (suite *BuildSuite) TestGenerate() {
-	definition := &Definition{
+	definition := &planModel.Definition{
 		ID:      "test",
 		Details: "Test",
 		Users:   []string{"user-1", "user-2"},
-		UserData: UserData{
+		UserData: planModel.UserData{
 			ContainerName:            []string{"test1"},
 			RecurrentGroupNamePrefix: "Test",
 			RecurrentGroups:          4,
@@ -74,10 +75,10 @@ func (suite *BuildSuite) TestGenerate() {
 
 	// Mock the combination builder
 	mockBuilder := &MockCombinationBuilder{}
-	generator := NewBuilder(definition, mockBuilder).Generate(context.Background())
+	generator := planModel.NewBuilder(definition, mockBuilder).Generate(context.Background())
 	suite.NotNil(generator)
 
-	data := []PlannedCombination{}
+	data := []planModel.PlannedCombination{}
 	for genCombination := range generator {
 		data = append(data, *genCombination)
 	}
@@ -111,11 +112,11 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Equal("test-24", data[lastIndex].Combination.Details)
 }
 func (suite *BuildSuite) TestGenerateCancelContext() {
-	definition := &Definition{
+	definition := &planModel.Definition{
 		ID:      "test",
 		Details: "Test",
 		Users:   []string{"user-1", "user-2"},
-		UserData: UserData{
+		UserData: planModel.UserData{
 			ContainerName:            []string{"test1"},
 			RecurrentGroupNamePrefix: "Test",
 			RecurrentGroups:          4,
@@ -129,12 +130,12 @@ func (suite *BuildSuite) TestGenerateCancelContext() {
 	ctx, cancel := context.WithCancel(background)
 	cancel()
 
-	generator := NewBuilder(definition, mockBuilder).Generate(ctx)
+	generator := planModel.NewBuilder(definition, mockBuilder).Generate(ctx)
 	suite.NotNil(generator)
 
 	item := <-generator
 
-	suite.Equal(ErrPlanBuildTerminated, item.Err)
+	suite.Equal(planModel.ErrPlanBuildTerminated, item.Err)
 }
 
 type MockCombinationBuilder struct {

@@ -1,7 +1,8 @@
-package random
+package random_test
 
 import (
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"testing"
 )
 
@@ -32,7 +33,7 @@ func (crg *CryptoRandomGeneratorFixture) SetupTest() {
 
 func (crg *CryptoRandomGeneratorFixture) TestUint() {
 	for _, testRow := range crg.tests {
-		c := &Crypto{}
+		c := &random.Crypto{}
 		got, err := c.Uint(testRow.args.min, testRow.args.max)
 		crg.NoError(err)
 		crg.GreaterOrEqual(got, testRow.args.min)

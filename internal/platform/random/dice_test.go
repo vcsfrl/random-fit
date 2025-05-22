@@ -1,8 +1,9 @@
-package random
+package random_test
 
 import (
 	"errors"
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"testing"
 )
 
@@ -12,13 +13,13 @@ func TestDice(t *testing.T) {
 
 type DiceFixture struct {
 	suite.Suite
-	dice      Dice
+	dice      *random.Dice
 	generator *MockGenerator
 }
 
 func (df *DiceFixture) SetupTest() {
 	df.generator = &MockGenerator{}
-	df.dice = Dice{generator: df.generator}
+	df.dice = random.NewDice(df.generator, 0)
 }
 
 func (df *DiceFixture) TestDice() {
@@ -38,7 +39,7 @@ func (df *DiceFixture) TestDiceErr() {
 	pick, err := df.dice.Roll()
 
 	df.Equal(pick, uint(0))
-	df.True(errors.Is(err, ErrDice))
+	df.True(errors.Is(err, random.ErrDice))
 	df.Equal(err.Error(), "dice error | must have at least one side")
 }
 
