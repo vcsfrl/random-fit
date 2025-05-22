@@ -16,35 +16,35 @@ func init() {
 	definitionTemplate = {{.}}
 }`
 
-func GenerateCode(c Printer, config *Config) {
-	c.Println("Generating helper code...\n")
+func GenerateCode(printer Printer, config *Config) {
+	printer.Println("Generating helper code...\n")
 
-	t := textTemplate.Must(textTemplate.New("template.render_text").Parse(definitionSkeleton))
+	textTmpl := textTemplate.Must(textTemplate.New("template.render_text").Parse(definitionSkeleton))
 
 	//create a file in shell/ folder
 	fileName := filepath.Join(config.BaseFolder, "internal", "service", "combination_definition_template.go")
 	// remove the file if it exists
 	if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {
-		c.Println("Error:", err)
+		printer.Println("Error:", err)
 		return
 	}
 
 	// get content of star definition template
 	content, err := os.ReadFile(filepath.Join(config.BaseFolder, "internal", "combination", "template", "script.star"))
 	if err != nil {
-		c.Println("Error:", err)
+		printer.Println("Error:", err)
 		return
 	}
 
 	buff := &bytes.Buffer{}
-	if err := t.Execute(buff, "`"+string(content)+"`"); err != nil {
-		c.Println("Error:", err)
+	if err := textTmpl.Execute(buff, "`"+string(content)+"`"); err != nil {
+		printer.Println("Error:", err)
 		return
 	}
 
 	if err := os.WriteFile(fileName, buff.Bytes(), 0644); err != nil {
-		c.Println("Error:", err)
+		printer.Println("Error:", err)
 	}
 
-	c.Println("Code generated in", fileName, "\n")
+	printer.Println("Code generated in", fileName, "\n")
 }

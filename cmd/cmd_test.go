@@ -70,7 +70,6 @@ func (suite *CommandsSuite) TestSubcommands() {
 				subcommandNames = append(subcommandNames, subSubCmd.Name())
 			}
 		}
-
 	}
 
 	slices.Sort(subcommandNames)
@@ -406,5 +405,4 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 	storageData, err := os.ReadFile(storageFile)
 	suite.NoError(err)
 	suite.Contains(string(storageData), "Sample")
-
 }

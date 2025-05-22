@@ -25,7 +25,6 @@ func NewPlanDefinition(cmd *cobra.Command, args []string, conf *service.Config) 
 	}
 
 	return planDefinition, nil
-
 }
 
 func (p *PlanDefinition) New() {

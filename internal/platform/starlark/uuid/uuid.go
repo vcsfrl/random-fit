@@ -18,13 +18,13 @@ var v7Func func() (string, error)
 
 func v7(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	uuidFunc := getUuidFunc()
-	id, err := uuidFunc()
+	uniqueId, err := uuidFunc()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return starlark.String(id), nil
+	return starlark.String(uniqueId), nil
 }
 
 func getUuidFunc() func() (string, error) {

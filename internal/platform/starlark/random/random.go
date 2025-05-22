@@ -22,24 +22,24 @@ var randomUintFunc func(min uint, max uint) (uint, error)
 func getUint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	var minVal, maxVal uint
 
-	var nr int
+	var number int
 
 	var allowDuplicates, sort = false, false
 
-	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
+	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &number, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
 		return nil, fmt.Errorf("unpack args: %w", err)
 	}
 
 	sliceResult := make([]uint, 0)
 
-	for i := 0; i < nr; i++ {
+	for index := 0; index < number; index++ {
 		randUint, err := getUintFunc()(minVal, maxVal)
 		if err != nil {
 			return nil, err
 		}
 
 		if !allowDuplicates && slices.Contains(sliceResult, randUint) {
-			i--
+			index--
 			continue
 		}
 

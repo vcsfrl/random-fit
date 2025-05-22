@@ -28,7 +28,7 @@ func renderText(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tupl
 	}
 
 	// Create a new textTemplate and parse the letter into it.
-	t := textTemplate.Must(textTemplate.New("template.render_text").Parse(tpl))
+	textTmpl := textTemplate.Must(textTemplate.New("template.render_text").Parse(tpl))
 
 	if err := json.Unmarshal([]byte(tplJsonArgs), &tplGoArgs); err != nil {
 		return nil, fmt.Errorf("unmarshal slJson args: %w", err)
@@ -37,7 +37,7 @@ func renderText(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tupl
 	buff := &bytes.Buffer{}
 
 	// Execute the textTemplate.
-	err := t.Execute(buff, tplGoArgs)
+	err := textTmpl.Execute(buff, tplGoArgs)
 	if err != nil {
 		return nil, fmt.Errorf("execute textTemplate: %w", err)
 	}

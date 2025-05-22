@@ -40,7 +40,6 @@ func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder 
 		UuidV7:             uuid.NewV7,
 		CombinationBuilder: builder,
 	}
-
 }
 
 func NewBuilder(definition *Definition, builder combination.Builder) *Builder {

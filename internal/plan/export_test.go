@@ -204,7 +204,6 @@ func (suite *ExportSuite) TestExportNoDateInContainer() {
 	// Check that the date was not included in the container name.
 	groupContainer = filepath.Join(userFolder, "GroupCombination-Container", "2010-01-02-03-04")
 	suite.False(suite.fileExists(groupContainer))
-
 }
 
 func (suite *ExportSuite) TestExportObject() {
