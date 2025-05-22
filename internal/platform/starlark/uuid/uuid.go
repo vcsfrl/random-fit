@@ -22,7 +22,6 @@ func v7(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwarg
 
 	if err != nil {
 		return nil, err
-
 	}
 
 	return starlark.String(id), nil

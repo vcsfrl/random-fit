@@ -24,7 +24,7 @@ func renderText(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tupl
 	var tplGoArgs any
 
 	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "tpl", &tpl, "tplJsonArgs", &tplJsonArgs); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unpack args: %w", err)
 	}
 
 	// Create a new textTemplate and parse the letter into it.

@@ -14,7 +14,6 @@ type CombinationDataSuite struct {
 }
 
 func (suite *CombinationDataSuite) TestUnmarshall() {
-
 	data := []byte(`{
 		"Extension": "json",
 		"MimeType": "application/json",

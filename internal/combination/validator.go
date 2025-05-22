@@ -1,6 +1,7 @@
 package combination
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -20,5 +21,9 @@ func Validator() (*validator.Validate, error) {
 		return false
 	})
 
-	return validate, err
+	if err != nil {
+		return nil, fmt.Errorf("register validator: %w", err)
+	}
+
+	return validate, nil
 }

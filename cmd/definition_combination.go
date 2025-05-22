@@ -79,7 +79,6 @@ func (c *CombinationDefinition) Edit() {
 		c.cmd.PrintErrln("Error editing script: ", err)
 		return
 	}
-
 }
 
 func (c *CombinationDefinition) Delete() {

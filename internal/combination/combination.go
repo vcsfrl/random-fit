@@ -80,7 +80,7 @@ func (d *Data) GobDecode(data []byte) error {
 func (d *Data) UnmarshalJSON(data []byte) error {
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+		return fmt.Errorf("error decoding data: %w", err)
 	}
 
 	for key, value := range raw {

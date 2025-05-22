@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
@@ -23,11 +24,11 @@ func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 	cmd.Stderr = b.cmd.ErrOrStderr()
 
 	if err := cmd.Start(); err != nil {
-		return err
+		return fmt.Errorf("error starting editor: %w", err)
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return err
+		return fmt.Errorf("error waiting for editor: %w", err)
 	}
 
 	return nil
@@ -54,7 +55,7 @@ func (b *BaseHandler) createFolder(folder string) error {
 func createFolder(folder string) error {
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		if err := os.MkdirAll(folder, 0755); err != nil {
-			return err
+			return fmt.Errorf("error creating folder %s: %w", folder, err)
 		}
 	}
 

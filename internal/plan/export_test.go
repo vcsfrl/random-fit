@@ -308,5 +308,5 @@ func (suite *ExportSuite) fileExists(path string) (bool, error) {
 		return false, nil
 	}
 
-	return false, err
+	return false, fmt.Errorf("error checking file existence: %w", err)
 }

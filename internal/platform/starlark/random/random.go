@@ -1,6 +1,7 @@
 package random
 
 import (
+	"fmt"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
@@ -26,7 +27,7 @@ func getUint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, 
 	var allowDuplicates, sort = false, false
 
 	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unpack args: %w", err)
 	}
 
 	sliceResult := make([]uint, 0)
@@ -53,7 +54,7 @@ func getUint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, 
 	for _, randUint := range sliceResult {
 		err := result.Append(starlark.MakeUint(randUint))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error generating random number: %v", err)
 		}
 	}
 

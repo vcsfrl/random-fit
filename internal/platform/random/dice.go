@@ -25,5 +25,10 @@ func (d Dice) Roll() (uint, error) {
 		return 0, fmt.Errorf("%w | must have at least one side", ErrDice)
 	}
 
-	return d.generator.Uint(1, d.Sides)
+	res, err := d.generator.Uint(1, d.Sides)
+	if err != nil {
+		return 0, fmt.Errorf("%w: generate number: %v", ErrDice, err)
+	}
+
+	return res, nil
 }
