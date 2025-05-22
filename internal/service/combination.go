@@ -85,6 +85,7 @@ func (dm *CombinationStarDefinitionManager) Build(definitionName string) (*combi
 	if err != nil {
 		return nil, fmt.Errorf("%s: creating star builder: %w", ErrCombinationDefinitionManager, err)
 	}
+
 	builtCombination, err := starBuilder.Build()
 	if err != nil {
 		return nil, fmt.Errorf("%s: building combination: %w", ErrCombinationDefinitionManager, err)

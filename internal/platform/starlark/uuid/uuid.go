@@ -1,6 +1,7 @@
 package uuid
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
@@ -35,7 +36,7 @@ func getUuidFunc() func() (string, error) {
 	v7Func = func() (string, error) {
 		id, err := uuid.NewV7()
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("error generating uuid: %v", err)
 		}
 		return id.String(), nil
 	}

@@ -108,10 +108,12 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 		close(generator)
 		return generator
 	}
+
 	createdAt := b.Now()
 
 	go func() {
 		defer close(generator)
+
 		for _, user := range b.Definition.Users {
 			// Create groups
 			for i := 0; i < b.Definition.RecurrentGroups; i++ {
@@ -120,8 +122,7 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 					case <-ctx.Done():
 						generator <- &PlannedCombination{Err: ErrPlanBuildTerminated}
 						return
-					default:
-						// continue
+					default: // continue
 					}
 
 					newCombination, err := b.CombinationBuilder.Build()

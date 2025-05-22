@@ -184,6 +184,7 @@ func NewCommand() (*cobra.Command, error) {
 
 	viper.SetConfigName("random-fit_config")
 	viper.SetEnvPrefix("RF")
+
 	if err := BindEnvConfig(rootCmd); err != nil {
 		return nil, err
 	}
@@ -195,12 +196,14 @@ func NewCommand() (*cobra.Command, error) {
 func Execute() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	wg := &sync.WaitGroup{}
+
 	defer func() {
 		stop()
 		wg.Wait()
 	}()
 
 	wg.Add(1)
+
 	go func() {
 		<-ctx.Done()
 

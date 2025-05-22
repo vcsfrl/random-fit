@@ -30,6 +30,7 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 	suite.NotNil(suite.definition)
 
 	suite.id = 0
+
 	uuid2.SetUuidFunc(func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil

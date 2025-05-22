@@ -68,6 +68,7 @@ func (suite *ExportSuite) SetupTest() {
 	suite.NoError(err)
 
 	suite.id = 0
+
 	slUuid.SetUuidFunc(func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
@@ -261,10 +262,12 @@ func (suite *ExportSuite) TestExportObjectInFolder() {
 	suite.NotEmpty(files)
 
 	suite.Len(files, suite.planDefinition.RecurrentGroups*suite.planDefinition.NrOfGroupCombinations)
+
 	for _, file := range files {
 		if file.IsDir() {
 			continue
 		}
+
 		suite.Contains(file.Name(), suite.planDefinition.Users[0])
 		suite.Contains(file.Name(), ".gob")
 

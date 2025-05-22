@@ -36,6 +36,7 @@ func (c *CombinationDefinition) New() {
 
 	c.cmd.Println(msgCreate, msgCombinationDefinition, name)
 	err := c.definitionManager.New(name)
+
 	if err != nil {
 		c.cmd.PrintErrln("Error: ", err)
 		return
@@ -43,12 +44,14 @@ func (c *CombinationDefinition) New() {
 
 	c.cmd.Println(msgDone, msgCreate, msgCombinationDefinition, name)
 	scriptName, err := c.definitionManager.GetScript(name)
+
 	if err != nil {
 		c.cmd.PrintErrln("Error getting script: ", err)
 		return
 	}
 
 	c.cmd.Println(msgEditScript, scriptName)
+
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
 		return
@@ -63,6 +66,7 @@ func (c *CombinationDefinition) Edit() {
 	}
 
 	c.cmd.Println(msgEdit, msgCombinationDefinition, name)
+
 	scriptName, err := c.definitionManager.GetScript(name)
 	if err != nil {
 		c.cmd.PrintErrln("Error getting script: ", err)
@@ -70,6 +74,7 @@ func (c *CombinationDefinition) Edit() {
 	}
 
 	c.cmd.Println(msgEditScript, scriptName)
+
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
 		return
@@ -86,6 +91,7 @@ func (c *CombinationDefinition) Delete() {
 
 	c.cmd.Println(msgDelete, msgCombinationDefinition, name)
 	err := c.definitionManager.Delete(name)
+
 	if err != nil {
 		c.cmd.PrintErrln("Error deleting script: ", err)
 		return
@@ -97,6 +103,7 @@ func (c *CombinationDefinition) Delete() {
 func (c *CombinationDefinition) List() {
 	c.cmd.Println(msgCombinationDefinition, msgList)
 	definitions, err := c.definitionManager.List()
+
 	if err != nil {
 		c.cmd.PrintErrln("Error listing definitions: ", err)
 		return

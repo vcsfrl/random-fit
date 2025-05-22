@@ -52,6 +52,7 @@ func (d *Data) GobEncode() ([]byte, error) {
 	}
 
 	var buffer bytes.Buffer
+
 	encoder := gob.NewEncoder(&buffer)
 	if err := encoder.Encode(gData); err != nil {
 		return nil, fmt.Errorf("error encoding data: %w", err)
@@ -98,6 +99,7 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 			if !slices.Contains(DataTypes, dataType) {
 				return fmt.Errorf("invalid data type: %s", dataType)
 			}
+
 			d.Type = dataType
 		case "Data":
 			d.Data = bytes.NewBuffer([]byte(unquoted))

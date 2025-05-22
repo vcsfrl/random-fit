@@ -36,6 +36,7 @@ func (p *PlanDefinition) New() {
 	}
 
 	p.cmd.Println(msgCreate, msgPlanDefinition, name)
+
 	err := p.definitionManager.New(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error: ", err)
@@ -43,6 +44,7 @@ func (p *PlanDefinition) New() {
 	}
 
 	p.cmd.Println(msgDone, msgCreate, msgPlanDefinition, name)
+
 	scriptName, err := p.definitionManager.GetFile(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error getting script: ", err)
@@ -50,6 +52,7 @@ func (p *PlanDefinition) New() {
 	}
 
 	p.cmd.Println(msgEditScript, scriptName)
+
 	if err := p.editScript(scriptName, "python"); err != nil {
 		p.cmd.PrintErrln("Error editing script: ", err)
 		return
@@ -58,6 +61,7 @@ func (p *PlanDefinition) New() {
 
 func (p *PlanDefinition) List() {
 	p.cmd.Println(msgPlanDefinition, msgList)
+
 	planDefinitions, err := p.definitionManager.List()
 	if err != nil {
 		p.cmd.PrintErrln("Error: ", err)
@@ -83,6 +87,7 @@ func (p *PlanDefinition) Edit() {
 
 	p.cmd.Println(msgEdit, msgPlanDefinition, name)
 	scriptName, err := p.definitionManager.GetFile(name)
+
 	if err != nil {
 		p.cmd.PrintErrln("Error getting script: ", err)
 		return
@@ -104,6 +109,7 @@ func (p *PlanDefinition) Delete() {
 	}
 
 	p.cmd.Println(msgDelete, msgPlanDefinition, name)
+
 	err := p.definitionManager.Delete(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error deleting paln definition: ", err)

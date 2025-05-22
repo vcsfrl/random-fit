@@ -80,10 +80,12 @@ func (cd *StarlarkDefinition) init() error {
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting ID field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
+
 	id, ok := sID.(starlark.String)
 	if !ok {
 		return fmt.Errorf("%w 'definition' ID field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
+
 	cd.ID = string(id)
 
 	// Retrieve the Details field fro	m the dict.
@@ -91,10 +93,12 @@ func (cd *StarlarkDefinition) init() error {
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
+
 	name, ok := sName.(starlark.String)
 	if !ok {
 		return fmt.Errorf("%w 'definition' name field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
+
 	cd.Details = string(name)
 
 	// Retrieve the BuildFunction field from the dict.
@@ -102,10 +106,12 @@ func (cd *StarlarkDefinition) init() error {
 	if err != nil || !ok {
 		return fmt.Errorf("%w 'definition' getting build function field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
+
 	buildFunction, ok := sBuildFunction.(*starlark.Function)
 	if !ok {
 		return fmt.Errorf("%w 'definition' build function field must be a function %s", ErrCombinationDefinition, cd.StarScript)
 	}
+
 	cd.buildFunction = buildFunction
 
 	return nil

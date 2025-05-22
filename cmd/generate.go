@@ -61,7 +61,9 @@ func (g *Generator) Combination() {
 		g.cmd.PrintErrln("Error getting combination definition:", err)
 		return
 	}
+
 	planDefinitionScript, err := g.planDefinitionManager.GetFile(planDefinitionName)
+
 	if err != nil {
 		g.cmd.PrintErrln("Error getting plan definition:", err)
 		return
@@ -72,9 +74,11 @@ func (g *Generator) Combination() {
 	planGenerator := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate(context.Background())
 
 	start := time.Now()
+
 	if g.export(planGenerator) {
 		return
 	}
+
 	g.logger.Info().Dur("duration", time.Since(start)).Msg("UserPlan generated and exported")
 	g.cmd.Println("UserPlan generated and exported in", time.Since(start))
 }
@@ -109,6 +113,7 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 func (g *Generator) startMonitor() {
 	g.logger.Info().Msgf("Starting debug chart server on port %s", g.conf.DebugChartPort)
 	server := &http.Server{Addr: fmt.Sprintf("0.0.0.0:%s", g.conf.DebugChartPort)}
+
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			g.logger.Error().Err(err).Msg("Server error.")
@@ -117,6 +122,7 @@ func (g *Generator) startMonitor() {
 
 	go func() {
 		<-g.cmd.Context().Done()
+
 		if err := server.Shutdown(context.Background()); err != nil {
 			g.logger.Error().Err(err).Msg("Error shutting down debug chart server.")
 			return
@@ -139,6 +145,7 @@ func (g *Generator) init() error {
 	if err != nil {
 		return err
 	}
+
 	g.logger = NewLogger()
 
 	g.combinationDefinitionManager = service.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())

@@ -24,6 +24,7 @@ func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
 
 func (m *PlanDefinitionManager) List() ([]string, error) {
 	result := make([]string, 0)
+
 	files, err := os.ReadDir(m.dataFolder)
 	if err != nil {
 		return nil, fmt.Errorf("%s: read data folder: %w", ErrPlanDefinitionManager, err)
@@ -49,6 +50,7 @@ func (m *PlanDefinitionManager) New(plan string) error {
 	}
 
 	emptyPlan := m.getSamplePlanDefinition()
+
 	buff, err := json.Marshal(emptyPlan)
 	if err != nil {
 		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanDefinitionManager, err)

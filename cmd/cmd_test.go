@@ -28,6 +28,7 @@ type CommandsSuite struct {
 func (suite *CommandsSuite) SetupTest() {
 	// Capture output
 	var err error
+
 	suite.buffer = new(bytes.Buffer)
 	suite.command, err = NewCommand()
 	suite.NoError(err)
@@ -60,6 +61,7 @@ func (suite *CommandsSuite) TestSubcommands() {
 	subcommands := suite.command.Commands()
 	var expectedSubcommandNames = []string{"definition", "code", "generate", "combination", "new", "edit", "delete", "plan", "new", "edit", "delete", "generate", "combination"}
 	var subcommandNames []string
+
 	for _, cmd := range subcommands {
 		subcommandNames = append(subcommandNames, cmd.Name())
 		for _, subCmd := range cmd.Commands() {
@@ -129,6 +131,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	suite.Contains(output, msgDone+" "+msgCreate+" "+msgCombinationDefinition+" test1")
 	suite.Contains(output, msgEditScript+" "+scriptName)
 	suite.Contains(output, errNoEnvEditor.Error())
+
 	scriptData, err := os.ReadFile(scriptName)
 	suite.NoError(err)
 	suite.Contains(string(scriptData), "definition =")
@@ -144,6 +147,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	suite.Contains(output, msgDone+" "+msgCreate+" "+msgCombinationDefinition+" test2")
 	suite.Contains(output, msgEditScript+" "+scriptName)
 	suite.Contains(output, errNoEnvEditor.Error())
+
 	scriptData, err = os.ReadFile(scriptName)
 	suite.NoError(err)
 	suite.Contains(string(scriptData), "definition =")
@@ -249,6 +253,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 	suite.Contains(output, msgDone+" "+msgCreate+" "+msgPlanDefinition+" test1")
 	suite.Contains(output, msgEditScript+" "+scriptName)
 	suite.Contains(output, errNoEnvEditor.Error())
+
 	scriptData, err := os.ReadFile(scriptName)
 	suite.NoError(err)
 	suite.Contains(string(scriptData), "RecurrentGroupNamePrefix")

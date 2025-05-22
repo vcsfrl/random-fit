@@ -131,6 +131,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 	suite.NotNil(suite.definition)
 
 	suite.id = 0
+
 	uuid.SetUuidFunc(func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil

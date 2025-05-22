@@ -55,10 +55,8 @@ func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedC
 	for planCombination := range generator {
 		select {
 		case <-ctx.Done():
-
 			return ErrExportTerminated
-		default:
-			// continue
+		default: // continue
 		}
 
 		if planCombination.Err != nil {
@@ -97,6 +95,7 @@ func (e *Exporter) containerFolder(plan Plan, group Group) string {
 			folder = filepath.Join(folder, plan.CreatedAt.Format("2006-01-02-15-04"))
 			continue
 		}
+
 		folder = filepath.Join(folder, container)
 	}
 
@@ -148,6 +147,7 @@ func (e *Exporter) exportPlannedCombinationObject(plan *PlannedCombination) erro
 func (e *Exporter) saveToFile(groupCombination *combination.Combination, data *combination.Data, groupFolder string, i int) error {
 	fileName := fmt.Sprintf("%s_%d.%s", groupCombination.Details, i, data.Extension)
 	filePath := filepath.Join(groupFolder, strings.ReplaceAll(fileName, " ", "_"))
+
 	err := os.WriteFile(filePath, data.Data.Bytes(), 0666)
 	if err != nil {
 		return fmt.Errorf("%w: error writing file: %s", ErrExport, err)
