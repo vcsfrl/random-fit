@@ -1,8 +1,9 @@
-package combination
+package combination_test
 
 import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/combination"
 	random2 "github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	uuid2 "github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	"testing"
@@ -15,7 +16,7 @@ func TestCombinationDefinitionSuite(t *testing.T) {
 type CombinationDefinitionSuite struct {
 	suite.Suite
 
-	definition *StarlarkDefinition
+	definition *combination.StarlarkDefinition
 	id         int
 	testRand   uint
 	scriptFile string
@@ -25,7 +26,7 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 	suite.scriptFile = "./testdata/star_script.star"
 
 	var err error
-	suite.definition, err = NewCombinationDefinition(suite.scriptFile)
+	suite.definition, err = combination.NewCombinationDefinition(suite.scriptFile)
 	suite.NoError(err)
 	suite.NotNil(suite.definition)
 

@@ -2,17 +2,17 @@ package cmd
 
 import "fmt"
 
-var errNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
+var ErrNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
 
-var msgNameMissing = "Name is required."
-var msgCombinationDefinitionNameMissing = "Combination definition name is required."
-var msgPlanDefinitionNameMissing = "Combination definition name is required."
-var msgCombinationDefinition = "Combination Definition"
-var msgPlanDefinition = "Plan Definition"
-var msgList = "List"
-var msgCreate = "Create"
-var msgEdit = "Edit"
-var msgDelete = "Delete"
-var msgDone = "DONE:"
-var msgEditScript = "Editing script"
-var msgNoItemsFound = "No items found!"
+var MsgNameMissing = "Name is required."
+var MsgCombinationDefinitionNameMissing = "Combination definition name is required."
+var MsgPlanDefinitionNameMissing = "Combination definition name is required."
+var MsgCombinationDefinition = "Combination Definition"
+var MsgPlanDefinition = "Plan Definition"
+var MsgList = "List"
+var MsgCreate = "Create"
+var MsgEdit = "Edit"
+var MsgDelete = "Delete"
+var MsgDone = "DONE:"
+var MsgEditScript = "Editing script"
+var MsgNoItemsFound = "No items found!"

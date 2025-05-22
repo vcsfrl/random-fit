@@ -30,11 +30,11 @@ func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *service.C
 func (c *CombinationDefinition) New() {
 	name := c.getArg(0, "name")
 	if name == "" {
-		c.cmd.PrintErrln(msgNameMissing)
+		c.cmd.PrintErrln(MsgNameMissing)
 		return
 	}
 
-	c.cmd.Println(msgCreate, msgCombinationDefinition, name)
+	c.cmd.Println(MsgCreate, MsgCombinationDefinition, name)
 	err := c.definitionManager.New(name)
 
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *CombinationDefinition) New() {
 		return
 	}
 
-	c.cmd.Println(msgDone, msgCreate, msgCombinationDefinition, name)
+	c.cmd.Println(MsgDone, MsgCreate, MsgCombinationDefinition, name)
 	scriptName, err := c.definitionManager.GetScript(name)
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (c *CombinationDefinition) New() {
 		return
 	}
 
-	c.cmd.Println(msgEditScript, scriptName)
+	c.cmd.Println(MsgEditScript, scriptName)
 
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
@@ -61,11 +61,11 @@ func (c *CombinationDefinition) New() {
 func (c *CombinationDefinition) Edit() {
 	name := c.getArg(0, "name")
 	if name == "" {
-		c.cmd.PrintErrln(msgNameMissing)
+		c.cmd.PrintErrln(MsgNameMissing)
 		return
 	}
 
-	c.cmd.Println(msgEdit, msgCombinationDefinition, name)
+	c.cmd.Println(MsgEdit, MsgCombinationDefinition, name)
 
 	scriptName, err := c.definitionManager.GetScript(name)
 	if err != nil {
@@ -73,7 +73,7 @@ func (c *CombinationDefinition) Edit() {
 		return
 	}
 
-	c.cmd.Println(msgEditScript, scriptName)
+	c.cmd.Println(MsgEditScript, scriptName)
 
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
@@ -84,11 +84,11 @@ func (c *CombinationDefinition) Edit() {
 func (c *CombinationDefinition) Delete() {
 	name := c.getArg(0, "name")
 	if name == "" {
-		c.cmd.PrintErrln(msgNameMissing)
+		c.cmd.PrintErrln(MsgNameMissing)
 		return
 	}
 
-	c.cmd.Println(msgDelete, msgCombinationDefinition, name)
+	c.cmd.Println(MsgDelete, MsgCombinationDefinition, name)
 	err := c.definitionManager.Delete(name)
 
 	if err != nil {
@@ -96,11 +96,11 @@ func (c *CombinationDefinition) Delete() {
 		return
 	}
 
-	c.cmd.Println(msgDone, msgDelete, msgCombinationDefinition, name)
+	c.cmd.Println(MsgDone, MsgDelete, MsgCombinationDefinition, name)
 }
 
 func (c *CombinationDefinition) List() {
-	c.cmd.Println(msgCombinationDefinition, msgList)
+	c.cmd.Println(MsgCombinationDefinition, MsgList)
 	definitions, err := c.definitionManager.List()
 
 	if err != nil {
@@ -109,7 +109,7 @@ func (c *CombinationDefinition) List() {
 	}
 
 	if len(definitions) == 0 {
-		c.cmd.Println(msgNoItemsFound)
+		c.cmd.Println(MsgNoItemsFound)
 		return
 	}
 

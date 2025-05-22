@@ -16,7 +16,7 @@ type BaseHandler struct {
 
 func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 	if os.Getenv("EDITOR") == "" {
-		return errNoEnvEditor
+		return ErrNoEnvEditor
 	}
 	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
 	cmd.Stdin = b.cmd.InOrStdin()
@@ -49,17 +49,7 @@ func (b *BaseHandler) getArg(position int, flagName string) string {
 }
 
 func (b *BaseHandler) createFolder(folder string) error {
-	return createFolder(folder)
-}
-
-func createFolder(folder string) error {
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		if err := os.MkdirAll(folder, 0755); err != nil {
-			return fmt.Errorf("error creating folder %s: %w", folder, err)
-		}
-	}
-
-	return nil
+	return CreateFolder(folder)
 }
 
 func (b *BaseHandler) initFolders() error {
@@ -85,6 +75,16 @@ func (b *BaseHandler) initFolders() error {
 	if err != nil {
 		b.cmd.PrintErrln("Error creating storage folder: ", err)
 		return err
+	}
+
+	return nil
+}
+
+func CreateFolder(folder string) error {
+	if _, err := os.Stat(folder); os.IsNotExist(err) {
+		if err := os.MkdirAll(folder, 0755); err != nil {
+			return fmt.Errorf("error creating folder %s: %w", folder, err)
+		}
 	}
 
 	return nil
