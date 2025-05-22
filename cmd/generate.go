@@ -84,29 +84,30 @@ func (g *Generator) Combination() {
 }
 
 func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
-	wg := sync.WaitGroup{}
+	waitGroup := sync.WaitGroup{}
 
 	g.logger.Info().Msgf("Starting %d workers to export plans", g.nrWorkers())
 	for i := 0; i < g.nrWorkers(); i++ {
-		wg.Add(1)
+		waitGroup.Add(1)
 		g.logger.Info().Msgf("Starting worker %d", i)
-		go func(i int) {
+
+		go func(index int) {
 			defer func() {
-				g.logger.Info().Msgf("Finished worker %d", i)
-				wg.Done()
+				g.logger.Info().Msgf("Finished worker %d", index)
+				waitGroup.Done()
 			}()
 
 			if err := g.planExporter.ExportGenerator(g.cmd.Context(), planGenerator); err != nil {
-				g.logger.Error().Err(err).Msgf("Error exporting plan in worker %d", i)
+				g.logger.Error().Err(err).Msgf("Error exporting plan in worker %d", index)
 				g.cmd.Println("Error exporting plan:", err)
 			}
 
-			g.logger.Info().Msgf("Worker %d finished exporting plan", i)
+			g.logger.Info().Msgf("Worker %d finished exporting plan", index)
 		}(i)
 	}
 
 	// Wait for all workers to finish
-	wg.Wait()
+	waitGroup.Wait()
 	return false
 }
 

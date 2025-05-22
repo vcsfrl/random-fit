@@ -65,50 +65,50 @@ func (cd *StarlarkDefinition) init() error {
 	}
 
 	// Retrieve the definition from the globals.
-	definition, ok := globals["definition"]
-	if !ok {
+	definition, hasDefinition := globals["definition"]
+	if !hasDefinition {
 		return fmt.Errorf("%w missing 'definition' Dict %s", ErrCombinationDefinition, cd.StarScript)
 	}
 
-	dictDefinition, ok := definition.(*starlark.Dict)
-	if !ok {
+	dictDefinition, hasDefinition := definition.(*starlark.Dict)
+	if !hasDefinition {
 		return fmt.Errorf("%w 'definition' must be a Dict %s", ErrCombinationDefinition, cd.StarScript)
 	}
 
 	// Retrieve the ID field from the dict.
-	sID, ok, err := dictDefinition.Get(starlark.String("ID"))
-	if err != nil || !ok {
+	sID, hasDefinition, err := dictDefinition.Get(starlark.String("ID"))
+	if err != nil || !hasDefinition {
 		return fmt.Errorf("%w 'definition' getting ID field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
 
-	id, ok := sID.(starlark.String)
-	if !ok {
+	id, hasDefinition := sID.(starlark.String)
+	if !hasDefinition {
 		return fmt.Errorf("%w 'definition' ID field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
 
 	cd.ID = string(id)
 
 	// Retrieve the Details field fro	m the dict.
-	sName, ok, err := dictDefinition.Get(starlark.String("Details"))
-	if err != nil || !ok {
+	sName, hasDefinition, err := dictDefinition.Get(starlark.String("Details"))
+	if err != nil || !hasDefinition {
 		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
 
-	name, ok := sName.(starlark.String)
-	if !ok {
+	name, hasDefinition := sName.(starlark.String)
+	if !hasDefinition {
 		return fmt.Errorf("%w 'definition' name field must be a string %s", ErrCombinationDefinition, cd.StarScript)
 	}
 
 	cd.Details = string(name)
 
 	// Retrieve the BuildFunction field from the dict.
-	sBuildFunction, ok, err := dictDefinition.Get(starlark.String("BuildFunction"))
-	if err != nil || !ok {
+	sBuildFunction, hasDefinition, err := dictDefinition.Get(starlark.String("BuildFunction"))
+	if err != nil || !hasDefinition {
 		return fmt.Errorf("%w 'definition' getting build function field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
 	}
 
-	buildFunction, ok := sBuildFunction.(*starlark.Function)
-	if !ok {
+	buildFunction, hasDefinition := sBuildFunction.(*starlark.Function)
+	if !hasDefinition {
 		return fmt.Errorf("%w 'definition' build function field must be a function %s", ErrCombinationDefinition, cd.StarScript)
 	}
 

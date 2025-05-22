@@ -52,7 +52,7 @@ func (p *PlanDefinition) New() {
 
 	p.cmd.Println(msgEditScript, scriptName)
 
-	if err := p.editScript(scriptName, "python"); err != nil {
+	if err := p.editScript(scriptName, "json"); err != nil {
 		p.cmd.PrintErrln("Error editing script: ", err)
 		return
 	}
@@ -92,7 +92,7 @@ func (p *PlanDefinition) Edit() {
 		return
 	}
 
-	if err := p.editScript(scriptName, "python"); err != nil {
+	if err := p.editScript(scriptName, "json"); err != nil {
 		p.cmd.PrintErrln("Error editing script: ", err)
 		return
 	}
