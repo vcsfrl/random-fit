@@ -1,9 +1,10 @@
-package service
+package service_test
 
 import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 	"path/filepath"
 	"testing"
@@ -17,7 +18,7 @@ type StarDefinitionManagerSuite struct {
 	suite.Suite
 	testFolder string
 
-	definitionManager *CombinationStarDefinitionManager
+	definitionManager *service.CombinationStarDefinitionManager
 }
 
 func (suite *StarDefinitionManagerSuite) SetupTest() {
@@ -27,7 +28,7 @@ func (suite *StarDefinitionManagerSuite) SetupTest() {
 	err := os.MkdirAll(suite.testFolder, 0755)
 	suite.NoError(err)
 
-	suite.definitionManager = NewCombinationStarDefinitionManager(suite.testFolder)
+	suite.definitionManager = service.NewCombinationStarDefinitionManager(suite.testFolder)
 }
 
 func (suite *StarDefinitionManagerSuite) TearDownTest() {
@@ -70,7 +71,7 @@ func (suite *StarDefinitionManagerSuite) TestNew() {
 	data, err := os.ReadFile(testDefinitionFile)
 	suite.NoError(err)
 	suite.NotEmpty(data)
-	suite.Equal(definitionTemplate, string(data))
+	suite.Equal(service.DefinitionTemplate, string(data))
 
 	// do not overwrite the file if it already exists
 	err = suite.definitionManager.New(testDefinitionFileName)

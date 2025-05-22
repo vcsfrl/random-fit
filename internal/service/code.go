@@ -12,8 +12,8 @@ const definitionSkeleton = `package service
 // This is a generated file. Do not edit!
 
 func init() {
-	// definitionTemplate is a template for a definition file
-	definitionTemplate = {{.}}
+	// DefinitionTemplate is a template for a definition file
+	DefinitionTemplate = {{.}}
 }`
 
 func GenerateCode(printer Printer, config *Config) {

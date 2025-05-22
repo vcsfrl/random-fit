@@ -10,7 +10,7 @@ import (
 
 var ErrCombinationDefinitionManager = "combination definition manager error"
 
-var definitionTemplate string
+var DefinitionTemplate string
 
 type CombinationStarDefinitionManager struct {
 	dataFolder string
@@ -52,7 +52,7 @@ func (dm *CombinationStarDefinitionManager) New(definitionName string) error {
 		return fmt.Errorf("%s: definition already exists", ErrCombinationDefinitionManager)
 	}
 
-	if err := os.WriteFile(definitionFilePath, []byte(definitionTemplate), 0644); err != nil {
+	if err := os.WriteFile(definitionFilePath, []byte(DefinitionTemplate), 0644); err != nil {
 		return fmt.Errorf("%s: new definition: %w", ErrCombinationDefinitionManager, err)
 	}
 
