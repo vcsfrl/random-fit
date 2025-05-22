@@ -16,6 +16,16 @@ import _ "github.com/mkevac/debugcharts"
 
 const defaultWorkers = 2
 
+type Generator struct {
+	BaseHandler
+
+	combinationDefinitionManager *service.CombinationStarDefinitionManager
+	planDefinitionManager        *service.PlanDefinitionManager
+	planExporter                 *plan.Exporter
+	logger                       zerolog.Logger
+	workers                      int
+}
+
 func NewGenerator(cmd *cobra.Command, args []string, config *service.Config) (*Generator, error) {
 	generator := &Generator{
 		BaseHandler: BaseHandler{
@@ -31,17 +41,6 @@ func NewGenerator(cmd *cobra.Command, args []string, config *service.Config) (*G
 
 	return generator, nil
 }
-
-type Generator struct {
-	BaseHandler
-
-	combinationDefinitionManager *service.CombinationStarDefinitionManager
-	planDefinitionManager        *service.PlanDefinitionManager
-	planExporter                 *plan.Exporter
-	logger                       zerolog.Logger
-	workers                      int
-}
-
 func (g *Generator) Combination() {
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {

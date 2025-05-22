@@ -16,6 +16,10 @@ type Generator interface {
 type Crypto struct {
 }
 
+func NewCrypto() *Crypto {
+	return &Crypto{}
+}
+
 func (c *Crypto) Uint(min, max uint) (uint, error) {
 	bg := big.NewInt(int64(max - min + 1))
 
@@ -25,8 +29,4 @@ func (c *Crypto) Uint(min, max uint) (uint, error) {
 	}
 
 	return uint(n.Uint64()) + min, nil
-}
-
-func NewCrypto() *Crypto {
-	return &Crypto{}
 }

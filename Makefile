@@ -35,7 +35,11 @@ test-debug:
 	docker compose run  --remove-orphans --build --rm --service-ports random-fit_dev /go/bin/dlv --listen=:$(RF_DEBUGGER_TEST_PORT) --headless=true --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --api-version=2 --accept-multiclient test  github.com/vcsfrl/random-fit/$(testPath) -- -test.run ^$(testName)$$;
 
 lint: ## Run linter.
-	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.1.6 golangci-lint run
+	#docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.0.2 golangci-lint run
+	docker compose down --remove-orphans
+	docker compose up random-fit_dev -d
+	docker compose exec random-fit_dev /go/bin/golangci-lint run --timeout 5m
+	docker compose down --remove-orphans
 
 build-docker-image:
 	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.0 --target prod .

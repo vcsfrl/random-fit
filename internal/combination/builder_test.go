@@ -25,27 +25,6 @@ func (suite *StarlarkBuilderSuite) SetupTest() {
 	suite.scriptFile = "./testdata/star_script.star"
 }
 
-func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
-	var err error
-	suite.definition, err = NewCombinationDefinition(scriptFile)
-	suite.NoError(err)
-	suite.NotNil(suite.definition)
-
-	suite.id = 0
-	uuid.SetUuidFunc(func() (string, error) {
-		suite.id++
-		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
-	})
-
-	suite.testRand = 0
-	random.SetUintFunc(func(min uint, max uint) (uint, error) {
-		suite.testRand++
-		return suite.testRand, nil
-	})
-
-	suite.NoError(err)
-}
-
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.initDefinition(suite.scriptFile)
 	builder, err := NewStarBuilder(suite.definition)
@@ -143,4 +122,25 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 	suite.Contains(combination.Data[DataTypeJson].Data.String(), "[1,2,3,4,5,6,7,8,9,10]")
 	suite.Contains(combination.Data[DataTypeMd].Data.String(), "Sample")
 	suite.Contains(combination.Data[DataTypeMd].Data.String(), "[ 1 2 3 4 5 6 7 8 9 10 ]")
+}
+
+func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
+	var err error
+	suite.definition, err = NewCombinationDefinition(scriptFile)
+	suite.NoError(err)
+	suite.NotNil(suite.definition)
+
+	suite.id = 0
+	uuid.SetUuidFunc(func() (string, error) {
+		suite.id++
+		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
+	})
+
+	suite.testRand = 0
+	random.SetUintFunc(func(min uint, max uint) (uint, error) {
+		suite.testRand++
+		return suite.testRand, nil
+	})
+
+	suite.NoError(err)
 }

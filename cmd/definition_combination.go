@@ -27,16 +27,6 @@ func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *service.C
 	return combinationDefinition, nil
 }
 
-func (c *CombinationDefinition) init() error {
-	err := c.initFolders()
-	if err != nil {
-		return err
-	}
-
-	c.definitionManager = service.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
-	return nil
-}
-
 func (c *CombinationDefinition) New() {
 	name := c.getArg(0, "name")
 	if name == "" {
@@ -120,4 +110,14 @@ func (c *CombinationDefinition) List() {
 	for _, definition := range definitions {
 		c.cmd.Println(" - " + definition)
 	}
+}
+
+func (c *CombinationDefinition) init() error {
+	err := c.initFolders()
+	if err != nil {
+		return err
+	}
+
+	c.definitionManager = service.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
+	return nil
 }

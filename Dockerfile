@@ -8,7 +8,7 @@ RUN mv micro /usr/bin
 RUN mkdir -p /srv/random-fit
 RUN chown $username:$username /srv/random-fit -R
 USER $username:$username
-RUN go install github.com/divan/expvarmon@latest
+RUN go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.1.6
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
 WORKDIR /srv/random-fit
 

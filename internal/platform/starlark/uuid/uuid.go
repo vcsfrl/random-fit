@@ -18,6 +18,7 @@ var v7Func func() (string, error)
 func v7(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
 	uuidFunc := getUuidFunc()
 	id, err := uuidFunc()
+
 	if err != nil {
 		return nil, err
 

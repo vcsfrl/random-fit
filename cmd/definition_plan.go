@@ -28,16 +28,6 @@ func NewPlanDefinition(cmd *cobra.Command, args []string, conf *service.Config) 
 
 }
 
-func (p *PlanDefinition) init() error {
-	err := p.initFolders()
-	if err != nil {
-		return err
-	}
-
-	p.definitionManager = service.NewPlanDefinitionManager(p.conf.PlanFolder())
-	return nil
-}
-
 func (p *PlanDefinition) New() {
 	name := p.getArg(0, "name")
 	if name == "" {
@@ -121,4 +111,14 @@ func (p *PlanDefinition) Delete() {
 	}
 
 	p.cmd.Println(msgDone, msgDelete, msgPlanDefinition, name)
+}
+
+func (p *PlanDefinition) init() error {
+	err := p.initFolders()
+	if err != nil {
+		return err
+	}
+
+	p.definitionManager = service.NewPlanDefinitionManager(p.conf.PlanFolder())
+	return nil
 }

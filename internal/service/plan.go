@@ -16,6 +16,12 @@ type PlanDefinitionManager struct {
 	dataFolder string
 }
 
+func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
+	return &PlanDefinitionManager{
+		dataFolder: folder,
+	}
+}
+
 func (m *PlanDefinitionManager) List() ([]string, error) {
 	result := make([]string, 0)
 	files, err := os.ReadDir(m.dataFolder)
@@ -27,6 +33,7 @@ func (m *PlanDefinitionManager) List() ([]string, error) {
 		if file.IsDir() || file.Name()[0] == '.' {
 			continue
 		}
+
 		result = append(result, strings.TrimSuffix(filepath.Base(file.Name()), filepath.Ext(file.Name())))
 	}
 
@@ -59,20 +66,6 @@ func (m *PlanDefinitionManager) New(plan string) error {
 	return nil
 }
 
-func (m *PlanDefinitionManager) getSamplePlanDefinition() *rfPlan.Definition {
-	return &rfPlan.Definition{
-		ID:      "definition",
-		Details: "Definition",
-		Users:   []string{"user1"},
-		UserData: rfPlan.UserData{
-			ContainerName:            []string{"ContainerName", "_date"},
-			RecurrentGroupNamePrefix: "Group",
-			RecurrentGroups:          1,
-			NrOfGroupCombinations:    1,
-		},
-	}
-}
-
 func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
 	planFileName := fmt.Sprintf("%s.json", plan)
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
@@ -97,8 +90,16 @@ func (m *PlanDefinitionManager) Delete(name string) error {
 	return nil
 }
 
-func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
-	return &PlanDefinitionManager{
-		dataFolder: folder,
+func (m *PlanDefinitionManager) getSamplePlanDefinition() *rfPlan.Definition {
+	return &rfPlan.Definition{
+		ID:      "definition",
+		Details: "Definition",
+		Users:   []string{"user1"},
+		UserData: rfPlan.UserData{
+			ContainerName:            []string{"ContainerName", "_date"},
+			RecurrentGroupNamePrefix: "Group",
+			RecurrentGroups:          1,
+			NrOfGroupCombinations:    1,
+		},
 	}
 }

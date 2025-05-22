@@ -19,11 +19,11 @@ var randomUintFunc func(min uint, max uint) (uint, error)
 // getUint() is a Go function called from Starlark.
 // It returns multiple random values from an interval of type uint.
 func getUint(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-	var minVal uint
-	var maxVal uint
+	var minVal, maxVal uint
+
 	var nr int
-	var allowDuplicates = false
-	var sort = false
+
+	var allowDuplicates, sort = false, false
 
 	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &nr, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
 		return nil, err
