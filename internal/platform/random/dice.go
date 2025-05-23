@@ -8,13 +8,15 @@ import (
 var ErrDice = errors.New("dice error")
 var ErrDiceNotEnoughSides = fmt.Errorf("%w: dice not enough sides", ErrDice)
 
+const DiceSides = uint(6)
+
 type Dice struct {
 	generator Generator
 	Sides     uint
 }
 
 func NewCubeDice() *Dice {
-	return &Dice{generator: NewCrypto(), Sides: uint(6)}
+	return &Dice{generator: NewCrypto(), Sides: DiceSides}
 }
 
 func NewDice(generator Generator, sides uint) *Dice {

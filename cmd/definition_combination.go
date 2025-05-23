@@ -39,6 +39,7 @@ func (c *CombinationDefinition) New() {
 
 	if err != nil {
 		c.cmd.PrintErrln("Error: ", err)
+
 		return
 	}
 
@@ -134,5 +135,6 @@ func (c *CombinationDefinition) init() error {
 	}
 
 	c.definitionManager = service.NewCombinationStarDefinitionManager(c.conf.DefinitionFolder())
+
 	return nil
 }

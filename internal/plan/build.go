@@ -12,6 +12,8 @@ import (
 var ErrPlanBuild = errors.New("error building plan")
 var ErrPlanBuildTerminated = fmt.Errorf("%w: build terminated", ErrPlanBuild)
 
+const GeneratorBuffer = 1000
+
 type Builder struct {
 	Definition         *Definition
 	Now                func() time.Time
@@ -100,7 +102,7 @@ func (b *Builder) Build() (*UserPlan, error) {
 }
 
 func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
-	generator := make(chan *PlannedCombination, 1000)
+	generator := make(chan *PlannedCombination, GeneratorBuffer)
 
 	uuidV7, err := b.UUIDV7()
 	if err != nil {

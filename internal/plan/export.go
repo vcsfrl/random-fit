@@ -14,6 +14,8 @@ import (
 var ErrExport = errors.New("error exporting plan")
 var ErrExportTerminated = fmt.Errorf("%w: export terminated", ErrExport)
 
+const FolderPermission = 0755
+
 type Exporter struct {
 	OutputDir  string
 	StorageDir string
@@ -30,7 +32,8 @@ func (e *Exporter) Export(plan *UserPlan) error {
 	for userID, groups := range plan.UserGroups {
 		for _, group := range groups {
 			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan.Plan, group.Group), group.Details), " ", "_")
-			if err := os.MkdirAll(groupFolder, 0755); err != nil {
+
+			if err := os.MkdirAll(groupFolder, FolderPermission); err != nil {
 				return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
 			}
 
