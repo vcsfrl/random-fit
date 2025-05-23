@@ -68,7 +68,7 @@ func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedC
 		}
 
 		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
-		if err := os.MkdirAll(groupFolder, 0755); err != nil {
+		if err := os.MkdirAll(groupFolder, FolderPermission); err != nil {
 			return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
 		}
 

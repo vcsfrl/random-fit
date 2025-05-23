@@ -120,8 +120,8 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 
 		for _, user := range b.Definition.Users {
 			// Create groups
-			for i := range b.Definition.RecurrentGroups {
-				for j := range b.Definition.NrOfGroupCombinations {
+			for nrRecurrentGroup := range b.Definition.RecurrentGroups {
+				for nrGroupCombination := range b.Definition.NrOfGroupCombinations {
 					select {
 					case <-ctx.Done():
 						generator <- &PlannedCombination{Err: ErrPlanBuildTerminated}
@@ -139,12 +139,12 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 							Details:      b.Definition.Details,
 						},
 						Group: Group{
-							Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
+							Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, nrRecurrentGroup+1),
 							ContainerName: b.Definition.ContainerName,
 							User:          user,
 						},
 						Combination:   newCombination,
-						GroupSerialID: j + 1,
+						GroupSerialID: nrGroupCombination + 1,
 						Err:           err,
 					}
 
