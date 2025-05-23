@@ -219,7 +219,7 @@ func (suite *ExportSuite) TestExportObject() {
 	suite.Require().NoError(err)
 
 	// Check if the user folder exists
-	dataFile := filepath.Join(suite.storageFolder, fmt.Sprintf("%s.gob", plan.UUID.String()))
+	dataFile := filepath.Join(suite.storageFolder, plan.UUID.String()+".gob")
 	suite.True(suite.fileExists(dataFile))
 
 	// open the file

@@ -2,13 +2,14 @@ package plan
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"time"
 )
 
-var ErrPlanBuild = fmt.Errorf("error building plan")
+var ErrPlanBuild = errors.New("error building plan")
 var ErrPlanBuildTerminated = fmt.Errorf("%w: build terminated", ErrPlanBuild)
 
 type Builder struct {

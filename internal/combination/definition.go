@@ -1,6 +1,7 @@
 package combination
 
 import (
+	"errors"
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/template"
@@ -11,7 +12,7 @@ import (
 	"go.starlark.net/syntax"
 )
 
-var ErrCombinationDefinition = fmt.Errorf("error combination definition")
+var ErrCombinationDefinition = errors.New("error combination definition")
 
 type StarlarkDefinition struct {
 	ID         string

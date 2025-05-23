@@ -2,7 +2,6 @@ package service_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
@@ -13,6 +12,7 @@ import (
 )
 
 func TestPlanDefinitionManager(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(StarPlanManagerSuite))
 }
 
@@ -61,7 +61,7 @@ func (suite *StarPlanManagerSuite) TestList() {
 func (suite *StarPlanManagerSuite) TestNew() {
 	testPlan := "test-plan"
 	// create a test plan file
-	testPlanFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.json", testPlan))
+	testPlanFile := filepath.Join(suite.testFolder, testPlan+".json")
 
 	// create a new plan
 	err := suite.planDefinitionManager.New(testPlan)
@@ -91,7 +91,7 @@ func (suite *StarPlanManagerSuite) TestNew() {
 func (suite *StarPlanManagerSuite) TestGetFile() {
 	testPlan := "test-plan"
 	// create a test plan file
-	testPlanFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.json", testPlan))
+	testPlanFile := filepath.Join(suite.testFolder, testPlan+".json")
 
 	// create a new plan
 	err := suite.planDefinitionManager.New(testPlan)

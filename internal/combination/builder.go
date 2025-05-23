@@ -2,13 +2,14 @@ package combination
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"time"
 )
 
-var ErrStarBuilder = fmt.Errorf("error combination definition")
+var ErrStarBuilder = errors.New("error combination definition")
 
 type Builder interface {
 	Build() (*Combination, error)

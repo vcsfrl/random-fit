@@ -42,7 +42,7 @@ func (m *PlanDefinitionManager) List() ([]string, error) {
 }
 
 func (m *PlanDefinitionManager) New(plan string) error {
-	planFileName := fmt.Sprintf("%s.json", plan)
+	planFileName := plan + ".json"
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
 
 	if _, err := os.Stat(planFilePath); !os.IsNotExist(err) {
@@ -69,7 +69,7 @@ func (m *PlanDefinitionManager) New(plan string) error {
 }
 
 func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
-	planFileName := fmt.Sprintf("%s.json", plan)
+	planFileName := plan + ".json"
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
 
 	if _, err := os.Stat(planFilePath); os.IsNotExist(err) {

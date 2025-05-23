@@ -3,6 +3,7 @@ package plan
 import (
 	"context"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"os"
@@ -10,7 +11,7 @@ import (
 	"strings"
 )
 
-var ErrExport = fmt.Errorf("error exporting plan")
+var ErrExport = errors.New("error exporting plan")
 var ErrExportTerminated = fmt.Errorf("%w: export terminated", ErrExport)
 
 type Exporter struct {
@@ -104,7 +105,7 @@ func (e *Exporter) containerFolder(plan Plan, group Group) string {
 
 func (e *Exporter) exportObject(plan *UserPlan) error {
 	// save the plan to storage
-	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s.gob", plan.UUID.String()))
+	storageFile := filepath.Join(e.StorageDir, plan.UUID.String()+".gob")
 	//open the file
 	file, err := os.Create(storageFile)
 	if err != nil {

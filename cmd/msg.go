@@ -1,8 +1,10 @@
 package cmd
 
-import "fmt"
+import (
+	"errors"
+)
 
-var ErrNoEnvEditor = fmt.Errorf("EDITOR environment variable is not set")
+var ErrNoEnvEditor = errors.New("EDITOR environment variable is not set")
 
 var MsgNameMissing = "Name is required."
 var MsgCombinationDefinitionNameMissing = "Combination definition name is required."

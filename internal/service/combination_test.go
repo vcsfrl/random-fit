@@ -1,7 +1,6 @@
 package service_test
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/service"
@@ -41,7 +40,7 @@ func (suite *StarDefinitionManagerSuite) TestList() {
 	// create a test definitionFileName files
 	testDefinitions := []string{"test-definitionFileName-1", "test-definitionFileName-2", "test-definitionFileName-3"}
 	for _, definitionFileName := range testDefinitions {
-		testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", definitionFileName))
+		testDefinitionFile := filepath.Join(suite.testFolder, definitionFileName+".star")
 		err := os.WriteFile(testDefinitionFile, []byte(`test`), 0644)
 		suite.Require().NoError(err)
 	}
@@ -59,7 +58,7 @@ func (suite *StarDefinitionManagerSuite) TestList() {
 func (suite *StarDefinitionManagerSuite) TestNew() {
 	// create a test definitionFileName file
 	testDefinitionFileName := "test-definitionFileName"
-	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
+	testDefinitionFile := filepath.Join(suite.testFolder, testDefinitionFileName+".star")
 
 	err := suite.definitionManager.New(testDefinitionFileName)
 	suite.Require().NoError(err)
@@ -81,7 +80,7 @@ func (suite *StarDefinitionManagerSuite) TestNew() {
 func (suite *StarDefinitionManagerSuite) TestGetScript() {
 	// create a test definitionFileName file
 	testDefinitionFileName := "test-definitionFileName"
-	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
+	testDefinitionFile := filepath.Join(suite.testFolder, testDefinitionFileName+".star")
 
 	err := suite.definitionManager.New(testDefinitionFileName)
 	suite.Require().NoError(err)

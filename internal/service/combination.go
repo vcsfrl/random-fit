@@ -44,7 +44,7 @@ func (dm *CombinationStarDefinitionManager) List() ([]string, error) {
 
 func (dm *CombinationStarDefinitionManager) New(definitionName string) error {
 	// create a file for the definition
-	definitionFileName := fmt.Sprintf("%s.star", definitionName)
+	definitionFileName := definitionName + ".star"
 	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
 
 	// check if the file already exists
@@ -60,7 +60,7 @@ func (dm *CombinationStarDefinitionManager) New(definitionName string) error {
 }
 
 func (dm *CombinationStarDefinitionManager) GetScript(definitionName string) (string, error) {
-	definitionFileName := fmt.Sprintf("%s.star", definitionName)
+	definitionFileName := definitionName + ".star"
 	definitionFilePath := filepath.Join(dm.dataFolder, definitionFileName)
 
 	if _, err := os.Stat(definitionFilePath); os.IsNotExist(err) {
