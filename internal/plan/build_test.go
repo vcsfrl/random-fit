@@ -145,6 +145,7 @@ type MockCombinationBuilder struct {
 
 func (m *MockCombinationBuilder) Build() (*combination.Combination, error) {
 	m.Calls++
+
 	return &combination.Combination{
 		UUID:         uuid.New(),
 		CreatedAt:    time.Now(),

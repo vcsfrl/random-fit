@@ -136,6 +136,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 
 	uuid.SetUUIDFunc(func() (string, error) {
 		suite.id++
+
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	})
 
@@ -143,6 +144,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 
 	random.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
+
 		return suite.testRand, nil
 	})
 
