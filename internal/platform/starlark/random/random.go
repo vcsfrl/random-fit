@@ -26,7 +26,21 @@ func getUint(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwarg
 
 	var allowDuplicates, sort = false, false
 
-	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "min", &minVal, "max", &maxVal, "nr", &number, "allow_duplicates?", &allowDuplicates, "sort?", &sort); err != nil {
+	if err := starlark.UnpackArgs(
+		b.Name(),
+		args,
+		kwargs,
+		"min",
+		&minVal,
+		"max",
+		&maxVal,
+		"nr",
+		&number,
+		"allow_duplicates?",
+		&allowDuplicates,
+		"sort?",
+		&sort,
+	); err != nil {
 		return nil, fmt.Errorf("unpack args: %w", err)
 	}
 

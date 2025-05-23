@@ -71,6 +71,7 @@ func (s *StarBuilder) Build() (*Combination, error) {
 		return nil, fmt.Errorf("%w: error validating combination data: %w", ErrStarBuilder, func() validator.ValidationErrors {
 			var target validator.ValidationErrors
 			_ = errors.As(err, &target)
+
 			return target
 		}())
 	}
