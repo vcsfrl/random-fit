@@ -106,6 +106,7 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 	if err != nil {
 		generator <- &PlannedCombination{Err: fmt.Errorf("%w: error creating uuid v7: %w", ErrPlanBuild, err)}
 		close(generator)
+
 		return generator
 	}
 

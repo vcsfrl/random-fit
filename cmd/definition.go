@@ -56,24 +56,28 @@ func (b *BaseHandler) initFolders() error {
 	err := b.createFolder(b.conf.DefinitionFolder())
 	if err != nil {
 		b.cmd.PrintErrln("Error creating definition folder: ", err)
+
 		return err
 	}
 
 	err = b.createFolder(b.conf.PlanFolder())
 	if err != nil {
 		b.cmd.PrintErrln("Error creating plan folder: ", err)
+
 		return err
 	}
 
 	err = b.createFolder(b.conf.CombinationFolder())
 	if err != nil {
 		b.cmd.PrintErrln("Error creating combination folder: ", err)
+
 		return err
 	}
 
 	err = b.createFolder(b.conf.StorageFolder())
 	if err != nil {
 		b.cmd.PrintErrln("Error creating storage folder: ", err)
+
 		return err
 	}
 

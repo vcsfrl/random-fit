@@ -35,11 +35,13 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 
 	uuid2.SetUUIDFunc(func() (string, error) {
 		suite.id++
+
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	})
 
 	random2.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
+
 		return suite.testRand, nil
 	})
 

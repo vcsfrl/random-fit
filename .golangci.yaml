@@ -63,7 +63,7 @@ linters:
     - mirror
     - misspell
     - mnd
-    - musttag
+#    - musttag
     - nakedret
     - nestif
     - nilerr
@@ -169,7 +169,7 @@ linters:
 #    - mirror
 #    - misspell
 #    - mnd
-#    - musttag
+    - musttag
 #    - nakedret
 #    - nestif
 #    - nilerr
