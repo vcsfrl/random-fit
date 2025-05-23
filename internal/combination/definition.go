@@ -62,6 +62,7 @@ func (cd *StarlarkDefinition) init() error {
 		if evalErr, ok := err.(*starlark.EvalError); ok {
 			return fmt.Errorf("execution error: %w\n%s", evalErr, evalErr.Backtrace())
 		}
+
 		return fmt.Errorf("execution error: %w", err)
 	}
 

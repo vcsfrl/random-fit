@@ -17,6 +17,7 @@ type cryptoRandomTestTable struct {
 }
 
 func TestCryptoRandomGenerator(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(CryptoRandomGeneratorFixture))
 }
 

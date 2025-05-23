@@ -40,6 +40,7 @@ func getUint(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwarg
 
 		if !allowDuplicates && slices.Contains(sliceResult, randUint) {
 			index--
+
 			continue
 		}
 

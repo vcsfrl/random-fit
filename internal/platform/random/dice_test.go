@@ -7,6 +7,7 @@ import (
 )
 
 func TestDice(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(DiceFixture))
 }
 

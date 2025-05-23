@@ -13,6 +13,7 @@ import (
 )
 
 func TestCommands(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(CommandsSuite))
 }
 

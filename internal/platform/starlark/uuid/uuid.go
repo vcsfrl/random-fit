@@ -16,7 +16,7 @@ var Module = &starlarkstruct.Module{
 
 var v7Func func() (string, error)
 
-func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, _ []starlark.Tuple) (starlark.Value, error) {
 	uuidFunc := getUUIDFunc()
 	uniqueID, err := uuidFunc()
 
@@ -37,6 +37,7 @@ func getUUIDFunc() func() (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("error generating uuid: %v", err)
 		}
+
 		return id.String(), nil
 	}
 

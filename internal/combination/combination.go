@@ -57,6 +57,7 @@ func (d *Data) GobEncode() ([]byte, error) {
 	if err := encoder.Encode(gData); err != nil {
 		return nil, fmt.Errorf("error encoding data: %w", err)
 	}
+
 	return buffer.Bytes(), nil
 }
 

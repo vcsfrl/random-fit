@@ -10,6 +10,7 @@ import (
 )
 
 func TestDefinitionManager(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(StarDefinitionManagerSuite))
 }
 

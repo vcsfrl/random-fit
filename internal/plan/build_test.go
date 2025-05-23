@@ -12,6 +12,7 @@ import (
 )
 
 func TestBuildSuite(t *testing.T) {
+	t.Parallel()
 	suite.Run(t, new(BuildSuite))
 }
 

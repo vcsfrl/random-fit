@@ -94,6 +94,7 @@ func (e *Exporter) containerFolder(plan Plan, group Group) string {
 	for _, container := range group.ContainerName {
 		if container == "_date" {
 			folder = filepath.Join(folder, plan.CreatedAt.Format("2006-01-02-15-04"))
+
 			continue
 		}
 
