@@ -16,18 +16,18 @@ var Module = &starlarkstruct.Module{
 
 var v7Func func() (string, error)
 
-func v7(thread *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
-	uuidFunc := getUuidFunc()
-	uniqueId, err := uuidFunc()
+func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+	uuidFunc := getUUIDFunc()
+	uniqueID, err := uuidFunc()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return starlark.String(uniqueId), nil
+	return starlark.String(uniqueID), nil
 }
 
-func getUuidFunc() func() (string, error) {
+func getUUIDFunc() func() (string, error) {
 	if v7Func != nil {
 		return v7Func
 	}
@@ -43,6 +43,6 @@ func getUuidFunc() func() (string, error) {
 	return v7Func
 }
 
-func SetUuidFunc(f func() (string, error)) {
+func SetUUIDFunc(f func() (string, error)) {
 	v7Func = f
 }

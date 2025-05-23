@@ -52,11 +52,11 @@ type PlannedCombination struct {
 	Plan
 	Group
 	Combination   *combination.Combination
-	GroupSerialId int
+	GroupSerialID int
 	Err           error
 }
 
-func NewJsonDefinition(fileName string) (*Definition, error) {
+func NewJSONDefinition(fileName string) (*Definition, error) {
 	result := &Definition{}
 
 	// Read the file

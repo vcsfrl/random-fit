@@ -27,8 +27,7 @@ func NewCommand() (*cobra.Command, error) {
 			Use:   "definition",
 			Short: "Definition management",
 			Long:  `Manage definitions: combination, plan.`,
-			Run: func(cmd *cobra.Command, args []string) {
-
+			Run: func(_ *cobra.Command, _ []string) {
 			},
 		}
 
@@ -173,7 +172,7 @@ func NewCommand() (*cobra.Command, error) {
 		var codeGenerator = &cobra.Command{
 			Use:   "generate",
 			Short: "Generate code.",
-			Run: func(cmd *cobra.Command, args []string) {
+			Run: func(cmd *cobra.Command, _ []string) {
 				service.GenerateCode(cmd, NewConfig())
 			},
 		}

@@ -69,13 +69,13 @@ func (suite *ExportSuite) SetupTest() {
 
 	suite.id = 0
 
-	slUuid.SetUuidFunc(func() (string, error) {
+	slUuid.SetUUIDFunc(func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	})
 
 	suite.testRand = 0
-	random.SetUintFunc(func(min uint, max uint) (uint, error) {
+	random.SetUintFunc(func(_ uint, maxValue uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil
 	})

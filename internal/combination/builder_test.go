@@ -43,15 +43,15 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal("Lotto Number Picks", combination.Details)
 	suite.NotNil(combination.Data)
 
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "6/49 and Lucky Number")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Lotto Numbers for User 1")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Lotto Numbers for User 2")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "[1,2,3,4,5,6]")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "[36,37,38,39,40,41]")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "collection_00000000-0000-0000-0000-000000000001")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "element_00000000-0000-0000-0000-000000000021")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Lucky Number")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "4200")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "6/49 and Lucky Number")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lotto Numbers for User 1")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lotto Numbers for User 2")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[1,2,3,4,5,6]")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[36,37,38,39,40,41]")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "collection_00000000-0000-0000-0000-000000000001")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "element_00000000-0000-0000-0000-000000000021")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lucky Number")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "4200")
 
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "6/49 and Lucky Number")
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "Lotto Numbers for User 1")
@@ -72,15 +72,15 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Equal("Lotto Number Picks", combination.Details)
 	suite.NotNil(combination.Data)
 
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "6/49 and Lucky Number")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Lotto Numbers for User 1")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Lotto Numbers for User 2")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "[43,44,45,46,47,48]")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "[78,79,80,81,82,83]")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "collection_00000000-0000-0000-0000-000000000022")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "set_00000000-0000-0000-0000-000000000040")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Lucky Number")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "8400")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "6/49 and Lucky Number")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lotto Numbers for User 1")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lotto Numbers for User 2")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[43,44,45,46,47,48]")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[78,79,80,81,82,83]")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "collection_00000000-0000-0000-0000-000000000022")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "set_00000000-0000-0000-0000-000000000040")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lucky Number")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "8400")
 
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "6/49 and Lucky Number")
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "Lotto Numbers for User 1")
@@ -119,8 +119,8 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 	suite.Equal("sample", combination.DefinitionID)
 	suite.Equal("Sample Combination", combination.Details)
 	suite.NotNil(combination.Data)
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "Sample")
-	suite.Contains(combination.Data[combinationModel.DataTypeJson].Data.String(), "[1,2,3,4,5,6,7,8,9,10]")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Sample")
+	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[1,2,3,4,5,6,7,8,9,10]")
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "Sample")
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "[ 1 2 3 4 5 6 7 8 9 10 ]")
 }
@@ -133,13 +133,13 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 
 	suite.id = 0
 
-	uuid.SetUuidFunc(func() (string, error) {
+	uuid.SetUUIDFunc(func() (string, error) {
 		suite.id++
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	})
 
 	suite.testRand = 0
-	random.SetUintFunc(func(min uint, max uint) (uint, error) {
+	random.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil
 	})

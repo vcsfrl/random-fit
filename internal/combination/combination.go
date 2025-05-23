@@ -21,11 +21,11 @@ type Combination struct {
 
 type DataType string
 
-const DataTypeJson DataType = "json"
+const DataTypeJSON DataType = "json"
 const DataTypeMd DataType = "markdown"
 
 var DataTypes = []DataType{
-	DataTypeJson,
+	DataTypeJSON,
 	DataTypeMd,
 }
 

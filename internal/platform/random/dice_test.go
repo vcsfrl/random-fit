@@ -45,9 +45,9 @@ type MockGenerator struct {
 	lastMin, lastMax uint
 }
 
-func (m *MockGenerator) Uint(min, max uint) (uint, error) {
-	m.lastMin = min
-	m.lastMax = max
+func (m *MockGenerator) Uint(minValue, maxValue uint) (uint, error) {
+	m.lastMin = minValue
+	m.lastMax = maxValue
 
-	return max - 1, nil
+	return maxValue - 1, nil
 }

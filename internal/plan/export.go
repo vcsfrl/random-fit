@@ -70,7 +70,7 @@ func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedC
 
 		// Create a file for each combination by type
 		for _, data := range planCombination.Combination.Data {
-			if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialId); err != nil {
+			if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialID); err != nil {
 				return fmt.Errorf("%w: error saving file: %s", ErrExport, err)
 			}
 		}

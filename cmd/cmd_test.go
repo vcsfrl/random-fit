@@ -378,11 +378,11 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 
 	// check combination was created
 	combinationMdFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.md")
-	combinationJsonFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.json")
+	combinationJSONFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.json")
 
 	_, err = os.Stat(combinationMdFile)
 	suite.Require().NoError(err, "File should exist")
-	_, err = os.Stat(combinationJsonFile)
+	_, err = os.Stat(combinationJSONFile)
 	suite.Require().NoError(err, "File should exist")
 
 	// check files content
@@ -390,9 +390,9 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 	suite.Require().NoError(err)
 	suite.Contains(string(combinationMdData), "Sample")
 
-	combinationJsonData, err := os.ReadFile(combinationJsonFile)
+	combinationJSONData, err := os.ReadFile(combinationJSONFile)
 	suite.Require().NoError(err)
-	suite.Contains(string(combinationJsonData), "Sample")
+	suite.Contains(string(combinationJSONData), "Sample")
 
 	// check objects saved in storage
 	storageFolder := filepath.Join(suite.testFolder, "storage")

@@ -13,7 +13,7 @@ func Validator() (*validator.Validate, error) {
 		value := fl.Field().Interface().(map[DataType]*Data)
 
 		for _, data := range value {
-			if data.Type == DataTypeJson {
+			if data.Type == DataTypeJSON {
 				return true
 			}
 		}

@@ -14,7 +14,7 @@ var ErrPlanBuildTerminated = fmt.Errorf("%w: build terminated", ErrPlanBuild)
 type Builder struct {
 	Definition         *Definition
 	Now                func() time.Time
-	UuidV7             func() (uuid.UUID, error)
+	UUIDV7             func() (uuid.UUID, error)
 	CombinationBuilder combination.Builder
 }
 
@@ -24,7 +24,7 @@ func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder 
 		panic(fmt.Errorf("%w: error creating combination definition: %w", ErrPlanBuild, err))
 	}
 
-	planDefinition, err := NewJsonDefinition(planFile)
+	planDefinition, err := NewJSONDefinition(planFile)
 	if err != nil {
 		panic(fmt.Errorf("%w: error creating plan definition: %w", ErrPlanBuild, err))
 	}
@@ -37,7 +37,7 @@ func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder 
 	return &Builder{
 		Definition:         planDefinition,
 		Now:                time.Now,
-		UuidV7:             uuid.NewV7,
+		UUIDV7:             uuid.NewV7,
 		CombinationBuilder: builder,
 	}
 }
@@ -46,13 +46,13 @@ func NewBuilder(definition *Definition, builder combination.Builder) *Builder {
 	return &Builder{
 		Definition:         definition,
 		Now:                time.Now,
-		UuidV7:             uuid.NewV7,
+		UUIDV7:             uuid.NewV7,
 		CombinationBuilder: builder,
 	}
 }
 
 func (b *Builder) Build() (*UserPlan, error) {
-	uuidV7, err := b.UuidV7()
+	uuidV7, err := b.UUIDV7()
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func (b *Builder) Build() (*UserPlan, error) {
 func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 	generator := make(chan *PlannedCombination, 1000)
 
-	uuidV7, err := b.UuidV7()
+	uuidV7, err := b.UUIDV7()
 	if err != nil {
 		generator <- &PlannedCombination{Err: fmt.Errorf("%w: error creating uuid v7: %w", ErrPlanBuild, err)}
 		close(generator)
@@ -138,7 +138,7 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 							User:          user,
 						},
 						Combination:   newCombination,
-						GroupSerialId: j + 1,
+						GroupSerialID: j + 1,
 						Err:           err,
 					}
 

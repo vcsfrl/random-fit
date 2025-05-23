@@ -94,7 +94,7 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-1", data[0].Group.Details)
 	suite.Equal(definition.ContainerName, data[0].ContainerName)
 	suite.Equal(definition.Users[0], data[0].User)
-	suite.Equal(1, data[0].GroupSerialId)
+	suite.Equal(1, data[0].GroupSerialID)
 	suite.NotNil(data[0].Combination)
 	suite.Equal("test-1", data[0].Combination.Details)
 
@@ -107,7 +107,7 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-4", data[lastIndex].Group.Details)
 	suite.Equal(definition.ContainerName, data[lastIndex].ContainerName)
 	suite.Equal(definition.Users[1], data[lastIndex].User)
-	suite.Equal(3, data[lastIndex].GroupSerialId)
+	suite.Equal(3, data[lastIndex].GroupSerialID)
 	suite.NotNil(data[lastIndex].Combination)
 	suite.Equal("test-24", data[lastIndex].Combination.Details)
 }
