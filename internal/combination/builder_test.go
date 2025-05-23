@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
+//nolint:paralleltest
 func TestStarlarkBuilder(t *testing.T) {
-	//t.Parallel()
 	suite.Run(t, new(StarlarkBuilderSuite))
 }
 

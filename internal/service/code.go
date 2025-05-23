@@ -26,6 +26,7 @@ func GenerateCode(printer Printer, config *Config) {
 	// remove the file if it exists
 	if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {
 		printer.Println("Error:", err)
+
 		return
 	}
 
@@ -33,12 +34,14 @@ func GenerateCode(printer Printer, config *Config) {
 	content, err := os.ReadFile(filepath.Join(config.BaseFolder, "internal", "combination", "template", "script.star"))
 	if err != nil {
 		printer.Println("Error:", err)
+
 		return
 	}
 
 	buff := &bytes.Buffer{}
 	if err := textTmpl.Execute(buff, "`"+string(content)+"`"); err != nil {
 		printer.Println("Error:", err)
+
 		return
 	}
 
