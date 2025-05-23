@@ -106,7 +106,7 @@ func (suite *CommandsSuite) TestGenerateCode() {
 	// Check generated file content
 	generatedFile := filepath.Join(suite.codeGenFolder, "combination_definition_template.go")
 	genData, err := os.ReadFile(generatedFile)
-	suite.Require().Error(err)
+	suite.Require().NoError(err)
 	suite.NotEmpty(genData)
 	suite.Contains(string(genData), string(templateData))
 }
@@ -381,9 +381,9 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 	combinationJsonFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.json")
 
 	_, err = os.Stat(combinationMdFile)
-	suite.Require().Error(err, "File should exist")
+	suite.Require().NoError(err, "File should exist")
 	_, err = os.Stat(combinationJsonFile)
-	suite.Require().Error(err, "File should exist")
+	suite.Require().NoError(err, "File should exist")
 
 	// check files content
 	combinationMdData, err := os.ReadFile(combinationMdFile)

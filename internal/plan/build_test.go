@@ -86,7 +86,7 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Len(data, definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users))
 	suite.Equal(definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users), mockBuilder.Calls)
 
-	suite.Require().Error(data[0].Err)
+	suite.Require().NoError(data[0].Err)
 	suite.Equal(definition.ID, data[0].DefinitionID)
 	suite.Equal(definition.Details, data[0].Plan.Details)
 	suite.NotNil(data[0].UUID)
@@ -99,7 +99,7 @@ func (suite *BuildSuite) TestGenerate() {
 	suite.Equal("test-1", data[0].Combination.Details)
 
 	lastIndex := len(data) - 1
-	suite.Require().Error(data[lastIndex].Err)
+	suite.Require().NoError(data[lastIndex].Err)
 	suite.Equal(definition.ID, data[lastIndex].DefinitionID)
 	suite.Equal(definition.Details, data[lastIndex].Plan.Details)
 	suite.NotNil(data[lastIndex].UUID)
