@@ -21,7 +21,7 @@ func GenerateCode(printer Printer, config *Config) {
 
 	textTmpl := textTemplate.Must(textTemplate.New("template.render_text").Parse(definitionSkeleton))
 
-	//create a file in shell/ folder
+	// create a file in shell/ folder
 	fileName := filepath.Join(config.BaseFolder, "internal", "service", "combination_definition_template.go")
 	// remove the file if it exists
 	if err := os.Remove(fileName); err != nil && !os.IsNotExist(err) {

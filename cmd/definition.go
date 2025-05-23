@@ -18,6 +18,7 @@ func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 	if os.Getenv("EDITOR") == "" {
 		return ErrNoEnvEditor
 	}
+
 	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
 	cmd.Stdin = b.cmd.InOrStdin()
 	cmd.Stdout = b.cmd.OutOrStdout()

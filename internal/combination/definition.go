@@ -59,7 +59,8 @@ func (cd *StarlarkDefinition) init() error {
 
 	globals, err := starlark.ExecFileOptions(syntax.LegacyFileOptions(), cd.thread, cd.StarScript, nil, cd.predeclared())
 	if err != nil {
-		if evalErr, ok := err.(*starlark.EvalError); ok {
+		evalErr := &starlark.EvalError{}
+		if errors.As(err, &evalErr) {
 			return fmt.Errorf("execution error: %w\n%s", evalErr, evalErr.Backtrace())
 		}
 

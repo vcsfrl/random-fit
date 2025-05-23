@@ -30,7 +30,7 @@ func (d Dice) Roll() (uint, error) {
 
 	res, err := d.generator.Uint(1, d.Sides)
 	if err != nil {
-		return 0, fmt.Errorf("%w: generate number: %v", ErrDice, err)
+		return 0, fmt.Errorf("%w: generate number: %w", ErrDice, err)
 	}
 
 	return res, nil

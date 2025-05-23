@@ -31,6 +31,7 @@ func (c *CombinationDefinition) New() {
 	name := c.getArg(0, "name")
 	if name == "" {
 		c.cmd.PrintErrln(MsgNameMissing)
+
 		return
 	}
 

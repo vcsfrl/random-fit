@@ -169,6 +169,7 @@ func NewCommand() (*cobra.Command, error) {
 			Use:   "code",
 			Short: "Code tools.",
 		}
+
 		var codeGenerator = &cobra.Command{
 			Use:   "generate",
 			Short: "Generate code.",

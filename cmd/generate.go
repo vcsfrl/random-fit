@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/plan"
@@ -11,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	// github.com/mkevac/debugcharts attach a debug chart endpoint to the monitoring server
+	// github.com/mkevac/debugcharts attach a debug chart endpoint to the monitoring server.
 	_ "github.com/mkevac/debugcharts"
 )
 
@@ -46,12 +45,14 @@ func (g *Generator) Combination() {
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {
 		g.cmd.PrintErrln(MsgCombinationDefinitionNameMissing)
+
 		return
 	}
 
 	planDefinitionName := g.getArg(1, "plan")
 	if planDefinitionName == "" {
 		g.cmd.PrintErrln(MsgPlanDefinitionNameMissing)
+
 		return
 	}
 
@@ -60,6 +61,7 @@ func (g *Generator) Combination() {
 	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
 	if err != nil {
 		g.cmd.PrintErrln("Error getting combination definition:", err)
+
 		return
 	}
 
@@ -67,6 +69,7 @@ func (g *Generator) Combination() {
 
 	if err != nil {
 		g.cmd.PrintErrln("Error getting plan definition:", err)
+
 		return
 	}
 
@@ -88,6 +91,7 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 	waitGroup := sync.WaitGroup{}
 
 	g.logger.Info().Msgf("Starting %d workers to export plans", g.nrWorkers())
+
 	for i := 0; i < g.nrWorkers(); i++ {
 		waitGroup.Add(1)
 		g.logger.Info().Msgf("Starting worker %d", i)
@@ -109,12 +113,13 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 
 	// Wait for all workers to finish
 	waitGroup.Wait()
+
 	return false
 }
 
 func (g *Generator) startMonitor() {
 	g.logger.Info().Msgf("Starting debug chart server on port %s", g.conf.DebugChartPort)
-	server := &http.Server{Addr: fmt.Sprintf("0.0.0.0:%s", g.conf.DebugChartPort)}
+	server := &http.Server{Addr: "0.0.0.0:" + g.conf.DebugChartPort}
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
@@ -127,6 +132,7 @@ func (g *Generator) startMonitor() {
 
 		if err := server.Shutdown(context.Background()); err != nil {
 			g.logger.Error().Err(err).Msg("Error shutting down debug chart server.")
+
 			return
 		}
 

@@ -27,7 +27,7 @@ type CryptoRandomGeneratorFixture struct {
 }
 
 func (crg *CryptoRandomGeneratorFixture) SetupTest() {
-	for i := 0; i < 1000; i++ {
+	for range 1000 {
 		crg.tests = append(crg.tests, cryptoRandomTestTable{name: "Test", args: args{1, 100}})
 	}
 }

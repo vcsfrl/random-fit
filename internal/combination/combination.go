@@ -103,7 +103,7 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 
 			d.Type = dataType
 		case "Data":
-			d.Data = bytes.NewBuffer([]byte(unquoted))
+			d.Data = bytes.NewBufferString(unquoted)
 		}
 	}
 

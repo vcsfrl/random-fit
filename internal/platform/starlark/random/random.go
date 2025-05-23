@@ -55,7 +55,7 @@ func getUint(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwarg
 	for _, randUint := range sliceResult {
 		err := result.Append(starlark.MakeUint(randUint))
 		if err != nil {
-			return nil, fmt.Errorf("error generating random number: %v", err)
+			return nil, fmt.Errorf("error generating random number: %w", err)
 		}
 	}
 

@@ -31,6 +31,7 @@ func (p *PlanDefinition) New() {
 	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(MsgNameMissing)
+
 		return
 	}
 
@@ -39,6 +40,7 @@ func (p *PlanDefinition) New() {
 	err := p.definitionManager.New(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error: ", err)
+
 		return
 	}
 
@@ -47,6 +49,7 @@ func (p *PlanDefinition) New() {
 	scriptName, err := p.definitionManager.GetFile(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error getting script: ", err)
+
 		return
 	}
 
@@ -54,6 +57,7 @@ func (p *PlanDefinition) New() {
 
 	if err := p.editScript(scriptName, "json"); err != nil {
 		p.cmd.PrintErrln("Error editing script: ", err)
+
 		return
 	}
 }
@@ -64,11 +68,13 @@ func (p *PlanDefinition) List() {
 	planDefinitions, err := p.definitionManager.List()
 	if err != nil {
 		p.cmd.PrintErrln("Error: ", err)
+
 		return
 	}
 
 	if len(planDefinitions) == 0 {
 		p.cmd.Println(MsgNoItemsFound)
+
 		return
 	}
 
@@ -81,6 +87,7 @@ func (p *PlanDefinition) Edit() {
 	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(MsgNameMissing)
+
 		return
 	}
 
@@ -89,11 +96,13 @@ func (p *PlanDefinition) Edit() {
 
 	if err != nil {
 		p.cmd.PrintErrln("Error getting script: ", err)
+
 		return
 	}
 
 	if err := p.editScript(scriptName, "json"); err != nil {
 		p.cmd.PrintErrln("Error editing script: ", err)
+
 		return
 	}
 
@@ -104,6 +113,7 @@ func (p *PlanDefinition) Delete() {
 	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(MsgNameMissing)
+
 		return
 	}
 
@@ -112,6 +122,7 @@ func (p *PlanDefinition) Delete() {
 	err := p.definitionManager.Delete(name)
 	if err != nil {
 		p.cmd.PrintErrln("Error deleting paln definition: ", err)
+
 		return
 	}
 
@@ -125,5 +136,6 @@ func (p *PlanDefinition) init() error {
 	}
 
 	p.definitionManager = service.NewPlanDefinitionManager(p.conf.PlanFolder())
+
 	return nil
 }

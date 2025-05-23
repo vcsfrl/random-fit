@@ -34,7 +34,7 @@ func (e *Exporter) Export(plan *UserPlan) error {
 			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan.Plan, group.Group), group.Details), " ", "_")
 
 			if err := os.MkdirAll(groupFolder, FolderPermission); err != nil {
-				return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
+				return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
 			}
 
 			// Create a file for each combination by type
@@ -49,7 +49,7 @@ func (e *Exporter) Export(plan *UserPlan) error {
 	}
 
 	if err := e.exportObject(plan); err != nil {
-		return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+		return fmt.Errorf("%w: error exporting plan object: %w", ErrExport, err)
 	}
 
 	return nil
@@ -64,23 +64,23 @@ func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedC
 		}
 
 		if planCombination.Err != nil {
-			return fmt.Errorf("%w: error generating plan: %s", ErrExport, planCombination.Err)
+			return fmt.Errorf("%w: error generating plan: %w", ErrExport, planCombination.Err)
 		}
 
 		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
 		if err := os.MkdirAll(groupFolder, 0755); err != nil {
-			return fmt.Errorf("%w: error creating group folder: %s", ErrExport, err)
+			return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
 		}
 
 		// Create a file for each combination by type
 		for _, data := range planCombination.Combination.Data {
 			if err := e.saveToFile(planCombination.Combination, data, groupFolder, planCombination.GroupSerialID); err != nil {
-				return fmt.Errorf("%w: error saving file: %s", ErrExport, err)
+				return fmt.Errorf("%w: error saving file: %w", ErrExport, err)
 			}
 		}
 
 		if err := e.exportPlannedCombinationObject(planCombination); err != nil {
-			return fmt.Errorf("%w: error exporting plan object: %s", ErrExport, err)
+			return fmt.Errorf("%w: error exporting plan object: %w", ErrExport, err)
 		}
 	}
 
@@ -110,10 +110,10 @@ func (e *Exporter) containerFolder(plan Plan, group Group) string {
 func (e *Exporter) exportObject(plan *UserPlan) error {
 	// save the plan to storage
 	storageFile := filepath.Join(e.StorageDir, plan.UUID.String()+".gob")
-	//open the file
+	// open the file
 	file, err := os.Create(storageFile)
 	if err != nil {
-		return fmt.Errorf("%w: error creating storage file: %s", ErrExport, err)
+		return fmt.Errorf("%w: error creating storage file: %w", ErrExport, err)
 	}
 
 	defer func() {
@@ -122,7 +122,7 @@ func (e *Exporter) exportObject(plan *UserPlan) error {
 
 	encoder := gob.NewEncoder(file)
 	if err := encoder.Encode(plan); err != nil {
-		return fmt.Errorf("%w: error encoding plan object: %s", ErrExport, err)
+		return fmt.Errorf("%w: error encoding plan object: %w", ErrExport, err)
 	}
 
 	return nil
@@ -131,10 +131,10 @@ func (e *Exporter) exportObject(plan *UserPlan) error {
 func (e *Exporter) exportPlannedCombinationObject(plan *PlannedCombination) error {
 	// save the plan to storage
 	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s_%s_%s.gob", plan.User, plan.UUID.String(), plan.Combination.UUID.String()))
-	//open the file
+	// open the file
 	file, err := os.Create(storageFile)
 	if err != nil {
-		return fmt.Errorf("%w: error creating storage file: %s", ErrExport, err)
+		return fmt.Errorf("%w: error creating storage file: %w", ErrExport, err)
 	}
 
 	defer func() {
@@ -143,7 +143,7 @@ func (e *Exporter) exportPlannedCombinationObject(plan *PlannedCombination) erro
 
 	encoder := gob.NewEncoder(file)
 	if err := encoder.Encode(plan); err != nil {
-		return fmt.Errorf("%w: error encoding plan object: %s", ErrExport, err)
+		return fmt.Errorf("%w: error encoding plan object: %w", ErrExport, err)
 	}
 
 	return nil
@@ -155,7 +155,7 @@ func (e *Exporter) saveToFile(groupCombination *combination.Combination, data *c
 
 	err := os.WriteFile(filePath, data.Data.Bytes(), 0666)
 	if err != nil {
-		return fmt.Errorf("%w: error writing file: %s", ErrExport, err)
+		return fmt.Errorf("%w: error writing file: %w", ErrExport, err)
 	}
 
 	return nil

@@ -261,7 +261,7 @@ func (suite *ExportSuite) TestExportObjectInFolder() {
 	userFolder := filepath.Join(suite.combinationFolder, "user-1")
 	suite.True(suite.fileExists(userFolder))
 
-	//get files from storage folder
+	// get files from storage folder
 	files, err := os.ReadDir(suite.storageFolder)
 	suite.Require().NoError(err)
 	suite.NotEmpty(files)

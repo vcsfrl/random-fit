@@ -35,7 +35,7 @@ func getUUIDFunc() func() (string, error) {
 	v7Func = func() (string, error) {
 		id, err := uuid.NewV7()
 		if err != nil {
-			return "", fmt.Errorf("error generating uuid: %v", err)
+			return "", fmt.Errorf("error generating uuid: %w", err)
 		}
 
 		return id.String(), nil

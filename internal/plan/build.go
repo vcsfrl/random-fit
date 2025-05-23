@@ -74,7 +74,7 @@ func (b *Builder) Build() (*UserPlan, error) {
 		userGroups := make([]*GroupCombination, 0)
 
 		// Create groups
-		for i := 0; i < b.Definition.RecurrentGroups; i++ {
+		for i := range b.Definition.RecurrentGroups {
 			group := &GroupCombination{
 				Group: Group{
 					Details:       fmt.Sprintf("%s-%d", b.Definition.RecurrentGroupNamePrefix, i+1),
@@ -83,7 +83,8 @@ func (b *Builder) Build() (*UserPlan, error) {
 				},
 				Combinations: make([]*combination.Combination, 0),
 			}
-			for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
+
+			for range b.Definition.NrOfGroupCombinations {
 				newCombination, err := b.CombinationBuilder.Build()
 				if err != nil {
 					return nil, fmt.Errorf("%w: error building combination: %w", ErrPlanBuild, err)
@@ -119,11 +120,12 @@ func (b *Builder) Generate(ctx context.Context) chan *PlannedCombination {
 
 		for _, user := range b.Definition.Users {
 			// Create groups
-			for i := 0; i < b.Definition.RecurrentGroups; i++ {
-				for j := 0; j < b.Definition.NrOfGroupCombinations; j++ {
+			for i := range b.Definition.RecurrentGroups {
+				for j := range b.Definition.NrOfGroupCombinations {
 					select {
 					case <-ctx.Done():
 						generator <- &PlannedCombination{Err: ErrPlanBuildTerminated}
+
 						return
 					default: // continue
 					}
