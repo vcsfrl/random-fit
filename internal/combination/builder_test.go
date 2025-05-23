@@ -139,6 +139,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 	})
 
 	suite.testRand = 0
+
 	random.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil

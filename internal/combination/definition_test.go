@@ -37,7 +37,7 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	})
 
-	random2.SetUintFunc(func(_ uint, maxValue uint) (uint, error) {
+	random2.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
 		return suite.testRand, nil
 	})

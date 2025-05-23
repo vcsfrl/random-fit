@@ -10,10 +10,10 @@ import (
 	"net/http"
 	"sync"
 	"time"
-)
 
-// github.com/mkevac/debugcharts attach a debug chart endpoint to the monitoring server
-import _ "github.com/mkevac/debugcharts"
+	// github.com/mkevac/debugcharts attach a debug chart endpoint to the monitoring server
+	_ "github.com/mkevac/debugcharts"
+)
 
 const defaultWorkers = 2
 
