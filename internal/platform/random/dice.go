@@ -6,6 +6,7 @@ import (
 )
 
 var ErrDice = errors.New("dice error")
+var ErrDiceNotEnoughSides = fmt.Errorf("%w: dice not enough sides", ErrDice)
 
 type Dice struct {
 	generator Generator
@@ -22,7 +23,7 @@ func NewDice(generator Generator, sides uint) *Dice {
 
 func (d Dice) Roll() (uint, error) {
 	if d.Sides == 0 {
-		return 0, fmt.Errorf("%w | must have at least one side", ErrDice)
+		return 0, ErrDiceNotEnoughSides
 	}
 
 	res, err := d.generator.Uint(1, d.Sides)

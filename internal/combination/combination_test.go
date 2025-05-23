@@ -29,5 +29,5 @@ func (suite *CombinationDataSuite) TestUnmarshall() {
 	suite.Equal("json", data.Extension)
 	suite.Equal("application/json", data.MimeType)
 	suite.Equal(combination.DataTypeJson, data.Type)
-	suite.Equal(`{"numbers": [1, 2, 3, 4, 5, 6]}`, data.Data.String())
+	suite.JSONEq(`{"numbers": [1, 2, 3, 4, 5, 6]}`, data.Data.String())
 }

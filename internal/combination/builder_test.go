@@ -33,11 +33,11 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.NotNil(builder)
 
 	// Build first combination
-	combination, err := builder.Build()
-	suite.NoError(err)
+	combination, err1 := builder.Build()
+	suite.NoError(err1)
 	suite.NotNil(combination)
 
-	suite.Equal(36, len(combination.UUID.String()))
+	suite.Len(combination.UUID.String(), 36)
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
 	suite.Equal("Lotto Number Picks", combination.Details)
@@ -62,11 +62,12 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "4200")
 
 	// Build first combination
-	combination, err = builder.Build()
-	suite.NoError(err)
+	var err2 error
+	combination, err2 = builder.Build()
+	suite.NoError(err2)
 	suite.NotNil(combination)
 
-	suite.Equal(36, len(combination.UUID.String()))
+	suite.Len(combination.UUID.String(), 36)
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("lotto-test", combination.DefinitionID)
 	suite.Equal("Lotto Number Picks", combination.Details)
@@ -111,10 +112,10 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 
 	// Build first combination
 	combination, err := builder.Build()
-	suite.Nil(err)
+	suite.NoError(err)
 	suite.NotNil(combination)
 
-	suite.Equal(36, len(combination.UUID.String()))
+	suite.Len(combination.UUID.String(), 36)
 	suite.NotNil(combination.CreatedAt)
 	suite.Equal("sample", combination.DefinitionID)
 	suite.Equal("Sample Combination", combination.Details)

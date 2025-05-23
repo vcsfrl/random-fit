@@ -108,6 +108,7 @@ func (suite *ExportSuite) TestExport() {
 	// Check if the group folder exists
 	groupContainer := filepath.Join(userFolder, "GroupCombination-Container", "2010-01-02-03-04")
 	suite.True(suite.fileExists(groupContainer))
+
 	for i := 1; i <= 4; i++ {
 		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-GroupCombination-%d", i))
 		suite.True(suite.fileExists(groupFolder))
@@ -120,12 +121,12 @@ func (suite *ExportSuite) TestExport() {
 				groupCombination := filepath.Join(groupFolder, fmt.Sprintf("Lotto_Number_Picks_%d.%s", j, ext))
 				exists, err := suite.fileExists(groupCombination)
 				suite.NoError(err)
-				suite.True(exists, fmt.Sprintf("File %s does not exist", groupCombination))
+				suite.True(exists, "File %s does not exist", groupCombination)
 
 				// Check if the file is not empty
 				fileInfo, err := os.Stat(groupCombination)
 				suite.NoError(err)
-				suite.True(fileInfo.Size() > 0, fmt.Sprintf("File %s is empty", groupCombination))
+				suite.Positive(fileInfo.Size(), "File %s is empty", groupCombination)
 
 				// Check if file contains a specific string
 				file, err := os.ReadFile(groupCombination)
@@ -153,6 +154,7 @@ func (suite *ExportSuite) TestExportGenerate() {
 	// Check if the group folder exists
 	groupContainer := filepath.Join(userFolder, "GroupCombination-Container", "2010-01-02-03-04")
 	suite.True(suite.fileExists(groupContainer))
+
 	for i := 1; i <= 4; i++ {
 		groupFolder := filepath.Join(groupContainer, fmt.Sprintf("Recurrent-GroupCombination-%d", i))
 		suite.True(suite.fileExists(groupFolder))
@@ -165,12 +167,12 @@ func (suite *ExportSuite) TestExportGenerate() {
 				groupCombination := filepath.Join(groupFolder, fmt.Sprintf("Lotto_Number_Picks_%d.%s", j, ext))
 				exists, err := suite.fileExists(groupCombination)
 				suite.NoError(err)
-				suite.True(exists, fmt.Sprintf("File %s does not exist", groupCombination))
+				suite.True(exists, "File %s does not exist")
 
 				// Check if the file is not empty
 				fileInfo, err := os.Stat(groupCombination)
 				suite.NoError(err)
-				suite.True(fileInfo.Size() > 0, fmt.Sprintf("File %s is empty", groupCombination))
+				suite.Positive(fileInfo.Size(), "File %s is empty", groupCombination)
 
 				// Check if file contains a specific string
 				file, err := os.ReadFile(groupCombination)
@@ -230,8 +232,8 @@ func (suite *ExportSuite) TestExportObject() {
 	suite.NoError(err)
 	suite.Equal(plan.UUID, savedPlan.UUID)
 	suite.Equal(plan.CreatedAt, savedPlan.CreatedAt)
-	suite.Equal(len(plan.UserGroups), len(savedPlan.UserGroups))
-	suite.Equal(len(plan.UserGroups["user-1"]), len(savedPlan.UserGroups["user-1"]))
+	suite.Len(plan.UserGroups, len(savedPlan.UserGroups))
+	suite.Len(plan.UserGroups["user-1"], len(savedPlan.UserGroups["user-1"]))
 	suite.Equal(plan.UserGroups["user-1"][0].Details, savedPlan.UserGroups["user-1"][0].Details)
 	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].UUID, savedPlan.UserGroups["user-1"][0].Combinations[0].UUID)
 	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].Details, savedPlan.UserGroups["user-1"][0].Combinations[0].Details)

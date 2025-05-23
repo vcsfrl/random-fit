@@ -51,7 +51,7 @@ func (suite *StarPlanManagerSuite) TestList() {
 	plans, err := suite.planDefinitionManager.List()
 	suite.NoError(err)
 	suite.NotNil(plans)
-	suite.Equal(len(testPlans), len(plans))
+	suite.Len(plans, len(testPlans))
 
 	for _, plan := range testPlans {
 		suite.Contains(plans, plan)
@@ -74,7 +74,7 @@ func (suite *StarPlanManagerSuite) TestNew() {
 	// check if the plan file is empty
 	fileInfo, err := os.Stat(testPlanFile)
 	suite.NoError(err)
-	suite.Greater(fileInfo.Size(), int64(0))
+	suite.Positive(fileInfo.Size())
 
 	// check if the plan file is valid json
 	data, err := os.ReadFile(testPlanFile)

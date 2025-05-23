@@ -39,8 +39,8 @@ func (suite *BuildSuite) TestBuild() {
 
 	suite.Equal(definition.ID, plan.DefinitionID)
 	suite.Equal(definition.Details, plan.Details)
-	suite.Equal(definition.RecurrentGroups, len(plan.UserGroups["user-1"]))
-	suite.Equal(definition.NrOfGroupCombinations, len(plan.UserGroups["user-1"][0].Combinations))
+	suite.Len(plan.UserGroups["user-1"], definition.RecurrentGroups)
+	suite.Len(plan.UserGroups["user-1"][0].Combinations, definition.NrOfGroupCombinations)
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-1", plan.UserGroups["user-1"][0].Details)
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-2", plan.UserGroups["user-1"][1].Details)
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-3", plan.UserGroups["user-1"][2].Details)
@@ -48,8 +48,8 @@ func (suite *BuildSuite) TestBuild() {
 	suite.Equal("test-1", plan.UserGroups["user-1"][0].Combinations[0].Details)
 	suite.Equal("test-12", plan.UserGroups["user-1"][3].Combinations[2].Details)
 
-	suite.Equal(definition.RecurrentGroups, len(plan.UserGroups["user-2"]))
-	suite.Equal(definition.NrOfGroupCombinations, len(plan.UserGroups["user-2"][0].Combinations))
+	suite.Len(plan.UserGroups["user-2"], definition.RecurrentGroups)
+	suite.Len(plan.UserGroups["user-2"][0].Combinations, definition.NrOfGroupCombinations)
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-1", plan.UserGroups["user-2"][0].Details)
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-2", plan.UserGroups["user-2"][1].Details)
 	suite.Equal(definition.RecurrentGroupNamePrefix+"-3", plan.UserGroups["user-2"][2].Details)
@@ -83,7 +83,7 @@ func (suite *BuildSuite) TestGenerate() {
 		data = append(data, *genCombination)
 	}
 
-	suite.Equal(definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users), len(data))
+	suite.Len(data, definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users))
 	suite.Equal(definition.RecurrentGroups*definition.NrOfGroupCombinations*len(definition.Users), mockBuilder.Calls)
 
 	suite.NoError(data[0].Err)

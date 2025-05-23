@@ -1,7 +1,6 @@
 package random_test
 
 import (
-	"errors"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/platform/random"
 	"testing"
@@ -27,8 +26,8 @@ func (df *DiceFixture) TestDice() {
 		df.dice.Sides = i
 
 		pick, err := df.dice.Roll()
-		df.Nil(err)
-		df.Equal(df.generator.lastMin, uint(1))
+		df.NoError(err)
+		df.Equal(uint(1), df.generator.lastMin)
 		df.Equal(df.generator.lastMax, df.dice.Sides)
 		df.Equal(pick, df.dice.Sides-1)
 	}
@@ -38,9 +37,8 @@ func (df *DiceFixture) TestDiceErr() {
 	df.dice.Sides = 0
 	pick, err := df.dice.Roll()
 
-	df.Equal(pick, uint(0))
-	df.True(errors.Is(err, random.ErrDice))
-	df.Equal(err.Error(), "dice error | must have at least one side")
+	df.Equal(uint(0), pick)
+	df.ErrorIs(err, random.ErrDiceNotEnoughSides)
 }
 
 type MockGenerator struct {

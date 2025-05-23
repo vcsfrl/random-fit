@@ -121,8 +121,8 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	suite.Contains(output, cmd.MsgNameMissing)
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
-	err = suite.command.Execute()
-	suite.NoError(err)
+	err1 := suite.command.Execute()
+	suite.NoError(err1)
 
 	//// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")

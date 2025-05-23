@@ -49,7 +49,7 @@ func (suite *StarDefinitionManagerSuite) TestList() {
 	definitions, err := suite.definitionManager.List()
 	suite.NoError(err)
 	suite.NotNil(definitions)
-	suite.Equal(len(testDefinitions), len(definitions))
+	suite.Len(definitions, len(testDefinitions))
 
 	for _, definitionFileName := range testDefinitions {
 		suite.Contains(definitions, definitionFileName)
