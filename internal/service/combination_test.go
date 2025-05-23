@@ -26,7 +26,7 @@ func (suite *StarDefinitionManagerSuite) SetupTest() {
 
 	// Create the test folder
 	err := os.MkdirAll(suite.testFolder, 0755)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.definitionManager = service.NewCombinationStarDefinitionManager(suite.testFolder)
 }
@@ -34,7 +34,7 @@ func (suite *StarDefinitionManagerSuite) SetupTest() {
 func (suite *StarDefinitionManagerSuite) TearDownTest() {
 	// Remove the test folder
 	err := os.RemoveAll(suite.testFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 }
 
 func (suite *StarDefinitionManagerSuite) TestList() {
@@ -43,11 +43,11 @@ func (suite *StarDefinitionManagerSuite) TestList() {
 	for _, definitionFileName := range testDefinitions {
 		testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", definitionFileName))
 		err := os.WriteFile(testDefinitionFile, []byte(`test`), 0644)
-		suite.NoError(err)
+		suite.Require().NoError(err)
 	}
 
 	definitions, err := suite.definitionManager.List()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(definitions)
 	suite.Len(definitions, len(testDefinitions))
 
@@ -62,20 +62,20 @@ func (suite *StarDefinitionManagerSuite) TestNew() {
 	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
 
 	err := suite.definitionManager.New(testDefinitionFileName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// check if the file exists
 	_, err = os.Stat(testDefinitionFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	data, err := os.ReadFile(testDefinitionFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotEmpty(data)
 	suite.Equal(service.DefinitionTemplate, string(data))
 
 	// do not overwrite the file if it already exists
 	err = suite.definitionManager.New(testDefinitionFileName)
-	suite.Error(err)
+	suite.Require().Error(err)
 }
 
 func (suite *StarDefinitionManagerSuite) TestGetScript() {
@@ -84,10 +84,10 @@ func (suite *StarDefinitionManagerSuite) TestGetScript() {
 	testDefinitionFile := filepath.Join(suite.testFolder, fmt.Sprintf("%s.star", testDefinitionFileName))
 
 	err := suite.definitionManager.New(testDefinitionFileName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	script, err := suite.definitionManager.GetScript(testDefinitionFileName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotEmpty(script)
 	suite.Equal(testDefinitionFile, script)
 }
@@ -95,10 +95,10 @@ func (suite *StarDefinitionManagerSuite) TestGetScript() {
 func (suite *StarDefinitionManagerSuite) TestBuild() {
 	testDefinitionFileName := "test-definitionFileName"
 	err := suite.definitionManager.New(testDefinitionFileName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	combination, err := suite.definitionManager.Build(testDefinitionFileName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(combination)
 
 	suite.Equal("Sample Combination", combination.Details)

@@ -26,7 +26,7 @@ func (df *DiceFixture) TestDice() {
 		df.dice.Sides = i
 
 		pick, err := df.dice.Roll()
-		df.NoError(err)
+		df.Require().NoError(err)
 		df.Equal(uint(1), df.generator.lastMin)
 		df.Equal(df.generator.lastMax, df.dice.Sides)
 		df.Equal(pick, df.dice.Sides-1)

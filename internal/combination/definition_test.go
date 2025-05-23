@@ -27,7 +27,7 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 
 	var err error
 	suite.definition, err = combination.NewCombinationDefinition(suite.scriptFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(suite.definition)
 
 	suite.id = 0
@@ -42,12 +42,12 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 		return suite.testRand, nil
 	})
 
-	suite.NoError(err)
+	suite.Require().NoError(err)
 }
 
 func (suite *CombinationDefinitionSuite) TestCombinationDefinition_CallScriptBuild() {
 	buildData, err := suite.definition.CallScriptBuildFunction()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.Equal("lotto-test", suite.definition.ID)
 	suite.Equal("Lotto Number Picks", suite.definition.Details)

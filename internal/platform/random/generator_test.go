@@ -35,7 +35,7 @@ func (crg *CryptoRandomGeneratorFixture) TestUint() {
 	for _, testRow := range crg.tests {
 		c := &random.Crypto{}
 		got, err := c.Uint(testRow.args.min, testRow.args.max)
-		crg.NoError(err)
+		crg.Require().NoError(err)
 		crg.GreaterOrEqual(got, testRow.args.min)
 		crg.LessOrEqual(got, testRow.args.max)
 	}

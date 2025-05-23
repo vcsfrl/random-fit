@@ -28,7 +28,7 @@ func (suite *StarPlanManagerSuite) SetupTest() {
 
 	// Create the test folder
 	err := os.MkdirAll(suite.testFolder, 0755)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.planDefinitionManager = service.NewPlanDefinitionManager(suite.testFolder)
 }
@@ -36,7 +36,7 @@ func (suite *StarPlanManagerSuite) SetupTest() {
 func (suite *StarPlanManagerSuite) TearDownTest() {
 	// Remove the test folder
 	err := os.RemoveAll(suite.testFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 }
 
 func (suite *StarPlanManagerSuite) TestList() {
@@ -45,11 +45,11 @@ func (suite *StarPlanManagerSuite) TestList() {
 	for _, plan := range testPlans {
 		testPlanFile := filepath.Join(suite.testFolder, plan)
 		err := os.WriteFile(testPlanFile, []byte(`test`), 0644)
-		suite.NoError(err)
+		suite.Require().NoError(err)
 	}
 
 	plans, err := suite.planDefinitionManager.List()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(plans)
 	suite.Len(plans, len(testPlans))
 
@@ -65,26 +65,26 @@ func (suite *StarPlanManagerSuite) TestNew() {
 
 	// create a new plan
 	err := suite.planDefinitionManager.New(testPlan)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// check if the plan file exists
 	_, err = os.Stat(testPlanFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// check if the plan file is empty
 	fileInfo, err := os.Stat(testPlanFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Positive(fileInfo.Size())
 
 	// check if the plan file is valid json
 	data, err := os.ReadFile(testPlanFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotEmpty(data)
 
 	resultPlanDefinition := &rfPlan.Definition{}
 
 	err = json.Unmarshal(data, resultPlanDefinition)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Equal(suite.planDefinitionManager.GetSamplePlanDefinition(), resultPlanDefinition)
 }
 
@@ -95,14 +95,14 @@ func (suite *StarPlanManagerSuite) TestGetFile() {
 
 	// create a new plan
 	err := suite.planDefinitionManager.New(testPlan)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// check if the plan file exists
 	_, err = os.Stat(testPlanFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// get the plan file
 	result, err := suite.planDefinitionManager.GetFile(testPlan)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Equal(testPlanFile, result)
 }

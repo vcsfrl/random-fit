@@ -32,7 +32,7 @@ func (suite *CommandsSuite) SetupTest() {
 
 	suite.buffer = new(bytes.Buffer)
 	suite.command, err = cmd.NewCommand()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.command.SetOut(suite.buffer)
 	suite.command.SetErr(suite.buffer)
@@ -41,21 +41,21 @@ func (suite *CommandsSuite) SetupTest() {
 
 	// Create the test folder
 	err = os.MkdirAll(suite.testFolder, 0755)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Set the environment variable
 	err = os.Setenv("RF_BASE_FOLDER", suite.testFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	err = os.Setenv("RF_DATA_FOLDER", suite.testFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	err = os.Setenv("EDITOR", "")
-	suite.NoError(err)
+	suite.Require().NoError(err)
 }
 
 func (suite *CommandsSuite) TearDownTest() {
 	// Remove the test folder
 	err := os.RemoveAll(suite.testFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 }
 
 func (suite *CommandsSuite) TestSubcommands() {
@@ -83,30 +83,30 @@ func (suite *CommandsSuite) TestGenerateCode() {
 	// Create the code generation folder
 	suite.codeGenFolder = filepath.Join(suite.testFolder, "internal", "service")
 	err := cmd.CreateFolder(suite.codeGenFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Create the internal folder to copy file that is used as a source
 	codeFolder := filepath.Join(suite.testFolder, "internal", "combination", "template")
 	err = cmd.CreateFolder(codeFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// copy file template file to the code generation folder
 	sourceFile := filepath.Join("..", "internal", "combination", "template", "script.star")
 	destFile := filepath.Join(codeFolder, "script.star")
 	// copy the file
 	templateData, err := os.ReadFile(sourceFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	err = os.WriteFile(destFile, templateData, 0644)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.command.SetArgs([]string{"code", "generate"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check generated file content
 	generatedFile := filepath.Join(suite.codeGenFolder, "combination_definition_template.go")
 	genData, err := os.ReadFile(generatedFile)
-	suite.NoError(err)
+	suite.Require().Error(err)
 	suite.NotEmpty(genData)
 	suite.Contains(string(genData), string(templateData))
 }
@@ -114,15 +114,15 @@ func (suite *CommandsSuite) TestGenerateCode() {
 func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	suite.command.SetArgs([]string{"definition", "combination", "new"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
 	suite.Contains(output, cmd.MsgNameMissing)
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
-	err1 := suite.command.Execute()
-	suite.NoError(err1)
+	err = suite.command.Execute()
+	suite.Require().NoError(err)
 
 	//// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
@@ -133,12 +133,12 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 
 	scriptData, err := os.ReadFile(scriptName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Contains(string(scriptData), "definition =")
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "test2"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	scriptName = filepath.Join(suite.testFolder, "definition", "test2.star")
@@ -149,14 +149,14 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 
 	scriptData, err = os.ReadFile(scriptName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Contains(string(scriptData), "definition =")
 }
 
 func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
 	suite.command.SetArgs([]string{"definition", "combination", "edit"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -164,7 +164,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
@@ -177,7 +177,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
 func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 	suite.command.SetArgs([]string{"definition", "combination", "delete"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -185,7 +185,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
@@ -194,7 +194,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 
 	suite.command.SetArgs([]string{"definition", "combination", "delete", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	// Check output
 	output = suite.buffer.String()
 	suite.Contains(output, cmd.MsgDelete+" "+cmd.MsgCombinationDefinition+" test1")
@@ -208,7 +208,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 func (suite *CommandsSuite) TestDefinitionCombination_List() {
 	suite.command.SetArgs([]string{"definition", "combination"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -218,14 +218,14 @@ func (suite *CommandsSuite) TestDefinitionCombination_List() {
 	// Create a definition
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test2"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.command.SetArgs([]string{"definition", "combination"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output = suite.buffer.String()
@@ -236,7 +236,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_List() {
 func (suite *CommandsSuite) TestDefinitionPlan_New() {
 	suite.command.SetArgs([]string{"definition", "plan", "new"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -244,7 +244,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
@@ -255,14 +255,14 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 
 	scriptData, err := os.ReadFile(scriptName)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Contains(string(scriptData), "RecurrentGroupNamePrefix")
 }
 
 func (suite *CommandsSuite) TestDefinitionPlan_List() {
 	suite.command.SetArgs([]string{"definition", "plan"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -272,14 +272,14 @@ func (suite *CommandsSuite) TestDefinitionPlan_List() {
 	// Create a definition
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test2"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.command.SetArgs([]string{"definition", "plan"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output = suite.buffer.String()
@@ -290,7 +290,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_List() {
 func (suite *CommandsSuite) TestDefinitionPlan_Edit() {
 	suite.command.SetArgs([]string{"definition", "plan", "edit"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -298,7 +298,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Edit() {
 
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
@@ -311,7 +311,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Edit() {
 func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 	suite.command.SetArgs([]string{"definition", "plan", "delete"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output := suite.buffer.String()
@@ -319,7 +319,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
@@ -328,7 +328,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 
 	suite.command.SetArgs([]string{"definition", "plan", "delete", "--name", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// Check output
 	output = suite.buffer.String()
@@ -342,7 +342,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 func (suite *CommandsSuite) TestGenerate_Combination() {
 	suite.command.SetArgs([]string{"generate", "combination"})
 	err := suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// check output
 	output := suite.buffer.String()
@@ -350,7 +350,7 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 
 	suite.command.SetArgs([]string{"generate", "combination", "--combination", "test1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// check output
 	output = suite.buffer.String()
@@ -359,21 +359,21 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 	// create combination definition
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "combination1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// create plan definition
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "plan1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.command.SetArgs([]string{"generate", "combination", "--combination", "combination1", "--plan", "plan1"})
 	err = suite.command.Execute()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	// get directories from test folder
 	containerFolder := filepath.Join(suite.testFolder, "combination", "user1", "ContainerName")
 	dirs, err := os.ReadDir(containerFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Len(dirs, 1)
 
 	// check combination was created
@@ -381,17 +381,17 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 	combinationJsonFile := filepath.Join(containerFolder, dirs[0].Name(), "Group-1", "Sample_Combination_1.json")
 
 	_, err = os.Stat(combinationMdFile)
-	suite.NoError(err, "File should exist")
+	suite.Require().Error(err, "File should exist")
 	_, err = os.Stat(combinationJsonFile)
-	suite.NoError(err, "File should exist")
+	suite.Require().Error(err, "File should exist")
 
 	// check files content
 	combinationMdData, err := os.ReadFile(combinationMdFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Contains(string(combinationMdData), "Sample")
 
 	combinationJsonData, err := os.ReadFile(combinationJsonFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Contains(string(combinationJsonData), "Sample")
 
 	// check objects saved in storage
@@ -399,11 +399,11 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 
 	// get files from storage folder
 	storageFiles, err := os.ReadDir(storageFolder)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Len(storageFiles, 1)
 	// check files content
 	storageFile := filepath.Join(storageFolder, storageFiles[0].Name())
 	storageData, err := os.ReadFile(storageFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.Contains(string(storageData), "Sample")
 }

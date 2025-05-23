@@ -29,12 +29,12 @@ func (suite *StarlarkBuilderSuite) SetupTest() {
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.initDefinition(suite.scriptFile)
 	builder, err := combinationModel.NewStarBuilder(suite.definition)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(builder)
 
 	// Build first combination
-	combination, err1 := builder.Build()
-	suite.NoError(err1)
+	combination, err := builder.Build()
+	suite.Require().NoError(err)
 	suite.NotNil(combination)
 
 	suite.Len(combination.UUID.String(), 36)
@@ -62,9 +62,8 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data[combinationModel.DataTypeMd].Data.String(), "4200")
 
 	// Build first combination
-	var err2 error
-	combination, err2 = builder.Build()
-	suite.NoError(err2)
+	combination, err = builder.Build()
+	suite.Require().NoError(err)
 	suite.NotNil(combination)
 
 	suite.Len(combination.UUID.String(), 36)
@@ -95,24 +94,24 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_NoJsonData() {
 	suite.initDefinition("./testdata/star_script_no_json.star")
 	builder, err := combinationModel.NewStarBuilder(suite.definition)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(builder)
 
 	// Build first combination
 	combination, err := builder.Build()
-	suite.Error(err)
+	suite.Require().Error(err)
 	suite.Nil(combination)
 }
 
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 	suite.initDefinition("./template/script.star")
 	builder, err := combinationModel.NewStarBuilder(suite.definition)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(builder)
 
 	// Build first combination
 	combination, err := builder.Build()
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(combination)
 
 	suite.Len(combination.UUID.String(), 36)
@@ -129,7 +128,7 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Sample() {
 func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 	var err error
 	suite.definition, err = combinationModel.NewCombinationDefinition(scriptFile)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 	suite.NotNil(suite.definition)
 
 	suite.id = 0
@@ -145,5 +144,5 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 		return suite.testRand, nil
 	})
 
-	suite.NoError(err)
+	suite.Require().NoError(err)
 }

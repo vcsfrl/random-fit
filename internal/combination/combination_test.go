@@ -24,7 +24,7 @@ func (suite *CombinationDataSuite) TestUnmarshall() {
 
 	var data combination.Data
 	err := data.UnmarshalJSON(jsonData)
-	suite.NoError(err)
+	suite.Require().NoError(err)
 
 	suite.Equal("json", data.Extension)
 	suite.Equal("application/json", data.MimeType)
