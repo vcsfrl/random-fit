@@ -100,9 +100,9 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 
 	g.logger.Info().Msgf("Starting %d workers to export plans", g.nrWorkers())
 
-	for i := 0; i < g.nrWorkers(); i++ {
+	for workerNr := range g.nrWorkers() {
 		waitGroup.Add(1)
-		g.logger.Info().Msgf("Starting worker %d", i)
+		g.logger.Info().Msgf("Starting worker %d", workerNr)
 
 		go func(index int) {
 			defer func() {
@@ -116,7 +116,7 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 			}
 
 			g.logger.Info().Msgf("Worker %d finished exporting plan", index)
-		}(i)
+		}(workerNr)
 	}
 
 	// Wait for all workers to finish
