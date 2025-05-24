@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+const shutdownSleep = 200
+
 func NewCommand() (*cobra.Command, error) {
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
@@ -207,7 +209,7 @@ func Execute() {
 	go func() {
 		<-ctx.Done()
 
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(shutdownSleep * time.Millisecond)
 		workGroup.Done()
 		os.Exit(0)
 	}()

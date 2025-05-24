@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/cmd"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"os"
 	"path/filepath"
 	"slices"
@@ -85,12 +86,12 @@ func (suite *CommandsSuite) TestSubcommands() {
 func (suite *CommandsSuite) TestGenerateCode() {
 	// Create the code generation folder
 	suite.codeGenFolder = filepath.Join(suite.testFolder, "internal", "service")
-	err := cmd.CreateFolder(suite.codeGenFolder)
+	err := fs.CreateFolder(suite.codeGenFolder)
 	suite.Require().NoError(err)
 
 	// Create the internal folder to copy file that is used as a source
 	codeFolder := filepath.Join(suite.testFolder, "internal", "combination", "template")
-	err = cmd.CreateFolder(codeFolder)
+	err = fs.CreateFolder(codeFolder)
 	suite.Require().NoError(err)
 
 	// copy file template file to the code generation folder
@@ -99,7 +100,7 @@ func (suite *CommandsSuite) TestGenerateCode() {
 	// copy the file
 	templateData, err := os.ReadFile(sourceFile)
 	suite.Require().NoError(err)
-	err = os.WriteFile(destFile, templateData, 0644)
+	err = os.WriteFile(destFile, templateData, fs.FilePermission)
 	suite.Require().NoError(err)
 
 	suite.command.SetArgs([]string{"code", "generate"})

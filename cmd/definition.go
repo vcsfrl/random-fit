@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 	"os/exec"
@@ -50,7 +51,7 @@ func (b *BaseHandler) getArg(position int, flagName string) string {
 }
 
 func (b *BaseHandler) createFolder(folder string) error {
-	return CreateFolder(folder)
+	return fs.CreateFolder(folder)
 }
 
 func (b *BaseHandler) initFolders() error {
@@ -80,16 +81,6 @@ func (b *BaseHandler) initFolders() error {
 		b.cmd.PrintErrln("Error creating storage folder: ", err)
 
 		return err
-	}
-
-	return nil
-}
-
-func CreateFolder(folder string) error {
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
-		if err := os.MkdirAll(folder, 0755); err != nil {
-			return fmt.Errorf("error creating folder %s: %w", folder, err)
-		}
 	}
 
 	return nil

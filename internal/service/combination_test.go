@@ -3,6 +3,7 @@ package service_test
 import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 	"path/filepath"
@@ -42,7 +43,7 @@ func (suite *StarDefinitionManagerSuite) TestList() {
 	testDefinitions := []string{"test-definitionFileName-1", "test-definitionFileName-2", "test-definitionFileName-3"}
 	for _, definitionFileName := range testDefinitions {
 		testDefinitionFile := filepath.Join(suite.testFolder, definitionFileName+".star")
-		err := os.WriteFile(testDefinitionFile, []byte(`test`), 0644)
+		err := os.WriteFile(testDefinitionFile, []byte(`test`), fs.FilePermission)
 		suite.Require().NoError(err)
 	}
 

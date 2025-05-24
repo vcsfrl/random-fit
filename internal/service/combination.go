@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/combination"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -52,7 +53,7 @@ func (dm *CombinationStarDefinitionManager) New(definitionName string) error {
 		return fmt.Errorf("%s: definition already exists", ErrCombinationDefinitionManager)
 	}
 
-	if err := os.WriteFile(definitionFilePath, []byte(DefinitionTemplate), 0644); err != nil {
+	if err := os.WriteFile(definitionFilePath, []byte(DefinitionTemplate), fs.FilePermission); err != nil {
 		return fmt.Errorf("%s: new definition: %w", ErrCombinationDefinitionManager, err)
 	}
 

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/vcsfrl/random-fit/internal/combination"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,8 +14,6 @@ import (
 
 var ErrExport = errors.New("error exporting plan")
 var ErrExportTerminated = fmt.Errorf("%w: export terminated", ErrExport)
-
-const FolderPermission = 0755
 
 type Exporter struct {
 	OutputDir  string
@@ -33,7 +32,7 @@ func (e *Exporter) Export(plan *UserPlan) error {
 		for _, group := range groups {
 			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan.Plan, group.Group), group.Details), " ", "_")
 
-			if err := os.MkdirAll(groupFolder, FolderPermission); err != nil {
+			if err := os.MkdirAll(groupFolder, fs.FolderPermission); err != nil {
 				return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
 			}
 
@@ -68,7 +67,7 @@ func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedC
 		}
 
 		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
-		if err := os.MkdirAll(groupFolder, FolderPermission); err != nil {
+		if err := fs.CreateFolder(groupFolder); err != nil {
 			return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
 		}
 
@@ -153,7 +152,7 @@ func (e *Exporter) saveToFile(groupCombination *combination.Combination, data *c
 	fileName := fmt.Sprintf("%s_%d.%s", groupCombination.Details, i, data.Extension)
 	filePath := filepath.Join(groupFolder, strings.ReplaceAll(fileName, " ", "_"))
 
-	err := os.WriteFile(filePath, data.Data.Bytes(), 0666)
+	err := os.WriteFile(filePath, data.Data.Bytes(), fs.FilePermission)
 	if err != nil {
 		return fmt.Errorf("%w: error writing file: %w", ErrExport, err)
 	}

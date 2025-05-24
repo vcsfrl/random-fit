@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"os"
 	"path/filepath"
 	textTemplate "text/template"
@@ -45,7 +46,7 @@ func GenerateCode(printer Printer, config *Config) {
 		return
 	}
 
-	if err := os.WriteFile(fileName, buff.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(fileName, buff.Bytes(), fs.FilePermission); err != nil {
 		printer.Println("Error:", err)
 	}
 

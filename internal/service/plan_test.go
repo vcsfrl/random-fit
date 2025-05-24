@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"github.com/vcsfrl/random-fit/internal/service"
 	"os"
 	"path/filepath"
@@ -44,7 +45,7 @@ func (suite *StarPlanManagerSuite) TestList() {
 	testPlans := []string{"test-plan-1", "test-plan-2", "test-plan-3"}
 	for _, plan := range testPlans {
 		testPlanFile := filepath.Join(suite.testFolder, plan)
-		err := os.WriteFile(testPlanFile, []byte(`test`), 0644)
+		err := os.WriteFile(testPlanFile, []byte(`test`), fs.FilePermission)
 		suite.Require().NoError(err)
 	}
 
