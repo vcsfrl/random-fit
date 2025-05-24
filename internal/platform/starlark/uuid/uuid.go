@@ -16,7 +16,10 @@ var Module = &starlarkstruct.Module{
 
 var v7Func func() (string, error)
 
-func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, _ []starlark.Tuple) (starlark.Value, error) {
+// v7 generates a UUIDv7 string. It is a wrapper around the uuid.NewV7 function.
+//
+//nolint:lll
+func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, _ []starlark.Tuple) (starlark.Value, error) { //nolint:ireturn
 	uuidFunc := getUUIDFunc()
 	uniqueID, err := uuidFunc()
 

@@ -56,7 +56,12 @@ func (g *Generator) Combination() {
 		return
 	}
 
-	g.cmd.Println("Generating plan with combination definition", combinationDefinitionName, "and plan definition", planDefinitionName)
+	g.cmd.Println(
+		"Generating plan with combination definition",
+		combinationDefinitionName,
+		"and plan definition",
+		planDefinitionName,
+	)
 
 	combinationDefinitionScript, err := g.combinationDefinitionManager.GetScript(combinationDefinitionName)
 	if err != nil {

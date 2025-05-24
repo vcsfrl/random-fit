@@ -18,12 +18,14 @@ var Module = &starlarkstruct.Module{
 
 // renderText() is a Go function called from Starlark.
 // It renders a text textTemplate with the given arguments.
-func renderText(_ *starlark.Thread, b *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) {
+//
+//nolint:lll
+func renderText(_ *starlark.Thread, builtin *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) { //nolint:ireturn
 	var tpl, tplJSONArgs string
 
 	var tplGoArgs any
 
-	if err := starlark.UnpackArgs(b.Name(), args, kwargs, "tpl", &tpl, "tplJsonArgs", &tplJSONArgs); err != nil {
+	if err := starlark.UnpackArgs(builtin.Name(), args, kwargs, "tpl", &tpl, "tplJsonArgs", &tplJSONArgs); err != nil {
 		return nil, fmt.Errorf("unpack args: %w", err)
 	}
 
