@@ -51,7 +51,12 @@ func (b *BaseHandler) getArg(position int, flagName string) string {
 }
 
 func (b *BaseHandler) createFolder(folder string) error {
-	return fs.CreateFolder(folder)
+	err := fs.CreateFolder(folder)
+	if err != nil {
+		return fmt.Errorf("error creating folder %s: %w", folder, err)
+	}
+
+	return nil
 }
 
 func (b *BaseHandler) initFolders() error {
