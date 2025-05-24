@@ -127,7 +127,7 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 
 func (g *Generator) startMonitor() {
 	g.logger.Info().Msgf("Starting debug chart server on port %s", g.conf.DebugChartPort)
-	server := &http.Server{Addr: "0.0.0.0:" + g.conf.DebugChartPort}
+	server := &http.Server{Addr: "0.0.0.0:" + g.conf.DebugChartPort, ReadHeaderTimeout: 1 * time.Second}
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {

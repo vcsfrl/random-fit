@@ -20,7 +20,7 @@ func (b *BaseHandler) editScript(scriptName string, filetype string) error {
 		return ErrNoEnvEditor
 	}
 
-	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName)
+	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName) //nolint:gosec
 	cmd.Stdin = b.cmd.InOrStdin()
 	cmd.Stdout = b.cmd.OutOrStdout()
 	cmd.Stderr = b.cmd.ErrOrStderr()

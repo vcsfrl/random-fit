@@ -21,7 +21,9 @@ func NewCrypto() *Crypto {
 }
 
 func (c *Crypto) Uint(minValue, maxValue uint) (uint, error) {
-	bg := big.NewInt(int64(maxValue - minValue + 1))
+	val := maxValue - minValue + 1
+	//nolint:gosec
+	bg := big.NewInt(int64(val))
 
 	n, err := rand.Int(rand.Reader, bg)
 	if err != nil {
