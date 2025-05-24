@@ -31,10 +31,8 @@ func NewStarBuilder(definition *StarlarkDefinition) (*StarBuilder, error) {
 	return &StarBuilder{
 		definition: definition,
 		now:        time.Now,
-		uuidV7: func() (uuid.UUID, error) {
-			return uuid.NewV7()
-		},
-		validate: validate,
+		uuidV7:     uuid.NewV7,
+		validate:   validate,
 	}, nil
 }
 
