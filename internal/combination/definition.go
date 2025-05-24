@@ -112,7 +112,11 @@ func (cd *StarlarkDefinition) init() error {
 
 	buildFunction, hasDefinition := sBuildFunction.(*starlark.Function)
 	if !hasDefinition {
-		return fmt.Errorf("%w 'definition' build function field must be a function %s", ErrCombinationDefinition, cd.StarScript)
+		return fmt.Errorf(
+			"%w 'definition' build function field must be a function %s",
+			ErrCombinationDefinition,
+			cd.StarScript,
+		)
 	}
 
 	cd.buildFunction = buildFunction

@@ -30,7 +30,12 @@ func NewExporter(outputDir string, storageDir string) *Exporter {
 func (e *Exporter) Export(plan *UserPlan) error {
 	for userID, groups := range plan.UserGroups {
 		for _, group := range groups {
-			groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, userID, e.containerFolder(plan.Plan, group.Group), group.Details), " ", "_")
+			groupFolder := strings.ReplaceAll(filepath.Join(
+				e.OutputDir,
+				userID,
+				e.containerFolder(plan.Plan, group.Group),
+				group.Details,
+			), " ", "_")
 
 			if err := os.MkdirAll(groupFolder, fs.FolderPermission); err != nil {
 				return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
@@ -66,7 +71,16 @@ func (e *Exporter) ExportGenerator(ctx context.Context, generator chan *PlannedC
 			return fmt.Errorf("%w: error generating plan: %w", ErrExport, planCombination.Err)
 		}
 
-		groupFolder := strings.ReplaceAll(filepath.Join(e.OutputDir, planCombination.User, e.containerFolder(planCombination.Plan, planCombination.Group), planCombination.Group.Details), " ", "_")
+		groupFolder := strings.ReplaceAll(
+			filepath.Join(
+				e.OutputDir,
+				planCombination.User,
+				e.containerFolder(planCombination.Plan, planCombination.Group),
+				planCombination.Group.Details,
+			),
+			" ",
+			"_",
+		)
 		if err := fs.CreateFolder(groupFolder); err != nil {
 			return fmt.Errorf("%w: error creating group folder: %w", ErrExport, err)
 		}
@@ -129,7 +143,10 @@ func (e *Exporter) exportObject(plan *UserPlan) error {
 
 func (e *Exporter) exportPlannedCombinationObject(plan *PlannedCombination) error {
 	// save the plan to storage
-	storageFile := filepath.Join(e.StorageDir, fmt.Sprintf("%s_%s_%s.gob", plan.User, plan.UUID.String(), plan.Combination.UUID.String()))
+	storageFile := filepath.Join(
+		e.StorageDir,
+		fmt.Sprintf("%s_%s_%s.gob", plan.User, plan.UUID.String(), plan.Combination.UUID.String()),
+	)
 	// open the file
 	file, err := os.Create(storageFile)
 	if err != nil {
@@ -148,8 +165,13 @@ func (e *Exporter) exportPlannedCombinationObject(plan *PlannedCombination) erro
 	return nil
 }
 
-func (e *Exporter) saveToFile(groupCombination *combination.Combination, data *combination.Data, groupFolder string, i int) error {
-	fileName := fmt.Sprintf("%s_%d.%s", groupCombination.Details, i, data.Extension)
+func (e *Exporter) saveToFile(
+	groupCombination *combination.Combination,
+	data *combination.Data,
+	groupFolder string,
+	index int,
+) error {
+	fileName := fmt.Sprintf("%s_%d.%s", groupCombination.Details, index, data.Extension)
 	filePath := filepath.Join(groupFolder, strings.ReplaceAll(fileName, " ", "_"))
 
 	err := os.WriteFile(filePath, data.Data.Bytes(), fs.FilePermission)

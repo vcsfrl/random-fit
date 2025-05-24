@@ -75,7 +75,10 @@ func (g *Generator) Combination() {
 
 	g.startMonitor()
 
-	planGenerator := plan.NewBuilderFromStarConfig(combinationDefinitionScript, planDefinitionScript).Generate(context.Background())
+	planGenerator := plan.NewBuilderFromStarConfig(
+		combinationDefinitionScript,
+		planDefinitionScript,
+	).Generate(context.Background())
 
 	start := time.Now()
 

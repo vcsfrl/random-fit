@@ -239,11 +239,26 @@ func (suite *ExportSuite) TestExportObject() {
 	suite.Len(plan.UserGroups, len(savedPlan.UserGroups))
 	suite.Len(plan.UserGroups["user-1"], len(savedPlan.UserGroups["user-1"]))
 	suite.Equal(plan.UserGroups["user-1"][0].Details, savedPlan.UserGroups["user-1"][0].Details)
-	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].UUID, savedPlan.UserGroups["user-1"][0].Combinations[0].UUID)
-	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].Details, savedPlan.UserGroups["user-1"][0].Combinations[0].Details)
-	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].DefinitionID, savedPlan.UserGroups["user-1"][0].Combinations[0].DefinitionID)
-	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].Data, savedPlan.UserGroups["user-1"][0].Combinations[0].Data)
-	suite.Equal(plan.UserGroups["user-1"][0].Combinations[0].CreatedAt.Format(time.DateTime), savedPlan.UserGroups["user-1"][0].Combinations[0].CreatedAt.Format(time.DateTime))
+	suite.Equal(
+		plan.UserGroups["user-1"][0].Combinations[0].UUID,
+		savedPlan.UserGroups["user-1"][0].Combinations[0].UUID,
+	)
+	suite.Equal(
+		plan.UserGroups["user-1"][0].Combinations[0].Details,
+		savedPlan.UserGroups["user-1"][0].Combinations[0].Details,
+	)
+	suite.Equal(
+		plan.UserGroups["user-1"][0].Combinations[0].DefinitionID,
+		savedPlan.UserGroups["user-1"][0].Combinations[0].DefinitionID,
+	)
+	suite.Equal(
+		plan.UserGroups["user-1"][0].Combinations[0].Data,
+		savedPlan.UserGroups["user-1"][0].Combinations[0].Data,
+	)
+	suite.Equal(
+		plan.UserGroups["user-1"][0].Combinations[0].CreatedAt.Format(time.DateTime),
+		savedPlan.UserGroups["user-1"][0].Combinations[0].CreatedAt.Format(time.DateTime),
+	)
 
 	err = file.Close()
 	suite.Require().NoError(err)

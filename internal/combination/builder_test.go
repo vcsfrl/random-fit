@@ -49,8 +49,14 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lotto Numbers for User 2")
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[1,2,3,4,5,6]")
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[36,37,38,39,40,41]")
-	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "collection_00000000-0000-0000-0000-000000000001")
-	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "element_00000000-0000-0000-0000-000000000021")
+	suite.Contains(
+		combination.Data[combinationModel.DataTypeJSON].Data.String(),
+		"collection_00000000-0000-0000-0000-000000000001",
+	)
+	suite.Contains(
+		combination.Data[combinationModel.DataTypeJSON].Data.String(),
+		"element_00000000-0000-0000-0000-000000000021",
+	)
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lucky Number")
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "4200")
 
@@ -78,8 +84,14 @@ func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lotto Numbers for User 2")
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[43,44,45,46,47,48]")
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "[78,79,80,81,82,83]")
-	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "collection_00000000-0000-0000-0000-000000000022")
-	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "set_00000000-0000-0000-0000-000000000040")
+	suite.Contains(
+		combination.Data[combinationModel.DataTypeJSON].Data.String(),
+		"collection_00000000-0000-0000-0000-000000000022",
+	)
+	suite.Contains(
+		combination.Data[combinationModel.DataTypeJSON].Data.String(),
+		"set_00000000-0000-0000-0000-000000000040",
+	)
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "Lucky Number")
 	suite.Contains(combination.Data[combinationModel.DataTypeJSON].Data.String(), "8400")
 
