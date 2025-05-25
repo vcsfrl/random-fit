@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
 	"github.com/vcsfrl/random-fit/internal/platform/fs"
@@ -11,7 +12,7 @@ import (
 	"strings"
 )
 
-var ErrPlanDefinitionManager = "plan definition manager error"
+var ErrPlanDefinitionManager = errors.New("plan definition manager error")
 
 type PlanDefinitionManager struct {
 	dataFolder string
@@ -28,7 +29,7 @@ func (m *PlanDefinitionManager) List() ([]string, error) {
 
 	files, err := os.ReadDir(m.dataFolder)
 	if err != nil {
-		return nil, fmt.Errorf("%s: read data folder: %w", ErrPlanDefinitionManager, err)
+		return nil, fmt.Errorf("%w: read data folder: %w", ErrPlanDefinitionManager, err)
 	}
 
 	for _, file := range files {
@@ -47,23 +48,23 @@ func (m *PlanDefinitionManager) New(plan string) error {
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
 
 	if _, err := os.Stat(planFilePath); !os.IsNotExist(err) {
-		return fmt.Errorf("%s: plan already exists", ErrPlanDefinitionManager)
+		return fmt.Errorf("%w: plan already exists", ErrPlanDefinitionManager)
 	}
 
 	emptyPlan := m.GetSamplePlanDefinition()
 
 	buff, err := json.Marshal(emptyPlan)
 	if err != nil {
-		return fmt.Errorf("%s: marshal plan to json: %w", ErrPlanDefinitionManager, err)
+		return fmt.Errorf("%w: marshal plan to json: %w", ErrPlanDefinitionManager, err)
 	}
 
 	var prettyJSON bytes.Buffer
 	if err := json.Indent(&prettyJSON, buff, "", "  "); err != nil {
-		return fmt.Errorf("%s: indent json: %w", ErrPlanDefinitionManager, err)
+		return fmt.Errorf("%w: indent json: %w", ErrPlanDefinitionManager, err)
 	}
 
 	if err := os.WriteFile(planFilePath, prettyJSON.Bytes(), fs.FilePermission); err != nil {
-		return fmt.Errorf("%s: new plan: %w", ErrPlanDefinitionManager, err)
+		return fmt.Errorf("%w: new plan: %w", ErrPlanDefinitionManager, err)
 	}
 
 	return nil
@@ -74,7 +75,7 @@ func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
 	planFilePath := filepath.Join(m.dataFolder, planFileName)
 
 	if _, err := os.Stat(planFilePath); os.IsNotExist(err) {
-		return "", fmt.Errorf("%s: plan does not exist", ErrPlanDefinitionManager)
+		return "", fmt.Errorf("%w: plan does not exist", ErrPlanDefinitionManager)
 	}
 
 	return planFilePath, nil
@@ -83,11 +84,11 @@ func (m *PlanDefinitionManager) GetFile(plan string) (string, error) {
 func (m *PlanDefinitionManager) Delete(name string) error {
 	scriptName, err := m.GetFile(name)
 	if err != nil {
-		return fmt.Errorf("%s: get script: %w", ErrPlanDefinitionManager, err)
+		return fmt.Errorf("%w: get script: %w", ErrPlanDefinitionManager, err)
 	}
 
 	if err := os.Remove(scriptName); err != nil {
-		return fmt.Errorf("%s: remove script: %w", ErrPlanDefinitionManager, err)
+		return fmt.Errorf("%w: remove script: %w", ErrPlanDefinitionManager, err)
 	}
 
 	return nil

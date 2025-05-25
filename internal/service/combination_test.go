@@ -10,6 +10,8 @@ import (
 	"testing"
 )
 
+const testDefinitionFileName = "test-definitionFileName"
+
 func TestDefinitionManager(t *testing.T) {
 	t.Parallel()
 	suite.Run(t, new(StarDefinitionManagerSuite))
@@ -59,7 +61,6 @@ func (suite *StarDefinitionManagerSuite) TestList() {
 
 func (suite *StarDefinitionManagerSuite) TestNew() {
 	// create a test definitionFileName file
-	testDefinitionFileName := "test-definitionFileName"
 	testDefinitionFile := filepath.Join(suite.testFolder, testDefinitionFileName+".star")
 
 	err := suite.definitionManager.New(testDefinitionFileName)
@@ -81,7 +82,6 @@ func (suite *StarDefinitionManagerSuite) TestNew() {
 
 func (suite *StarDefinitionManagerSuite) TestGetScript() {
 	// create a test definitionFileName file
-	testDefinitionFileName := "test-definitionFileName"
 	testDefinitionFile := filepath.Join(suite.testFolder, testDefinitionFileName+".star")
 
 	err := suite.definitionManager.New(testDefinitionFileName)
@@ -94,7 +94,6 @@ func (suite *StarDefinitionManagerSuite) TestGetScript() {
 }
 
 func (suite *StarDefinitionManagerSuite) TestBuild() {
-	testDefinitionFileName := "test-definitionFileName"
 	err := suite.definitionManager.New(testDefinitionFileName)
 	suite.Require().NoError(err)
 

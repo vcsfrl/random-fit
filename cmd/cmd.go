@@ -216,11 +216,15 @@ func Execute() {
 
 	rootCmd, err := NewCommand()
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error creating command: %v", err)
+
+		return
 	}
 
 	err = rootCmd.ExecuteContext(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error executing command: %v", err)
+
+		return
 	}
 }
