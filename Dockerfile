@@ -10,6 +10,7 @@ RUN chown $username:$username /srv/random-fit -R
 USER $username:$username
 RUN go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.1.6
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
+RUN go install golang.org/x/text/cmd/gotext@latest
 WORKDIR /srv/random-fit
 
 FROM base AS build

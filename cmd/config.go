@@ -16,6 +16,7 @@ func NewConfig() *service.Config {
 	newConfig.BaseFolder = viper.Get("baseFolder").(string)
 	newConfig.K8sSharedFolder = viper.Get("k8sSharedFolder").(string)
 	newConfig.Editor = viper.Get("editor").(string)
+	newConfig.Locale = viper.GetString("locale")
 
 	return &newConfig
 }
@@ -88,6 +89,16 @@ func BindEnvConfig(command *cobra.Command) error {
 	}
 
 	if err := viper.BindEnv("editor", "EDITOR"); err != nil {
+		return fmt.Errorf("error binding env: %w", err)
+	}
+
+	command.Flags().String("locale", "en-US", "Locale")
+
+	if err := viper.BindPFlag("locale", command.Flags().Lookup("locale")); err != nil {
+		return fmt.Errorf("error binding flag: %w", err)
+	}
+
+	if err := viper.BindEnv("locale", "RF_LOCALE"); err != nil {
 		return fmt.Errorf("error binding env: %w", err)
 	}
 

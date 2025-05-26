@@ -136,7 +136,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgNameMissing)
+	suite.Contains(output, "Name is required.")
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
 	err = suite.command.Execute()
@@ -145,9 +145,9 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	//// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgCreate+" "+cmd.MsgCombinationDefinition+" test1")
-	suite.Contains(output, cmd.MsgDone+" "+cmd.MsgCreate+" "+cmd.MsgCombinationDefinition+" test1")
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Create combination definition: test1")
+	suite.Contains(output, "Finished creating combination definition: test1")
+	suite.Contains(output, "Edit combination definition file: "+scriptName)
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 
 	scriptData, err := os.ReadFile(scriptName)
@@ -161,9 +161,9 @@ func (suite *CommandsSuite) TestDefinitionCombination_New() {
 	// Check output
 	scriptName = filepath.Join(suite.testFolder, "definition", "test2.star")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgCreate+" "+cmd.MsgCombinationDefinition+" test2")
-	suite.Contains(output, cmd.MsgDone+" "+cmd.MsgCreate+" "+cmd.MsgCombinationDefinition+" test2")
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Create combination definition: test2")
+	suite.Contains(output, "Finished creating combination definition: test2")
+	suite.Contains(output, "Edit combination definition file: "+scriptName)
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 
 	scriptData, err = os.ReadFile(scriptName)
@@ -178,7 +178,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgNameMissing)
+	suite.Contains(output, "Name is required.")
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
 	err = suite.command.Execute()
@@ -187,7 +187,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Edit() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Edit combination definition file: "+scriptName)
 
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 }
@@ -199,7 +199,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgNameMissing)
+	suite.Contains(output, "Name is required.")
 
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
 	err = suite.command.Execute()
@@ -208,15 +208,15 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "definition", "test1.star")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Edit combination definition file: "+scriptName)
 
 	suite.command.SetArgs([]string{"definition", "combination", "delete", "--name", "test1"})
 	err = suite.command.Execute()
 	suite.Require().NoError(err)
 	// Check output
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgDelete+" "+cmd.MsgCombinationDefinition+" test1")
-	suite.Contains(output, cmd.MsgDone+" "+cmd.MsgDelete+" "+cmd.MsgCombinationDefinition+" test1")
+	suite.Contains(output, "Delete combination definition: test1")
+	suite.Contains(output, "Finished deleting combination definition:"+" test1")
 
 	// check if the file is deleted
 	_, err = os.Stat(scriptName)
@@ -230,8 +230,8 @@ func (suite *CommandsSuite) TestDefinitionCombination_List() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgCombinationDefinition+" "+cmd.MsgList)
-	suite.Contains(output, cmd.MsgNoItemsFound)
+	suite.Contains(output, "Combination definitions:")
+	suite.Contains(output, "No combination definitions found.")
 
 	// Create a definition
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "test1"})
@@ -258,7 +258,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgNameMissing)
+	suite.Contains(output, "Name is required.")
 
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
@@ -267,9 +267,9 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgCreate+" "+cmd.MsgPlanDefinition+" test1")
-	suite.Contains(output, cmd.MsgDone+" "+cmd.MsgCreate+" "+cmd.MsgPlanDefinition+" test1")
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Creating plan definition: test1")
+	suite.Contains(output, "Finished creating plan definition: test1")
+	suite.Contains(output, "Edit definition file: "+scriptName)
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 
 	scriptData, err := os.ReadFile(scriptName)
@@ -284,8 +284,8 @@ func (suite *CommandsSuite) TestDefinitionPlan_List() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgPlanDefinition+" "+cmd.MsgList)
-	suite.Contains(output, cmd.MsgNoItemsFound)
+	suite.Contains(output, "Plan Definitions:")
+	suite.Contains(output, "No plan definitions found.")
 
 	// Create a definition
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
@@ -312,7 +312,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Edit() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgNameMissing)
+	suite.Contains(output, "Name is required.")
 
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
@@ -321,7 +321,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Edit() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Edit definition file: "+scriptName)
 
 	suite.Contains(output, cmd.ErrNoEnvEditor.Error())
 }
@@ -333,7 +333,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 
 	// Check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgNameMissing)
+	suite.Contains(output, "Name is required.")
 
 	suite.command.SetArgs([]string{"definition", "plan", "new", "--name", "test1"})
 	err = suite.command.Execute()
@@ -342,7 +342,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 	// Check output
 	scriptName := filepath.Join(suite.testFolder, "plan", "test1.json")
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgEditScript+" "+scriptName)
+	suite.Contains(output, "Edit definition file: "+scriptName)
 
 	suite.command.SetArgs([]string{"definition", "plan", "delete", "--name", "test1"})
 	err = suite.command.Execute()
@@ -350,8 +350,8 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 
 	// Check output
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgDelete+" "+cmd.MsgPlanDefinition+" test1")
-	suite.Contains(output, cmd.MsgDone+" "+cmd.MsgDelete+" "+cmd.MsgPlanDefinition+" test1")
+	suite.Contains(output, "Delete plan definition: test1")
+	suite.Contains(output, "Finished deleting plan definition: test1")
 	// check if the file is deleted
 	_, err = os.Stat(scriptName)
 	suite.True(os.IsNotExist(err), "File should be deleted")
@@ -364,7 +364,7 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 
 	// check output
 	output := suite.buffer.String()
-	suite.Contains(output, cmd.MsgCombinationDefinitionNameMissing)
+	suite.Contains(output, "No combination definition found.")
 
 	suite.command.SetArgs([]string{"generate", "combination", "--combination", "test1"})
 	err = suite.command.Execute()
@@ -372,7 +372,7 @@ func (suite *CommandsSuite) TestGenerate_Combination() {
 
 	// check output
 	output = suite.buffer.String()
-	suite.Contains(output, cmd.MsgPlanDefinitionNameMissing)
+	suite.Contains(output, "No plan definition found.")
 
 	// create combination definition
 	suite.command.SetArgs([]string{"definition", "combination", "new", "--name", "combination1"})

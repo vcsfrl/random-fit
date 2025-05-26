@@ -1,18 +1,25 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"github.com/vcsfrl/random-fit/internal/service"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 	"os"
 	"os/exec"
 )
+
+var ErrNoEnvEditor = errors.New("EDITOR environment variable is not set")
 
 type BaseHandler struct {
 	cmd  *cobra.Command
 	args []string
 	conf *service.Config
+
+	printer *message.Printer
 }
 
 func (b *BaseHandler) editScript(scriptName string, filetype string) error {
@@ -57,6 +64,19 @@ func (b *BaseHandler) createFolder(folder string) error {
 	}
 
 	return nil
+}
+
+func (b *BaseHandler) initTranslations() {
+	var lang language.Tag
+
+	switch b.conf.Locale {
+	case "en_US.UTF-8":
+		lang = language.MustParse("en-US")
+	default:
+		lang = language.MustParse("en-US")
+	}
+
+	b.printer = message.NewPrinter(lang)
 }
 
 func (b *BaseHandler) initFolders() error {

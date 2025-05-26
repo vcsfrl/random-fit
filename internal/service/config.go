@@ -8,6 +8,7 @@ type Config struct {
 	BaseFolder      string
 	K8sSharedFolder string
 	Editor          string
+	Locale          string
 }
 
 func (c *Config) CombinationFolder() string {

@@ -30,12 +30,12 @@ func NewPlanDefinition(cmd *cobra.Command, args []string, conf *service.Config) 
 func (p *PlanDefinition) New() {
 	name := p.getArg(0, "name")
 	if name == "" {
-		p.cmd.PrintErrln(MsgNameMissing)
+		p.cmd.PrintErrln(p.printer.Sprint("Name is required."))
 
 		return
 	}
 
-	p.cmd.Println(MsgCreate, MsgPlanDefinition, name)
+	p.cmd.Println(p.printer.Sprint("Creating plan definition:"), name)
 
 	err := p.definitionManager.New(name)
 	if err != nil {
@@ -44,7 +44,7 @@ func (p *PlanDefinition) New() {
 		return
 	}
 
-	p.cmd.Println(MsgDone, MsgCreate, MsgPlanDefinition, name)
+	p.cmd.Println(p.printer.Sprint("Finished creating plan definition:"), name)
 
 	scriptName, err := p.definitionManager.GetFile(name)
 	if err != nil {
@@ -53,7 +53,7 @@ func (p *PlanDefinition) New() {
 		return
 	}
 
-	p.cmd.Println(MsgEditScript, scriptName)
+	p.cmd.Println(p.printer.Sprint("Edit definition file:"), scriptName)
 
 	if err := p.editScript(scriptName, "json"); err != nil {
 		p.cmd.PrintErrln("Error editing script: ", err)
@@ -63,7 +63,7 @@ func (p *PlanDefinition) New() {
 }
 
 func (p *PlanDefinition) List() {
-	p.cmd.Println(MsgPlanDefinition, MsgList)
+	p.cmd.Println(p.printer.Sprint("Plan Definitions:"))
 
 	planDefinitions, err := p.definitionManager.List()
 	if err != nil {
@@ -73,7 +73,7 @@ func (p *PlanDefinition) List() {
 	}
 
 	if len(planDefinitions) == 0 {
-		p.cmd.Println(MsgNoItemsFound)
+		p.cmd.Println(p.printer.Sprint("No plan definitions found."))
 
 		return
 	}
@@ -86,12 +86,12 @@ func (p *PlanDefinition) List() {
 func (p *PlanDefinition) Edit() {
 	name := p.getArg(0, "name")
 	if name == "" {
-		p.cmd.PrintErrln(MsgNameMissing)
+		p.cmd.PrintErrln(p.printer.Sprint("Name is required."))
 
 		return
 	}
 
-	p.cmd.Println(MsgEdit, MsgPlanDefinition, name)
+	p.cmd.Println(p.printer.Sprint("Editing plan definition:"), name)
 	scriptName, err := p.definitionManager.GetFile(name)
 
 	if err != nil {
@@ -106,30 +106,32 @@ func (p *PlanDefinition) Edit() {
 		return
 	}
 
-	p.cmd.Println(MsgDone, MsgEdit, MsgPlanDefinition, name)
+	p.cmd.Println(p.printer.Sprint("Finished editing plan definition:"), name)
 }
 
 func (p *PlanDefinition) Delete() {
 	name := p.getArg(0, "name")
 	if name == "" {
-		p.cmd.PrintErrln(MsgNameMissing)
+		p.cmd.PrintErrln(p.printer.Sprint("Name is required."))
 
 		return
 	}
 
-	p.cmd.Println(MsgDelete, MsgPlanDefinition, name)
+	p.cmd.Println(p.printer.Sprint("Delete plan definition:"), name)
 
 	err := p.definitionManager.Delete(name)
 	if err != nil {
-		p.cmd.PrintErrln("Error deleting paln definition: ", err)
+		p.cmd.PrintErrln("Error deleting plan definition:", err)
 
 		return
 	}
 
-	p.cmd.Println(MsgDone, MsgDelete, MsgPlanDefinition, name)
+	p.cmd.Println(p.printer.Sprint("Finished deleting plan definition:"), name)
 }
 
 func (p *PlanDefinition) init() error {
+	p.initTranslations()
+
 	err := p.initFolders()
 	if err != nil {
 		return err

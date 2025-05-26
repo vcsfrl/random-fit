@@ -30,12 +30,12 @@ func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *service.C
 func (c *CombinationDefinition) New() {
 	name := c.getArg(0, "name")
 	if name == "" {
-		c.cmd.PrintErrln(MsgNameMissing)
+		c.cmd.PrintErrln(c.printer.Sprint("Name is required."))
 
 		return
 	}
 
-	c.cmd.Println(MsgCreate, MsgCombinationDefinition, name)
+	c.cmd.Println(c.printer.Sprint("Create combination definition:"), name)
 	err := c.definitionManager.New(name)
 
 	if err != nil {
@@ -44,7 +44,7 @@ func (c *CombinationDefinition) New() {
 		return
 	}
 
-	c.cmd.Println(MsgDone, MsgCreate, MsgCombinationDefinition, name)
+	c.cmd.Println(c.printer.Sprint("Finished creating combination definition:"), name)
 	scriptName, err := c.definitionManager.GetScript(name)
 
 	if err != nil {
@@ -53,7 +53,7 @@ func (c *CombinationDefinition) New() {
 		return
 	}
 
-	c.cmd.Println(MsgEditScript, scriptName)
+	c.cmd.Println(c.printer.Sprint("Edit combination definition file:"), scriptName)
 
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
@@ -65,12 +65,12 @@ func (c *CombinationDefinition) New() {
 func (c *CombinationDefinition) Edit() {
 	name := c.getArg(0, "name")
 	if name == "" {
-		c.cmd.PrintErrln(MsgNameMissing)
+		c.cmd.PrintErrln(c.printer.Sprint("Name is required."))
 
 		return
 	}
 
-	c.cmd.Println(MsgEdit, MsgCombinationDefinition, name)
+	c.cmd.Println(c.printer.Sprint("Edit combination definition: "), name)
 
 	scriptName, err := c.definitionManager.GetScript(name)
 	if err != nil {
@@ -79,7 +79,7 @@ func (c *CombinationDefinition) Edit() {
 		return
 	}
 
-	c.cmd.Println(MsgEditScript, scriptName)
+	c.cmd.Println(c.printer.Sprint("Edit script:"), scriptName)
 
 	if err := c.editScript(scriptName, "python"); err != nil {
 		c.cmd.PrintErrln("Error editing script: ", err)
@@ -91,12 +91,12 @@ func (c *CombinationDefinition) Edit() {
 func (c *CombinationDefinition) Delete() {
 	name := c.getArg(0, "name")
 	if name == "" {
-		c.cmd.PrintErrln(MsgNameMissing)
+		c.cmd.PrintErrln(c.printer.Sprint("Name is required."))
 
 		return
 	}
 
-	c.cmd.Println(MsgDelete, MsgCombinationDefinition, name)
+	c.cmd.Println(c.printer.Sprint("Delete combination definition:"), name)
 	err := c.definitionManager.Delete(name)
 
 	if err != nil {
@@ -105,11 +105,11 @@ func (c *CombinationDefinition) Delete() {
 		return
 	}
 
-	c.cmd.Println(MsgDone, MsgDelete, MsgCombinationDefinition, name)
+	c.cmd.Println(c.printer.Sprint("Finished deleting combination definition:"), name)
 }
 
 func (c *CombinationDefinition) List() {
-	c.cmd.Println(MsgCombinationDefinition, MsgList)
+	c.cmd.Println(c.printer.Sprint("Combination definitions:"))
 	definitions, err := c.definitionManager.List()
 
 	if err != nil {
@@ -119,7 +119,7 @@ func (c *CombinationDefinition) List() {
 	}
 
 	if len(definitions) == 0 {
-		c.cmd.Println(MsgNoItemsFound)
+		c.cmd.Println(c.printer.Sprint("No combination definitions found."))
 
 		return
 	}
@@ -130,6 +130,8 @@ func (c *CombinationDefinition) List() {
 }
 
 func (c *CombinationDefinition) init() error {
+	c.initTranslations()
+
 	err := c.initFolders()
 	if err != nil {
 		return err
