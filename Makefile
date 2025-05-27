@@ -21,6 +21,7 @@ shell: ## APP Shell.
 
 generate: ## APP Generate code.
 	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit
+	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit/cmd/translations
 
 build: generate## APP Build.
 	docker compose run --remove-orphans random-fit_dev go build -o ./bin/random-fit ./main.go

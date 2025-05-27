@@ -1,4 +1,150 @@
 {
     "language": "en-US",
-    "messages": null
+    "messages": [
+        {
+            "id": "Error creating definition folder:",
+            "message": "Error creating definition folder:",
+            "translation": ""
+        },
+        {
+            "id": "Error creating plan folder:",
+            "message": "Error creating plan folder:",
+            "translation": ""
+        },
+        {
+            "id": "Error creating combination folder:",
+            "message": "Error creating combination folder:",
+            "translation": ""
+        },
+        {
+            "id": "Error creating storage folder:",
+            "message": "Error creating storage folder:",
+            "translation": ""
+        },
+        {
+            "id": "Name is required.",
+            "message": "Name is required.",
+            "translation": ""
+        },
+        {
+            "id": "Create combination definition:",
+            "message": "Create combination definition:",
+            "translation": ""
+        },
+        {
+            "id": "Finished creating combination definition:",
+            "message": "Finished creating combination definition:",
+            "translation": ""
+        },
+        {
+            "id": "Edit combination definition file:",
+            "message": "Edit combination definition file:",
+            "translation": ""
+        },
+        {
+            "id": "Edit combination definition:",
+            "message": "Edit combination definition:",
+            "translation": ""
+        },
+        {
+            "id": "Edit script:",
+            "message": "Edit script:",
+            "translation": ""
+        },
+        {
+            "id": "Delete combination definition:",
+            "message": "Delete combination definition:",
+            "translation": ""
+        },
+        {
+            "id": "Finished deleting combination definition:",
+            "message": "Finished deleting combination definition:",
+            "translation": ""
+        },
+        {
+            "id": "Combination definitions:",
+            "message": "Combination definitions:",
+            "translation": ""
+        },
+        {
+            "id": "No combination definitions found.",
+            "message": "No combination definitions found.",
+            "translation": ""
+        },
+        {
+            "id": "Creating plan definition:",
+            "message": "Creating plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "Error:",
+            "message": "Error:",
+            "translation": ""
+        },
+        {
+            "id": "Finished creating plan definition:",
+            "message": "Finished creating plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "Error getting script:",
+            "message": "Error getting script:",
+            "translation": ""
+        },
+        {
+            "id": "Edit definition file:",
+            "message": "Edit definition file:",
+            "translation": ""
+        },
+        {
+            "id": "Error editing script:",
+            "message": "Error editing script:",
+            "translation": ""
+        },
+        {
+            "id": "Plan Definitions:",
+            "message": "Plan Definitions:",
+            "translation": ""
+        },
+        {
+            "id": "No plan definitions found.",
+            "message": "No plan definitions found.",
+            "translation": ""
+        },
+        {
+            "id": "Editing plan definition:",
+            "message": "Editing plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "Finished editing plan definition:",
+            "message": "Finished editing plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "Delete plan definition:",
+            "message": "Delete plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "Error deleting plan definition:",
+            "message": "Error deleting plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "Finished deleting plan definition:",
+            "message": "Finished deleting plan definition:",
+            "translation": ""
+        },
+        {
+            "id": "No combination definition found.",
+            "message": "No combination definition found.",
+            "translation": ""
+        },
+        {
+            "id": "No plan definition found.",
+            "message": "No plan definition found.",
+            "translation": ""
+        }
+    ]
 }

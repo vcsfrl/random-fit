@@ -30,50 +30,50 @@ func NewPlanDefinition(cmd *cobra.Command, args []string, conf *service.Config) 
 func (p *PlanDefinition) New() {
 	name := p.getArg(0, "name")
 	if name == "" {
-		p.cmd.PrintErrln(p.printer.Sprint("Name is required."))
+		p.cmd.PrintErrln(p.printer.Sprintf("Name is required."))
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Creating plan definition:"), name)
+	p.cmd.Println(p.printer.Sprintf("Creating plan definition:"), name)
 
 	err := p.definitionManager.New(name)
 	if err != nil {
-		p.cmd.PrintErrln("Error: ", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error:"), err)
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Finished creating plan definition:"), name)
+	p.cmd.Println(p.printer.Sprintf("Finished creating plan definition:"), name)
 
 	scriptName, err := p.definitionManager.GetFile(name)
 	if err != nil {
-		p.cmd.PrintErrln("Error getting script: ", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error getting script:"), err)
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Edit definition file:"), scriptName)
+	p.cmd.Println(p.printer.Sprintf("Edit definition file:"), scriptName)
 
 	if err := p.editScript(scriptName, "json"); err != nil {
-		p.cmd.PrintErrln("Error editing script: ", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error editing script:"), err)
 
 		return
 	}
 }
 
 func (p *PlanDefinition) List() {
-	p.cmd.Println(p.printer.Sprint("Plan Definitions:"))
+	p.cmd.Println(p.printer.Sprintf("Plan Definitions:"))
 
 	planDefinitions, err := p.definitionManager.List()
 	if err != nil {
-		p.cmd.PrintErrln("Error: ", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error:"), err)
 
 		return
 	}
 
 	if len(planDefinitions) == 0 {
-		p.cmd.Println(p.printer.Sprint("No plan definitions found."))
+		p.cmd.Println(p.printer.Sprintf("No plan definitions found."))
 
 		return
 	}
@@ -86,47 +86,47 @@ func (p *PlanDefinition) List() {
 func (p *PlanDefinition) Edit() {
 	name := p.getArg(0, "name")
 	if name == "" {
-		p.cmd.PrintErrln(p.printer.Sprint("Name is required."))
+		p.cmd.PrintErrln(p.printer.Sprintf("Name is required."))
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Editing plan definition:"), name)
+	p.cmd.Println(p.printer.Sprintf("Editing plan definition:"), name)
 	scriptName, err := p.definitionManager.GetFile(name)
 
 	if err != nil {
-		p.cmd.PrintErrln("Error getting script: ", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error getting script:"), err)
 
 		return
 	}
 
 	if err := p.editScript(scriptName, "json"); err != nil {
-		p.cmd.PrintErrln("Error editing script: ", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error editing script:"), err)
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Finished editing plan definition:"), name)
+	p.cmd.Println(p.printer.Sprintf("Finished editing plan definition:"), name)
 }
 
 func (p *PlanDefinition) Delete() {
 	name := p.getArg(0, "name")
 	if name == "" {
-		p.cmd.PrintErrln(p.printer.Sprint("Name is required."))
+		p.cmd.PrintErrln(p.printer.Sprintf("Name is required."))
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Delete plan definition:"), name)
+	p.cmd.Println(p.printer.Sprintf("Delete plan definition:"), name)
 
 	err := p.definitionManager.Delete(name)
 	if err != nil {
-		p.cmd.PrintErrln("Error deleting plan definition:", err)
+		p.cmd.PrintErrln(p.printer.Sprintf("Error deleting plan definition:"), err)
 
 		return
 	}
 
-	p.cmd.Println(p.printer.Sprint("Finished deleting plan definition:"), name)
+	p.cmd.Println(p.printer.Sprintf("Finished deleting plan definition:"), name)
 }
 
 func (p *PlanDefinition) init() error {

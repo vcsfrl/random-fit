@@ -44,14 +44,14 @@ func NewGenerator(cmd *cobra.Command, args []string, config *service.Config) (*G
 func (g *Generator) Combination() {
 	combinationDefinitionName := g.getArg(0, "combination")
 	if combinationDefinitionName == "" {
-		g.cmd.PrintErrln(g.printer.Sprint("No combination definition found."))
+		g.cmd.PrintErrln(g.printer.Sprintf("No combination definition found."))
 
 		return
 	}
 
 	planDefinitionName := g.getArg(1, "plan")
 	if planDefinitionName == "" {
-		g.cmd.PrintErrln(g.printer.Sprint("No plan definition found."))
+		g.cmd.PrintErrln(g.printer.Sprintf("No plan definition found."))
 
 		return
 	}
