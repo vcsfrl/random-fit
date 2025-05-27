@@ -22,7 +22,8 @@ type StarlarkDefinition struct {
 	buildFunction *starlark.Function
 	thread        *starlark.Thread
 
-	UUIDModule *uuid.UUID
+	UUIDModule     *uuid.UUID
+	TemplateModule *template.Template
 }
 
 func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
@@ -128,11 +129,12 @@ func (cd *StarlarkDefinition) init() error {
 
 func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	cd.UUIDModule = uuid.New()
+	cd.TemplateModule = template.New()
 
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
 		"uuid":     cd.UUIDModule.Module,
-		"template": template.Module,
+		"template": cd.TemplateModule.Module,
 		"json":     slJson.Module,
 		"time":     slTime.Module,
 		"random":   random.Module,

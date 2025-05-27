@@ -24,9 +24,11 @@ type DataType string
 const DataTypeJSON DataType = "json"
 const DataTypeMd DataType = "markdown"
 
-var DataTypes = []DataType{
-	DataTypeJSON,
-	DataTypeMd,
+func DataTypes() []DataType {
+	return []DataType{
+		DataTypeJSON,
+		DataTypeMd,
+	}
 }
 
 type Data struct {
@@ -97,7 +99,7 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 			d.MimeType = unquoted
 		case "Type":
 			dataType := DataType(unquoted)
-			if !slices.Contains(DataTypes, dataType) {
+			if !slices.Contains(DataTypes(), dataType) {
 				return fmt.Errorf("invalid data type: %s", dataType)
 			}
 

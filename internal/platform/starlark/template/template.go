@@ -9,18 +9,31 @@ import (
 	textTemplate "text/template"
 )
 
-var Module = &starlarkstruct.Module{
-	Name: "template",
-	Members: starlark.StringDict{
-		"render_text": starlark.NewBuiltin("render_text", renderText),
-	},
+type Template struct {
+	Module *starlarkstruct.Module
+}
+
+func New() *Template {
+	tpl := &Template{}
+	tpl.init()
+
+	return tpl
+}
+
+func (t *Template) init() {
+	t.Module = &starlarkstruct.Module{
+		Name: "template",
+		Members: starlark.StringDict{
+			"render_text": starlark.NewBuiltin("render_text", t.renderText),
+		},
+	}
 }
 
 // renderText() is a Go function called from Starlark.
 // It renders a text textTemplate with the given arguments.
 //
 //nolint:lll
-func renderText(_ *starlark.Thread, builtin *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) { //nolint:ireturn
+func (t *Template) renderText(_ *starlark.Thread, builtin *starlark.Builtin, args starlark.Tuple, kwargs []starlark.Tuple) (starlark.Value, error) { //nolint:ireturn
 	var tpl, tplJSONArgs string
 
 	var tplGoArgs any
