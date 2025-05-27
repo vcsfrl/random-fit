@@ -7,20 +7,32 @@ import (
 	"go.starlark.net/starlarkstruct"
 )
 
-var Module = &starlarkstruct.Module{
-	Name: "uuid",
-	Members: starlark.StringDict{
-		"v7": starlark.NewBuiltin("v7", v7),
-	},
+type UUID struct {
+	Module *starlarkstruct.Module
+	v7Func func() (string, error)
 }
 
-var v7Func func() (string, error)
+func New() *UUID {
+	uuidModule := &UUID{}
+	uuidModule.init()
+
+	return uuidModule
+}
+
+func (u *UUID) init() {
+	u.Module = &starlarkstruct.Module{
+		Name: "uuid",
+		Members: starlark.StringDict{
+			"v7": starlark.NewBuiltin("v7", u.v7),
+		},
+	}
+}
 
 // v7 generates a UUIDv7 string. It is a wrapper around the uuid.NewV7 function.
 //
 //nolint:lll
-func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, _ []starlark.Tuple) (starlark.Value, error) { //nolint:ireturn
-	uuidFunc := getUUIDFunc()
+func (u *UUID) v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, _ []starlark.Tuple) (starlark.Value, error) { //nolint:ireturn
+	uuidFunc := u.getUUIDFunc()
 	uniqueID, err := uuidFunc()
 
 	if err != nil {
@@ -30,12 +42,12 @@ func v7(_ *starlark.Thread, _ *starlark.Builtin, _ starlark.Tuple, _ []starlark.
 	return starlark.String(uniqueID), nil
 }
 
-func getUUIDFunc() func() (string, error) {
-	if v7Func != nil {
-		return v7Func
+func (u *UUID) getUUIDFunc() func() (string, error) {
+	if u.v7Func != nil {
+		return u.v7Func
 	}
 
-	v7Func = func() (string, error) {
+	u.v7Func = func() (string, error) {
 		id, err := uuid.NewV7()
 		if err != nil {
 			return "", fmt.Errorf("error generating uuid: %w", err)
@@ -44,9 +56,9 @@ func getUUIDFunc() func() (string, error) {
 		return id.String(), nil
 	}
 
-	return v7Func
+	return u.v7Func
 }
 
-func SetUUIDFunc(f func() (string, error)) {
-	v7Func = f
+func (u *UUID) SetUUIDFunc(f func() (string, error)) {
+	u.v7Func = f
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
-	slUuid "github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -70,7 +69,7 @@ func (suite *ExportSuite) SetupTest() {
 
 	suite.id = 0
 
-	slUuid.SetUUIDFunc(func() (string, error) {
+	definition.UUIDModule.SetUUIDFunc(func() (string, error) {
 		suite.id++
 
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil

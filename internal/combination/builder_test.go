@@ -5,7 +5,6 @@ import (
 	"github.com/stretchr/testify/suite"
 	combinationModel "github.com/vcsfrl/random-fit/internal/combination"
 	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
-	"github.com/vcsfrl/random-fit/internal/platform/starlark/uuid"
 	"testing"
 )
 
@@ -146,7 +145,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 
 	suite.id = 0
 
-	uuid.SetUUIDFunc(func() (string, error) {
+	suite.definition.UUIDModule.SetUUIDFunc(func() (string, error) {
 		suite.id++
 
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil

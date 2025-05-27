@@ -21,6 +21,8 @@ type StarlarkDefinition struct {
 
 	buildFunction *starlark.Function
 	thread        *starlark.Thread
+
+	UUIDModule *uuid.UUID
 }
 
 func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
@@ -91,7 +93,7 @@ func (cd *StarlarkDefinition) init() error {
 
 	cd.ID = string(id)
 
-	// Retrieve the Details field fro	m the dict.
+	// Retrieve the Details field from the dict.
 	sName, hasDefinition, err := dictDefinition.Get(starlark.String("Details"))
 	if err != nil || !hasDefinition {
 		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
@@ -125,9 +127,11 @@ func (cd *StarlarkDefinition) init() error {
 }
 
 func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
+	cd.UUIDModule = uuid.New()
+
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
-		"uuid":     uuid.Module,
+		"uuid":     cd.UUIDModule.Module,
 		"template": template.Module,
 		"json":     slJson.Module,
 		"time":     slTime.Module,
