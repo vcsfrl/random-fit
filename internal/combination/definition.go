@@ -54,7 +54,6 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 	return combinationDict.String(), nil
 }
 
-//nolint:cyclop,funlen
 func (cd *StarlarkDefinition) init() error {
 	// The Thread defines the behavior of the built-in 'print' function.
 	cd.thread = &starlark.Thread{
@@ -85,6 +84,60 @@ func (cd *StarlarkDefinition) init() error {
 		return fmt.Errorf("%w 'definition' must be a Dict %s", ErrCombinationDefinition, cd.StarScript)
 	}
 
+	if err := cd.initID(dictDefinition); err != nil {
+		return err
+	}
+
+	if err := cd.initDetails(dictDefinition); err != nil {
+		return err
+	}
+
+	if err := cd.initBuildFunction(dictDefinition); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cd *StarlarkDefinition) initBuildFunction(dictDefinition *starlark.Dict) error {
+	// Retrieve the BuildFunction field from the dict.
+	sBuildFunction, hasBuildFunction, err := dictDefinition.Get(starlark.String("BuildFunction"))
+	if err != nil || !hasBuildFunction {
+		return fmt.Errorf("%w 'definition' getting build function field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
+	}
+
+	buildFunction, hasBuildFunction := sBuildFunction.(*starlark.Function)
+	if !hasBuildFunction {
+		return fmt.Errorf(
+			"%w 'definition' build function field must be a function %s",
+			ErrCombinationDefinition,
+			cd.StarScript,
+		)
+	}
+
+	cd.buildFunction = buildFunction
+
+	return nil
+}
+
+func (cd *StarlarkDefinition) initDetails(dictDefinition *starlark.Dict) error {
+	// Retrieve the Details field from the dict.
+	sName, hasDetails, err := dictDefinition.Get(starlark.String("Details"))
+	if err != nil || !hasDetails {
+		return fmt.Errorf("%w 'definition' getting details field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
+	}
+
+	details, hasDetails := sName.(starlark.String)
+	if !hasDetails {
+		return fmt.Errorf("%w 'definition' details field must be a string %s", ErrCombinationDefinition, cd.StarScript)
+	}
+
+	cd.Details = string(details)
+
+	return nil
+}
+
+func (cd *StarlarkDefinition) initID(dictDefinition *starlark.Dict) error {
 	// Retrieve the ID field from the dict.
 	sID, hasDefinition, err := dictDefinition.Get(starlark.String("ID"))
 	if err != nil || !hasDefinition {
@@ -97,36 +150,6 @@ func (cd *StarlarkDefinition) init() error {
 	}
 
 	cd.ID = string(id)
-
-	// Retrieve the Details field from the dict.
-	sName, hasDefinition, err := dictDefinition.Get(starlark.String("Details"))
-	if err != nil || !hasDefinition {
-		return fmt.Errorf("%w 'definition' getting name field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
-	}
-
-	name, hasDefinition := sName.(starlark.String)
-	if !hasDefinition {
-		return fmt.Errorf("%w 'definition' name field must be a string %s", ErrCombinationDefinition, cd.StarScript)
-	}
-
-	cd.Details = string(name)
-
-	// Retrieve the BuildFunction field from the dict.
-	sBuildFunction, hasDefinition, err := dictDefinition.Get(starlark.String("BuildFunction"))
-	if err != nil || !hasDefinition {
-		return fmt.Errorf("%w 'definition' getting build function field %s: %w", ErrCombinationDefinition, cd.StarScript, err)
-	}
-
-	buildFunction, hasDefinition := sBuildFunction.(*starlark.Function)
-	if !hasDefinition {
-		return fmt.Errorf(
-			"%w 'definition' build function field must be a function %s",
-			ErrCombinationDefinition,
-			cd.StarScript,
-		)
-	}
-
-	cd.buildFunction = buildFunction
 
 	return nil
 }
