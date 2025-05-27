@@ -12,9 +12,18 @@ import (
 
 var ErrCombinationDefinitionManager = errors.New("combination definition manager error")
 
-var DefinitionTemplate string
+// DefinitionTemplateData is a struct that holds the template data for a combination definition.
+// Allow overloading of the template from generated code.
+type DefinitionTemplateData struct {
+}
+
+// GetTemplate returns the template for a combination definition.
+func (d *DefinitionTemplateData) GetTemplate() string {
+	return ""
+}
 
 type CombinationStarDefinitionManager struct {
+	DefinitionTemplateData
 	dataFolder string
 }
 
@@ -54,7 +63,7 @@ func (dm *CombinationStarDefinitionManager) New(definitionName string) error {
 		return fmt.Errorf("%w: definition already exists", ErrCombinationDefinitionManager)
 	}
 
-	if err := os.WriteFile(definitionFilePath, []byte(DefinitionTemplate), fs.FilePermission); err != nil {
+	if err := os.WriteFile(definitionFilePath, []byte(dm.GetTemplate()), fs.FilePermission); err != nil {
 		return fmt.Errorf("%w: new definition: %w", ErrCombinationDefinitionManager, err)
 	}
 

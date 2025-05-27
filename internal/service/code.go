@@ -12,9 +12,11 @@ const definitionSkeleton = `package service
 
 // This is a generated file. Do not edit!
 
-func init() {
-	// DefinitionTemplate is a template for a definition file
-	DefinitionTemplate = {{.}}
+func (dm *CombinationStarDefinitionManager) GetTemplate() string {
+	// definitionTemplate is a template for a definition file
+	var definitionTemplate = {{.}}
+
+	return definitionTemplate
 }`
 
 func GenerateCode(printer Printer, config *Config) {

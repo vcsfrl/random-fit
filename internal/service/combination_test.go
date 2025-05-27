@@ -73,7 +73,7 @@ func (suite *StarDefinitionManagerSuite) TestNew() {
 	data, err := os.ReadFile(testDefinitionFile)
 	suite.Require().NoError(err)
 	suite.NotEmpty(data)
-	suite.Equal(service.DefinitionTemplate, string(data))
+	suite.Equal(suite.definitionManager.GetTemplate(), string(data))
 
 	// do not overwrite the file if it already exists
 	err = suite.definitionManager.New(testDefinitionFileName)
