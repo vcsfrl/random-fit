@@ -54,6 +54,7 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 	return combinationDict.String(), nil
 }
 
+//nolint:cyclop,funlen
 func (cd *StarlarkDefinition) init() error {
 	// The Thread defines the behavior of the built-in 'print' function.
 	cd.thread = &starlark.Thread{

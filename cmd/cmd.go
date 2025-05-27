@@ -24,167 +24,9 @@ func NewCommand() (*cobra.Command, error) {
 	}
 
 	// Definition
-	{
-		var definition = &cobra.Command{
-			Use:   "definition",
-			Short: "Definition management",
-			Long:  `Manage definitions: combination, plan.`,
-			Run: func(_ *cobra.Command, _ []string) {
-			},
-		}
-
-		// Combination Definition
-		//nolint:dupl
-		{
-			var combination = &cobra.Command{
-				Use:   "combination",
-				Short: "Combination Definition management",
-				Long:  `Manage combination definitions: list, new, edit, delete.`,
-				Run: func(cmd *cobra.Command, args []string) {
-					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-						combinationDefinition.List()
-					}
-				},
-			}
-
-			var newCombination = &cobra.Command{
-				Use:   "new",
-				Short: "New Combination Definition",
-				Run: func(cmd *cobra.Command, args []string) {
-					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-						combinationDefinition.New()
-					}
-				},
-			}
-
-			var editCombination = &cobra.Command{
-				Use:   "edit",
-				Short: "Edit Combination Definition",
-				Run: func(cmd *cobra.Command, args []string) {
-					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-						combinationDefinition.Edit()
-					}
-				},
-			}
-
-			var deleteCombination = &cobra.Command{
-				Use:   "delete",
-				Short: "Delete Combination Definition",
-				Run: func(cmd *cobra.Command, args []string) {
-					if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-						combinationDefinition.Delete()
-					}
-				},
-			}
-
-			newCombination.Flags().String("name", "", "")
-			editCombination.Flags().String("name", "", "")
-			deleteCombination.Flags().String("name", "", "")
-
-			combination.AddCommand(newCombination)
-			combination.AddCommand(editCombination)
-			combination.AddCommand(deleteCombination)
-			definition.AddCommand(combination)
-		}
-
-		// Plan Definition
-		//nolint:dupl
-		{
-			var plan = &cobra.Command{
-				Use:   "plan",
-				Short: "Plan Definition management",
-				Long:  `Manage plan definitions: list, new, edit, delete.`,
-				Run: func(cmd *cobra.Command, args []string) {
-					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-						planDefinition.List()
-					}
-				},
-			}
-
-			var newPlan = &cobra.Command{
-				Use:   "new",
-				Short: "New Plan Definition",
-				Run: func(cmd *cobra.Command, args []string) {
-					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-						planDefinition.New()
-					}
-				},
-			}
-
-			var editPlan = &cobra.Command{
-				Use:   "edit",
-				Short: "Edit Plan Definition",
-				Run: func(cmd *cobra.Command, args []string) {
-					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-						planDefinition.Edit()
-					}
-				},
-			}
-
-			var deletePlan = &cobra.Command{
-				Use:   "delete",
-				Short: "Delete Plan Definition",
-				Run: func(cmd *cobra.Command, args []string) {
-					if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-						planDefinition.Delete()
-					}
-				},
-			}
-
-			newPlan.Flags().String("name", "", "")
-			editPlan.Flags().String("name", "", "")
-			deletePlan.Flags().String("name", "", "")
-
-			plan.AddCommand(newPlan)
-			plan.AddCommand(editPlan)
-			plan.AddCommand(deletePlan)
-			definition.AddCommand(plan)
-		}
-
-		rootCmd.AddCommand(definition)
-	}
-
-	// Generate
-	{
-		var generate = &cobra.Command{
-			Use:   "generate",
-			Short: "Generate entities: combinations",
-		}
-
-		var generateCombination = &cobra.Command{
-			Use:   "combination",
-			Short: "Generate a combination",
-			Long:  `Generate a combination from a combination definition and a plan definition.`,
-			Run: func(cmd *cobra.Command, args []string) {
-				if generator, err := NewGenerator(cmd, args, NewConfig()); err == nil {
-					generator.Combination()
-				}
-			},
-		}
-
-		generateCombination.Flags().String("combination", "", "Combination definition name")
-		generateCombination.Flags().String("plan", "", "Plan definition name")
-		generate.AddCommand(generateCombination)
-		rootCmd.AddCommand(generate)
-	}
-
-	{
-		var code = &cobra.Command{
-			Use:   "code",
-			Short: "Code tools.",
-		}
-
-		var codeGenerator = &cobra.Command{
-			Use:   "generate",
-			Short: "Generate code.",
-			Run: func(cmd *cobra.Command, _ []string) {
-				service.GenerateCode(cmd, NewConfig())
-			},
-		}
-
-		code.AddCommand(codeGenerator)
-		rootCmd.AddCommand(code)
-	}
+	definitionCmd(rootCmd)
+	generateCmd(rootCmd)
+	codeCmd(rootCmd)
 
 	viper.SetConfigName("random-fit_config")
 	viper.SetEnvPrefix("RF")
@@ -194,6 +36,169 @@ func NewCommand() (*cobra.Command, error) {
 	}
 
 	return rootCmd, nil
+}
+
+func codeCmd(rootCmd *cobra.Command) {
+	var code = &cobra.Command{
+		Use:   "code",
+		Short: "Code tools.",
+	}
+
+	var codeGenerator = &cobra.Command{
+		Use:   "generate",
+		Short: "Generate code.",
+		Run: func(cmd *cobra.Command, _ []string) {
+			service.GenerateCode(cmd, NewConfig())
+		},
+	}
+
+	code.AddCommand(codeGenerator)
+	rootCmd.AddCommand(code)
+}
+
+func definitionCmd(rootCmd *cobra.Command) {
+	var definition = &cobra.Command{
+		Use:   "definition",
+		Short: "Definition management",
+		Long:  `Manage definitions: combination, plan.`,
+		Run: func(_ *cobra.Command, _ []string) {
+		},
+	}
+
+	// Combination Definition
+	combinationDefinitionCmd(definition)
+	planDefinitionCmd(definition)
+
+	rootCmd.AddCommand(definition)
+}
+
+func generateCmd(rootCmd *cobra.Command) {
+	var generate = &cobra.Command{
+		Use:   "generate",
+		Short: "Generate entities: combinations",
+	}
+
+	var generateCombination = &cobra.Command{
+		Use:   "combination",
+		Short: "Generate a combination",
+		Long:  `Generate a combination from a combination definition and a plan definition.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if generator, err := NewGenerator(cmd, args, NewConfig()); err == nil {
+				generator.Combination()
+			}
+		},
+	}
+
+	generateCombination.Flags().String("combination", "", "Combination definition name")
+	generateCombination.Flags().String("plan", "", "Plan definition name")
+	generate.AddCommand(generateCombination)
+	rootCmd.AddCommand(generate)
+}
+
+//nolint:dupl
+func planDefinitionCmd(definition *cobra.Command) {
+	var plan = &cobra.Command{
+		Use:   "plan",
+		Short: "Plan Definition management",
+		Long:  `Manage plan definitions: list, new, edit, delete.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+				planDefinition.List()
+			}
+		},
+	}
+
+	var newPlan = &cobra.Command{
+		Use:   "new",
+		Short: "New Plan Definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+				planDefinition.New()
+			}
+		},
+	}
+
+	var editPlan = &cobra.Command{
+		Use:   "edit",
+		Short: "Edit Plan Definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+				planDefinition.Edit()
+			}
+		},
+	}
+
+	var deletePlan = &cobra.Command{
+		Use:   "delete",
+		Short: "Delete Plan Definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
+				planDefinition.Delete()
+			}
+		},
+	}
+
+	newPlan.Flags().String("name", "", "")
+	editPlan.Flags().String("name", "", "")
+	deletePlan.Flags().String("name", "", "")
+
+	plan.AddCommand(newPlan)
+	plan.AddCommand(editPlan)
+	plan.AddCommand(deletePlan)
+	definition.AddCommand(plan)
+}
+
+//nolint:dupl
+func combinationDefinitionCmd(definition *cobra.Command) {
+	var combination = &cobra.Command{
+		Use:   "combination",
+		Short: "Combination Definition management",
+		Long:  `Manage combination definitions: list, new, edit, delete.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+				combinationDefinition.List()
+			}
+		},
+	}
+
+	var newCombination = &cobra.Command{
+		Use:   "new",
+		Short: "New Combination Definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+				combinationDefinition.New()
+			}
+		},
+	}
+
+	var editCombination = &cobra.Command{
+		Use:   "edit",
+		Short: "Edit Combination Definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+				combinationDefinition.Edit()
+			}
+		},
+	}
+
+	var deleteCombination = &cobra.Command{
+		Use:   "delete",
+		Short: "Delete Combination Definition",
+		Run: func(cmd *cobra.Command, args []string) {
+			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
+				combinationDefinition.Delete()
+			}
+		},
+	}
+
+	newCombination.Flags().String("name", "", "")
+	editCombination.Flags().String("name", "", "")
+	deleteCombination.Flags().String("name", "", "")
+
+	combination.AddCommand(newCombination)
+	combination.AddCommand(editCombination)
+	combination.AddCommand(deleteCombination)
+	definition.AddCommand(combination)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

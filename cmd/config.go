@@ -21,6 +21,7 @@ func NewConfig() *service.Config {
 	return &newConfig
 }
 
+//nolint:cyclop,funlen
 func BindEnvConfig(command *cobra.Command) error {
 	command.Flags().String("trace-port", "40021", "Trace port")
 
