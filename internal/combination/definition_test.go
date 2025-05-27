@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
-	random2 "github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	"testing"
 )
 
@@ -38,7 +37,7 @@ func (suite *CombinationDefinitionSuite) SetupTest() {
 		return fmt.Sprintf("00000000-0000-0000-0000-%012d", suite.id), nil
 	})
 
-	random2.SetUintFunc(func(_ uint, _ uint) (uint, error) {
+	suite.definition.RandomModule.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
 
 		return suite.testRand, nil

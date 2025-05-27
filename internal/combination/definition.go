@@ -24,6 +24,7 @@ type StarlarkDefinition struct {
 
 	UUIDModule     *uuid.UUID
 	TemplateModule *template.Template
+	RandomModule   *random.Random
 }
 
 func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
@@ -56,8 +57,10 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 func (cd *StarlarkDefinition) init() error {
 	// The Thread defines the behavior of the built-in 'print' function.
 	cd.thread = &starlark.Thread{
-		Name:  cd.Details,
-		Print: func(_ *starlark.Thread, msg string) { fmt.Println(msg) },
+		Name: cd.Details,
+		Print: func(_ *starlark.Thread, msg string) {
+			fmt.Println(msg) //nolint:forbidigo
+		},
 	}
 
 	globals, err := starlark.ExecFileOptions(syntax.LegacyFileOptions(), cd.thread, cd.StarScript, nil, cd.predeclared())
@@ -130,14 +133,15 @@ func (cd *StarlarkDefinition) init() error {
 func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
 	cd.UUIDModule = uuid.New()
 	cd.TemplateModule = template.New()
+	cd.RandomModule = random.New()
 
 	// This dictionary defines the pre-declared environment.
 	predeclared := starlark.StringDict{
 		"uuid":     cd.UUIDModule.Module,
 		"template": cd.TemplateModule.Module,
+		"random":   cd.RandomModule.Module,
 		"json":     slJson.Module,
 		"time":     slTime.Module,
-		"random":   random.Module,
 	}
 
 	return predeclared

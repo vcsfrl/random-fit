@@ -34,6 +34,7 @@ func NewCommand() (*cobra.Command, error) {
 		}
 
 		// Combination Definition
+		//nolint:dupl
 		{
 			var combination = &cobra.Command{
 				Use:   "combination",
@@ -87,6 +88,7 @@ func NewCommand() (*cobra.Command, error) {
 		}
 
 		// Plan Definition
+		//nolint:dupl
 		{
 			var plan = &cobra.Command{
 				Use:   "plan",

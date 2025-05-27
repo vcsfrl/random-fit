@@ -223,6 +223,7 @@ func (suite *CommandsSuite) TestDefinitionCombination_Delete() {
 	suite.True(os.IsNotExist(err), "File should be deleted")
 }
 
+//nolint:dupl
 func (suite *CommandsSuite) TestDefinitionCombination_List() {
 	suite.command.SetArgs([]string{"definition", "combination"})
 	err := suite.command.Execute()
@@ -277,6 +278,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 	suite.Contains(string(scriptData), "RecurrentGroupNamePrefix")
 }
 
+//nolint:dupl
 func (suite *CommandsSuite) TestDefinitionPlan_List() {
 	suite.command.SetArgs([]string{"definition", "plan"})
 	err := suite.command.Execute()
@@ -357,6 +359,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_Delete() {
 	suite.True(os.IsNotExist(err), "File should be deleted")
 }
 
+//nolint:funlen
 func (suite *CommandsSuite) TestGenerate_Combination() {
 	suite.command.SetArgs([]string{"generate", "combination"})
 	err := suite.command.Execute()

@@ -23,12 +23,12 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
+#    - exhaustruct
     - exptostd
     - fatcontext
     - forbidigo
     - forcetypeassert
-#    - funcorder
+    - funcorder
     - funlen
     - ginkgolinter
     - gocheckcompilerdirectives
@@ -129,7 +129,7 @@ linters:
 #    - errname
 #    - errorlint
 #    - exhaustive
-#    - exhaustruct
+    - exhaustruct
 #    - exptostd
 #    - fatcontext
 #    - forbidigo

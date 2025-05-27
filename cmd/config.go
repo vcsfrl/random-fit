@@ -9,13 +9,13 @@ import (
 
 func NewConfig() *service.Config {
 	var newConfig service.Config
-	newConfig.TracePort = viper.Get("tracePort").(string)
-	newConfig.DebuggerPort = viper.Get("debuggerPort").(string)
-	newConfig.DebugChartPort = viper.Get("debugChartPort").(string)
-	newConfig.DataFolder = viper.Get("dataFolder").(string)
-	newConfig.BaseFolder = viper.Get("baseFolder").(string)
-	newConfig.K8sSharedFolder = viper.Get("k8sSharedFolder").(string)
-	newConfig.Editor = viper.Get("editor").(string)
+	newConfig.TracePort = viper.GetString("tracePort")
+	newConfig.DebuggerPort = viper.GetString("debuggerPort")
+	newConfig.DebugChartPort = viper.GetString("debugChartPort")
+	newConfig.DataFolder = viper.GetString("dataFolder")
+	newConfig.BaseFolder = viper.GetString("baseFolder")
+	newConfig.K8sSharedFolder = viper.GetString("k8sSharedFolder")
+	newConfig.Editor = viper.GetString("editor")
 	newConfig.Locale = viper.GetString("locale")
 
 	return &newConfig

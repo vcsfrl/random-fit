@@ -19,6 +19,10 @@ func New() *UUID {
 	return uuidModule
 }
 
+func (u *UUID) SetUUIDFunc(f func() (string, error)) {
+	u.v7Func = f
+}
+
 func (u *UUID) init() {
 	u.Module = &starlarkstruct.Module{
 		Name: "uuid",
@@ -57,8 +61,4 @@ func (u *UUID) getUUIDFunc() func() (string, error) {
 	}
 
 	return u.v7Func
-}
-
-func (u *UUID) SetUUIDFunc(f func() (string, error)) {
-	u.v7Func = f
 }

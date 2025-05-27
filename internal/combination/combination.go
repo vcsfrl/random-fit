@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"slices"
 	"strconv"
 	"time"
 )
+
+var ErrInvalidDataType = errors.New("invalid data type")
 
 type Combination struct {
 	UUID         uuid.UUID
@@ -100,7 +103,7 @@ func (d *Data) UnmarshalJSON(data []byte) error {
 		case "Type":
 			dataType := DataType(unquoted)
 			if !slices.Contains(DataTypes(), dataType) {
-				return fmt.Errorf("invalid data type: %s", dataType)
+				return fmt.Errorf("%w: Type field: %s", ErrInvalidDataType, dataType)
 			}
 
 			d.Type = dataType

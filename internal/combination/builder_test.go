@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/suite"
 	combinationModel "github.com/vcsfrl/random-fit/internal/combination"
-	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	"testing"
 )
 
@@ -26,6 +25,7 @@ func (suite *StarlarkBuilderSuite) SetupTest() {
 	suite.scriptFile = "./testdata/star_script.star"
 }
 
+//nolint:funlen
 func (suite *StarlarkBuilderSuite) TestStarlarkBuilder_Build() {
 	suite.initDefinition(suite.scriptFile)
 	builder, err := combinationModel.NewStarBuilder(suite.definition)
@@ -153,7 +153,7 @@ func (suite *StarlarkBuilderSuite) initDefinition(scriptFile string) {
 
 	suite.testRand = 0
 
-	random.SetUintFunc(func(_ uint, _ uint) (uint, error) {
+	suite.definition.RandomModule.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
 
 		return suite.testRand, nil

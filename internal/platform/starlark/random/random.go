@@ -8,20 +8,37 @@ import (
 	"slices"
 )
 
-var Module = &starlarkstruct.Module{
-	Name: "random",
-	Members: starlark.StringDict{
-		"uint": starlark.NewBuiltin("uint", getUint),
-	},
+type Random struct {
+	Module         *starlarkstruct.Module
+	randomUintFunc func(minValue uint, maxValue uint) (uint, error)
 }
 
-var randomUintFunc func(minValue uint, maxValue uint) (uint, error)
+// New creates a new Starlark module for random number generation.
+func New() *Random {
+	randomModule := &Random{}
+	randomModule.init()
+
+	return randomModule
+}
+
+func (r *Random) SetUintFunc(f func(minValue uint, maxValue uint) (uint, error)) {
+	r.randomUintFunc = f
+}
+
+func (r *Random) init() {
+	r.Module = &starlarkstruct.Module{
+		Name: "random",
+		Members: starlark.StringDict{
+			"uint": starlark.NewBuiltin("uint", r.getUint),
+		},
+	}
+}
 
 // getUint() is a Go function called from Starlark.
 // It returns multiple random values from an interval of type uint.
 //
 //nolint:ireturn
-func getUint(
+func (r *Random) getUint(
 	_ *starlark.Thread,
 	builtin *starlark.Builtin,
 	args starlark.Tuple,
@@ -41,7 +58,7 @@ func getUint(
 	sliceResult := make([]uint, 0)
 
 	for index := 0; index < number; index++ {
-		randUint, err := getUintFunc()(minVal, maxVal)
+		randUint, err := r.getUintFunc()(minVal, maxVal)
 		if err != nil {
 			return nil, err
 		}
@@ -70,16 +87,12 @@ func getUint(
 	return result, nil
 }
 
-func getUintFunc() func(minValue uint, maxValue uint) (uint, error) {
-	if randomUintFunc != nil {
-		return randomUintFunc
+func (r *Random) getUintFunc() func(minValue uint, maxValue uint) (uint, error) {
+	if r.randomUintFunc != nil {
+		return r.randomUintFunc
 	}
 
-	randomUintFunc = random.NewCrypto().Uint
+	r.randomUintFunc = random.NewCrypto().Uint
 
-	return randomUintFunc
-}
-
-func SetUintFunc(f func(minValue uint, maxValue uint) (uint, error)) {
-	randomUintFunc = f
+	return r.randomUintFunc
 }

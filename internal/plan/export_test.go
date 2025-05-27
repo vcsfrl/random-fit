@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 	"github.com/vcsfrl/random-fit/internal/combination"
-	"github.com/vcsfrl/random-fit/internal/platform/starlark/random"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -77,7 +76,7 @@ func (suite *ExportSuite) SetupTest() {
 
 	suite.testRand = 0
 
-	random.SetUintFunc(func(_ uint, _ uint) (uint, error) {
+	definition.RandomModule.SetUintFunc(func(_ uint, _ uint) (uint, error) {
 		suite.testRand++
 
 		return suite.testRand, nil

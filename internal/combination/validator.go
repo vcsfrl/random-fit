@@ -10,7 +10,10 @@ func Validator() (*validator.Validate, error) {
 
 	// register a custom validation for combination data
 	err := validate.RegisterValidation("combination_data_json", func(fl validator.FieldLevel) bool {
-		value := fl.Field().Interface().(map[DataType]*Data)
+		value, isRightType := fl.Field().Interface().(map[DataType]*Data)
+		if !isRightType {
+			return false
+		}
 
 		for _, data := range value {
 			if data.Type == DataTypeJSON {
