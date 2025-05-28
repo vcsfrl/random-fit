@@ -16,13 +16,13 @@ type Builder interface {
 }
 
 type StarBuilder struct {
-	definition *StarlarkDefinition
+	definition *StarDefinition
 	now        func() time.Time
 	uuidV7     func() (uuid.UUID, error)
 	validate   *validator.Validate
 }
 
-func NewStarBuilder(definition *StarlarkDefinition) (*StarBuilder, error) {
+func NewStarBuilder(definition *StarDefinition) (*StarBuilder, error) {
 	validate, err := Validator()
 	if err != nil {
 		return nil, fmt.Errorf("%w: error creating validator: %w", ErrStarBuilder, err)

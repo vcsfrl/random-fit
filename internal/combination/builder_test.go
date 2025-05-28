@@ -15,7 +15,7 @@ func TestStarlarkBuilder(t *testing.T) {
 type StarlarkBuilderSuite struct {
 	suite.Suite
 
-	definition *combinationModel.StarlarkDefinition
+	definition *combinationModel.StarDefinition
 	id         int
 	testRand   uint
 	scriptFile string

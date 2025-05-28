@@ -15,7 +15,7 @@ func TestCombinationDefinitionSuite(t *testing.T) {
 type CombinationDefinitionSuite struct {
 	suite.Suite
 
-	definition *combination.StarlarkDefinition
+	definition *combination.StarDefinition
 	id         int
 	testRand   uint
 	scriptFile string

@@ -14,7 +14,7 @@ import (
 
 var ErrCombinationDefinition = errors.New("error combination definition")
 
-type StarlarkDefinition struct {
+type StarDefinition struct {
 	ID         string
 	Details    string
 	StarScript string
@@ -27,8 +27,8 @@ type StarlarkDefinition struct {
 	RandomModule   *random.Random
 }
 
-func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
-	definition := &StarlarkDefinition{
+func NewCombinationDefinition(script string) (*StarDefinition, error) {
+	definition := &StarDefinition{
 		StarScript: script,
 	}
 
@@ -40,7 +40,7 @@ func NewCombinationDefinition(script string) (*StarlarkDefinition, error) {
 	return definition, nil
 }
 
-func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
+func (cd *StarDefinition) CallScriptBuildFunction() (string, error) {
 	combinationStarlarkData, err := starlark.Call(cd.thread, cd.buildFunction, nil, nil)
 	if err != nil {
 		return "", fmt.Errorf("%w: error building combination data: %w", ErrCombinationDefinition, err)
@@ -54,7 +54,7 @@ func (cd *StarlarkDefinition) CallScriptBuildFunction() (string, error) {
 	return combinationDict.String(), nil
 }
 
-func (cd *StarlarkDefinition) init() error {
+func (cd *StarDefinition) init() error {
 	// The Thread defines the behavior of the built-in 'print' function.
 	cd.thread = &starlark.Thread{
 		Name: cd.Details,
@@ -99,7 +99,7 @@ func (cd *StarlarkDefinition) init() error {
 	return nil
 }
 
-func (cd *StarlarkDefinition) initBuildFunction(dictDefinition *starlark.Dict) error {
+func (cd *StarDefinition) initBuildFunction(dictDefinition *starlark.Dict) error {
 	// Retrieve the BuildFunction field from the dict.
 	sBuildFunction, hasBuildFunction, err := dictDefinition.Get(starlark.String("BuildFunction"))
 	if err != nil || !hasBuildFunction {
@@ -120,7 +120,7 @@ func (cd *StarlarkDefinition) initBuildFunction(dictDefinition *starlark.Dict) e
 	return nil
 }
 
-func (cd *StarlarkDefinition) initDetails(dictDefinition *starlark.Dict) error {
+func (cd *StarDefinition) initDetails(dictDefinition *starlark.Dict) error {
 	// Retrieve the Details field from the dict.
 	sName, hasDetails, err := dictDefinition.Get(starlark.String("Details"))
 	if err != nil || !hasDetails {
@@ -137,7 +137,7 @@ func (cd *StarlarkDefinition) initDetails(dictDefinition *starlark.Dict) error {
 	return nil
 }
 
-func (cd *StarlarkDefinition) initID(dictDefinition *starlark.Dict) error {
+func (cd *StarDefinition) initID(dictDefinition *starlark.Dict) error {
 	// Retrieve the ID field from the dict.
 	sID, hasDefinition, err := dictDefinition.Get(starlark.String("ID"))
 	if err != nil || !hasDefinition {
@@ -154,7 +154,7 @@ func (cd *StarlarkDefinition) initID(dictDefinition *starlark.Dict) error {
 	return nil
 }
 
-func (cd *StarlarkDefinition) predeclared() starlark.StringDict {
+func (cd *StarDefinition) predeclared() starlark.StringDict {
 	cd.UUIDModule = uuid.New()
 	cd.TemplateModule = template.New()
 	cd.RandomModule = random.New()
