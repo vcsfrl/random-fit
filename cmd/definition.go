@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
+	_ "github.com/vcsfrl/random-fit/cmd/translations"
 	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"github.com/vcsfrl/random-fit/internal/service"
 	"golang.org/x/text/language"
