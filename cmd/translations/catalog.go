@@ -37,12 +37,62 @@ func init() {
 	message.DefaultCatalog = cat
 }
 
-var messageKeyToIndex = map[string]int{}
+var messageKeyToIndex = map[string]int{
+	"Combination definitions:":                  12,
+	"Create combination definition:":            5,
+	"Creating plan definition:":                 14,
+	"Delete combination definition:":            10,
+	"Delete plan definition:":                   24,
+	"Edit combination definition file:":         7,
+	"Edit combination definition:":              8,
+	"Edit definition file:":                     18,
+	"Edit script:":                              9,
+	"Editing plan definition:":                  22,
+	"Error creating combination folder:":        2,
+	"Error creating definition folder:":         0,
+	"Error creating plan folder:":               1,
+	"Error creating storage folder:":            3,
+	"Error deleting plan definition:":           25,
+	"Error editing script:":                     19,
+	"Error getting script:":                     17,
+	"Error:":                                    15,
+	"Finished creating combination definition:": 6,
+	"Finished creating plan definition:":        16,
+	"Finished deleting combination definition:": 11,
+	"Finished deleting plan definition:":        26,
+	"Finished editing plan definition:":         23,
+	"Name is required.":                         4,
+	"No combination definition found.":          27,
+	"No combination definitions found.":         13,
+	"No plan definition found.":                 28,
+	"No plan definitions found.":                21,
+	"Plan Definitions:":                         20,
+}
 
-var en_USIndex = []uint32{ // 1 elements
-	0x00000000,
-} // Size: 28 bytes
+var en_USIndex = []uint32{ // 30 elements
+	0x00000000, 0x00000022, 0x0000003e, 0x00000061,
+	0x00000080, 0x00000086, 0x000000a5, 0x000000cf,
+	0x000000f1, 0x0000010e, 0x0000011b, 0x0000013a,
+	0x00000164, 0x0000017d, 0x0000019f, 0x000001b9,
+	0x000001c0, 0x000001e3, 0x000001f9, 0x0000020f,
+	0x00000225, 0x00000237, 0x00000252, 0x0000026b,
+	0x0000028d, 0x000002a5, 0x000002c5, 0x000002e8,
+	0x00000309, 0x00000323,
+} // Size: 144 bytes
 
-const en_USData string = ""
+const en_USData string = "" + // Size: 803 bytes
+	"\x02Error creating definition folder:\x02Error creating plan folder:\x02" +
+	"Error creating combination folder:\x02Error creating storage folder:\x02" +
+	"dddd.\x02Create combination definition:\x02Finished creating combination" +
+	" definition:\x02Edit combination definition file:\x02Edit combination de" +
+	"finition:\x02Edit script:\x02Delete combination definition:\x02Finished " +
+	"deleting combination definition:\x02Combination definitions:\x02No combi" +
+	"nation definitions found.\x02Creating plan definition:\x02Error:\x02Fini" +
+	"shed creating plan definition:\x02Error getting script:\x02Edit definiti" +
+	"on file:\x02Error editing script:\x02Plan Definitions:\x02No plan defini" +
+	"tions found.\x02Editing plan definition:\x02Finished editing plan defini" +
+	"tion:\x02Delete plan definition:\x02Error deleting plan definition:\x02F" +
+	"inished deleting plan definition:\x02No combination definition found." +
+	"\x02No plan definition found."
 
-// Total table size 28 bytes (0KiB); checksum: 8AEC66F1
+	// Total table size 947 bytes (0KiB); checksum: ED20A4F2
