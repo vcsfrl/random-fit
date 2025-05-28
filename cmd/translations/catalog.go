@@ -71,28 +71,28 @@ var messageKeyToIndex = map[string]int{
 
 var en_USIndex = []uint32{ // 30 elements
 	0x00000000, 0x00000022, 0x0000003e, 0x00000061,
-	0x00000080, 0x00000086, 0x000000a5, 0x000000cf,
-	0x000000f1, 0x0000010e, 0x0000011b, 0x0000013a,
-	0x00000164, 0x0000017d, 0x0000019f, 0x000001b9,
-	0x000001c0, 0x000001e3, 0x000001f9, 0x0000020f,
-	0x00000225, 0x00000237, 0x00000252, 0x0000026b,
-	0x0000028d, 0x000002a5, 0x000002c5, 0x000002e8,
-	0x00000309, 0x00000323,
+	0x00000080, 0x00000092, 0x000000b1, 0x000000db,
+	0x000000fd, 0x0000011a, 0x00000127, 0x00000146,
+	0x00000170, 0x00000189, 0x000001ab, 0x000001c5,
+	0x000001cc, 0x000001ef, 0x00000205, 0x0000021b,
+	0x00000231, 0x00000243, 0x0000025e, 0x00000277,
+	0x00000299, 0x000002b1, 0x000002d1, 0x000002f4,
+	0x00000315, 0x0000032f,
 } // Size: 144 bytes
 
-const en_USData string = "" + // Size: 803 bytes
+const en_USData string = "" + // Size: 815 bytes
 	"\x02Error creating definition folder:\x02Error creating plan folder:\x02" +
 	"Error creating combination folder:\x02Error creating storage folder:\x02" +
-	"dddd.\x02Create combination definition:\x02Finished creating combination" +
-	" definition:\x02Edit combination definition file:\x02Edit combination de" +
-	"finition:\x02Edit script:\x02Delete combination definition:\x02Finished " +
-	"deleting combination definition:\x02Combination definitions:\x02No combi" +
-	"nation definitions found.\x02Creating plan definition:\x02Error:\x02Fini" +
-	"shed creating plan definition:\x02Error getting script:\x02Edit definiti" +
-	"on file:\x02Error editing script:\x02Plan Definitions:\x02No plan defini" +
-	"tions found.\x02Editing plan definition:\x02Finished editing plan defini" +
-	"tion:\x02Delete plan definition:\x02Error deleting plan definition:\x02F" +
-	"inished deleting plan definition:\x02No combination definition found." +
-	"\x02No plan definition found."
+	"Name is required.\x02Create combination definition:\x02Finished creating" +
+	" combination definition:\x02Edit combination definition file:\x02Edit co" +
+	"mbination definition:\x02Edit script:\x02Delete combination definition:" +
+	"\x02Finished deleting combination definition:\x02Combination definitions" +
+	":\x02No combination definitions found.\x02Creating plan definition:\x02E" +
+	"rror:\x02Finished creating plan definition:\x02Error getting script:\x02" +
+	"Edit definition file:\x02Error editing script:\x02Plan Definitions:\x02N" +
+	"o plan definitions found.\x02Editing plan definition:\x02Finished editin" +
+	"g plan definition:\x02Delete plan definition:\x02Error deleting plan def" +
+	"inition:\x02Finished deleting plan definition:\x02No combination definit" +
+	"ion found.\x02No plan definition found."
 
-	// Total table size 947 bytes (0KiB); checksum: ED20A4F2
+	// Total table size 959 bytes (0KiB); checksum: 11DCB47B
