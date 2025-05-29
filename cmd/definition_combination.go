@@ -11,7 +11,7 @@ type CombinationDefinition struct {
 	definitionManager *service.CombinationStarDefinitionManager
 }
 
-func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *service.Config) (*CombinationDefinition, error) {
+func NewCombinationDefinition(cmd *cobra.Command, args []string, conf *Config) (*CombinationDefinition, error) {
 	combinationDefinition := &CombinationDefinition{
 		BaseHandler: BaseHandler{
 			cmd:  cmd,

@@ -11,7 +11,7 @@ type PlanDefinition struct {
 	definitionManager *service.PlanDefinitionManager
 }
 
-func NewPlanDefinition(cmd *cobra.Command, args []string, conf *service.Config) (*PlanDefinition, error) {
+func NewPlanDefinition(cmd *cobra.Command, args []string, conf *Config) (*PlanDefinition, error) {
 	planDefinition := &PlanDefinition{
 		BaseHandler: BaseHandler{
 			cmd:  cmd,

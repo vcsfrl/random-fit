@@ -1,14 +1,8 @@
 package service
 
 type Config struct {
-	TracePort       string
-	DebuggerPort    string
-	DebugChartPort  string
-	DataFolder      string
-	BaseFolder      string
-	K8sSharedFolder string
-	Editor          string
-	Locale          string
+	DataFolder string
+	BaseFolder string
 }
 
 func (c *Config) CombinationFolder() string {

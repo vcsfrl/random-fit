@@ -7,8 +7,20 @@ import (
 	"github.com/vcsfrl/random-fit/internal/service"
 )
 
-func NewConfig() *service.Config {
-	var newConfig service.Config
+type Config struct {
+	TracePort       string
+	DebuggerPort    string
+	DebugChartPort  string
+	K8sSharedFolder string
+	Editor          string
+	Locale          string
+	*service.Config
+}
+
+func NewConfig() *Config {
+	var newConfig Config
+
+	newConfig.Config = &service.Config{}
 	newConfig.TracePort = viper.GetString("tracePort")
 	newConfig.DebuggerPort = viper.GetString("debuggerPort")
 	newConfig.DebugChartPort = viper.GetString("debugChartPort")

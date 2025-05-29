@@ -26,7 +26,7 @@ type Generator struct {
 	workers                      int
 }
 
-func NewGenerator(cmd *cobra.Command, args []string, config *service.Config) (*Generator, error) {
+func NewGenerator(cmd *cobra.Command, args []string, config *Config) (*Generator, error) {
 	generator := &Generator{
 		BaseHandler: BaseHandler{
 			cmd:  cmd,

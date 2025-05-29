@@ -48,7 +48,7 @@ func codeCmd(rootCmd *cobra.Command) {
 		Use:   "generate",
 		Short: "Generate code.",
 		Run: func(cmd *cobra.Command, _ []string) {
-			service.GenerateCode(cmd, NewConfig())
+			service.GenerateCode(cmd, NewConfig().Config)
 		},
 	}
 

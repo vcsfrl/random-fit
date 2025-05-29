@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/platform/fs"
-	"github.com/vcsfrl/random-fit/internal/service"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"os/exec"
@@ -19,7 +18,7 @@ var ErrNoEnvEditor = errors.New("EDITOR environment variable is not set")
 type BaseHandler struct {
 	cmd  *cobra.Command
 	args []string
-	conf *service.Config
+	conf *Config
 
 	printer *message.Printer
 }
