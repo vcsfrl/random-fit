@@ -12,18 +12,18 @@ import (
 // Definition is used to define how to generate Combinations.
 // It is used to generate combinations and  categorise them.
 type Definition struct {
-	ID      string
-	Details string
-	Users   []string
+	ID      string   `json:"id"`
+	Details string   `json:"details"`
+	Users   []string `json:"users"`
 	UserData
 }
 
 // UserData is used to define a group of combinations.
 type UserData struct {
-	ContainerName            []string
-	RecurrentGroupNamePrefix string
-	RecurrentGroups          int
-	NrOfGroupCombinations    int
+	ContainerName            []string `json:"containerName"`
+	RecurrentGroupNamePrefix string   `json:"recurrentGroupNamePrefix"`
+	RecurrentGroups          int      `json:"recurrentGroups"`
+	NrOfGroupCombinations    int      `json:"nrOfGroupCombinations"`
 }
 
 type Group struct {

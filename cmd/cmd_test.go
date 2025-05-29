@@ -275,7 +275,7 @@ func (suite *CommandsSuite) TestDefinitionPlan_New() {
 
 	scriptData, err := os.ReadFile(scriptName)
 	suite.Require().NoError(err)
-	suite.Contains(string(scriptData), "RecurrentGroupNamePrefix")
+	suite.Contains(string(scriptData), "recurrentGroupNamePrefix")
 }
 
 //nolint:dupl
