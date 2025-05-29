@@ -55,33 +55,16 @@ func (cd *StarDefinition) CallScriptBuildFunction() (string, error) {
 }
 
 func (cd *StarDefinition) init() error {
-	// The Thread defines the behavior of the built-in 'print' function.
-	cd.thread = &starlark.Thread{
-		Name: cd.Details,
-		Print: func(_ *starlark.Thread, msg string) {
-			fmt.Println(msg) //nolint:forbidigo
-		},
-	}
+	cd.initThread()
 
-	globals, err := starlark.ExecFileOptions(syntax.LegacyFileOptions(), cd.thread, cd.StarScript, nil, cd.predeclared())
+	globals, err := cd.getGlobals()
 	if err != nil {
-		evalErr := &starlark.EvalError{}
-		if errors.As(err, &evalErr) {
-			return fmt.Errorf("execution error: %w\n%s", evalErr, evalErr.Backtrace())
-		}
-
-		return fmt.Errorf("execution error: %w", err)
+		return err
 	}
 
-	// Retrieve the definition from the globals.
-	definition, hasDefinition := globals["definition"]
-	if !hasDefinition {
-		return fmt.Errorf("%w missing 'definition' Dict %s", ErrCombinationDefinition, cd.StarScript)
-	}
-
-	dictDefinition, hasDefinition := definition.(*starlark.Dict)
-	if !hasDefinition {
-		return fmt.Errorf("%w 'definition' must be a Dict %s", ErrCombinationDefinition, cd.StarScript)
+	dictDefinition, err := cd.getDictDefinition(globals)
+	if err != nil {
+		return err
 	}
 
 	if err := cd.initID(dictDefinition); err != nil {
@@ -97,6 +80,45 @@ func (cd *StarDefinition) init() error {
 	}
 
 	return nil
+}
+
+func (cd *StarDefinition) initThread() {
+	// The Thread defines the behavior of the built-in 'print' function.
+	cd.thread = &starlark.Thread{
+		Name: cd.Details,
+		Print: func(_ *starlark.Thread, msg string) {
+			fmt.Println(msg) //nolint:forbidigo
+		},
+	}
+}
+
+func (cd *StarDefinition) getGlobals() (starlark.StringDict, error) {
+	globals, err := starlark.ExecFileOptions(syntax.LegacyFileOptions(), cd.thread, cd.StarScript, nil, cd.predeclared())
+	if err != nil {
+		evalErr := &starlark.EvalError{}
+		if errors.As(err, &evalErr) {
+			return nil, fmt.Errorf("execution error: %w\n%s", evalErr, evalErr.Backtrace())
+		}
+
+		return nil, fmt.Errorf("execution error: %w", err)
+	}
+
+	return globals, nil
+}
+
+func (cd *StarDefinition) getDictDefinition(globals starlark.StringDict) (*starlark.Dict, error) {
+	// Retrieve the definition from the globals.
+	definition, hasDefinition := globals["definition"]
+	if !hasDefinition {
+		return nil, fmt.Errorf("%w missing 'definition' Dict %s", ErrCombinationDefinition, cd.StarScript)
+	}
+
+	dictDefinition, hasDefinition := definition.(*starlark.Dict)
+	if !hasDefinition {
+		return nil, fmt.Errorf("%w 'definition' must be a Dict %s", ErrCombinationDefinition, cd.StarScript)
+	}
+
+	return dictDefinition, nil
 }
 
 func (cd *StarDefinition) initBuildFunction(dictDefinition *starlark.Dict) error {
