@@ -50,7 +50,7 @@ func (suite *CommandsSuite) SetupTest() {
 	suite.Require().NoError(err)
 	err = os.Setenv("RF_DATA_FOLDER", suite.testFolder)
 	suite.Require().NoError(err)
-	err = os.Setenv("EDITOR", "")
+	err = os.Setenv("EDITOR", "-")
 	suite.Require().NoError(err)
 }
 

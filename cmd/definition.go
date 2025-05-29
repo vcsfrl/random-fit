@@ -8,7 +8,6 @@ import (
 	"github.com/vcsfrl/random-fit/internal/service"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"os"
 	"os/exec"
 
 	// Initialize translations.
@@ -26,11 +25,11 @@ type BaseHandler struct {
 }
 
 func (b *BaseHandler) editScript(scriptName string, filetype string) error {
-	if os.Getenv("EDITOR") == "" {
+	if b.conf.Editor == "" || b.conf.Editor == "-" {
 		return ErrNoEnvEditor
 	}
 
-	cmd := exec.Command(os.Getenv("EDITOR"), "-filetype", filetype, scriptName) //nolint:gosec
+	cmd := exec.Command(b.conf.Editor, "-filetype", filetype, scriptName) //nolint:gosec
 	cmd.Stdin = b.cmd.InOrStdin()
 	cmd.Stdout = b.cmd.OutOrStdout()
 	cmd.Stderr = b.cmd.ErrOrStderr()
