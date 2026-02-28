@@ -1,7 +1,13 @@
 services:
   random-fit: &random-fit
     container_name: random-fit
-    image: vcsfrl/random-fit:v1.0.0
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: prod
+      args:
+        - username=${CONTAINER_USERNAME}
+        - exec_user_id=${CONTAINER_EXEC_USER_ID}
     restart: "unless-stopped"
     volumes:
       - ./data:/srv/random-fit/data:shared
@@ -12,6 +18,9 @@ services:
       - ${RF_DEBUG_CHART_PORT}:${RF_DEBUG_CHART_PORT}
     env_file:
       - .env
+    profiles:
+      - prod
+
   random-fit_dev:
     <<: *random-fit
     build:
@@ -30,3 +39,5 @@ services:
     command:
       - sleep
       - "999999999"
+    profiles:
+      - dev

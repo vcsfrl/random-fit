@@ -1,4 +1,4 @@
-FROM golang:1.24-bookworm AS base
+FROM golang:1.26-bookworm AS base
 ARG username
 ARG exec_user_id
 RUN groupadd -g $exec_user_id -o $username
@@ -26,7 +26,7 @@ RUN go build -o ./bin/app ./main.go;
 FROM base AS prod
 USER root:root
 COPY --from=build /srv/random-fit/bin/app /srv/random-fit/bin/app
-COPY ./data /srv/random-fit/data
+#COPY ./data /srv/random-fit/data
 RUN chown $username:$username /srv/random-fit -R
 USER $username
 

@@ -10,7 +10,7 @@ help: ## Usage: make <option>
 
 install: ## APP Build.
 	if [ ! -f .env ]; then cp -n .env.dist .env; echo "CONTAINER_EXEC_USER_ID=`id -u`" >> .env; echo "CONTAINER_USERNAME=${USER}" >> .env; fi
-	docker compose build;
+	docker compose --profile $(APP_ENV) build;
 
 shell: ## APP Shell.
 	docker compose down --remove-orphans
@@ -42,11 +42,12 @@ lint: ## Run linter.
 	docker compose exec random-fit_dev /go/bin/golangci-lint run --timeout 5m
 	docker compose down --remove-orphans
 
-build-docker-image:
-	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.0 --target prod .
+#build-docker-image:
+#	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.0 --target prod .
 	#docker run --rm -it --entrypoint bash vcsfrl/random-fit:v1.0.0
 	#docker tag <image hash> <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
 	#docker push <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
 
 run: ## Run the app.
-	docker compose run --remove-orphans random-fit
+	docker compose --profile $(APP_ENV) run --remove-orphans -i random-fit
+	docker compose --profile $(APP_ENV) down --remove-orphans
