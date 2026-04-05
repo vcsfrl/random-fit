@@ -338,11 +338,9 @@ func (m runModel) codeStepInfo() (string, []string, bool) {
 }
 
 func (m runModel) isConfirmStep() bool {
-	_, choices, _ := m.computeStepInfo()
-
-	return len(choices) == confirmChoiceCount &&
-		choices[0] == executeChoice &&
-		choices[1] == cancelChoice
+	return len(m.choices) == confirmChoiceCount &&
+		m.choices[0] == executeChoice &&
+		m.choices[1] == cancelChoice
 }
 
 func (m runModel) buildCommandArgs() []string {
