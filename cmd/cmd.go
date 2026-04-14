@@ -27,6 +27,7 @@ func NewCommand() (*cobra.Command, error) {
 	definitionCmd(rootCmd)
 	generateCmd(rootCmd)
 	codeCmd(rootCmd)
+	runInteractiveCmd(rootCmd)
 
 	viper.SetConfigName("random-fit_config")
 	viper.SetEnvPrefix("RF")

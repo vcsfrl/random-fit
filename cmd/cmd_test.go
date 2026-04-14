@@ -77,6 +77,7 @@ func (suite *CommandsSuite) TestSubcommands() {
 		"delete",
 		"generate",
 		"combination",
+		"run",
 	}
 
 	var subcommandNames = make([]string, 0)
