@@ -19,7 +19,7 @@ define require_dev
 endef
 
 .DEFAULT_GOAL := help
-.PHONY: help install shell generate build test test-name test-debug lint run down clean
+.PHONY: build clean down generate help install lint run shell test test-debug test-name
 
 help: ## Usage: make <option>
 	@echo ""
@@ -40,9 +40,7 @@ shell: ## Open a shell inside the container.
 
 generate: ## Generate code (dev only).
 	$(call require_dev,generate)
-	$(COMPOSE_RUN) $(SERVICE_NAME) sh -c '\
-		go generate github.com/vcsfrl/random-fit && \
-		go generate github.com/vcsfrl/random-fit/cmd/translations'
+	$(COMPOSE_RUN) $(SERVICE_NAME) sh -c 'go generate github.com/vcsfrl/random-fit && go generate github.com/vcsfrl/random-fit/cmd/translations'
 
 build: generate ## Build the binary (dev only).
 	$(call require_dev,build)
