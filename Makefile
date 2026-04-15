@@ -52,14 +52,11 @@ test-name: ## Run test by name (dev only).
 
 test-debug: ## Debug a test (dev only).
 	$(call require_dev,test-debug)
-	docker compose --profile $(APP_ENV) run --remove-orphans --build --rm --service-ports $(SERVICE_NAME) /go/bin/dlv --listen=:$(RF_DEBUGGER_TEST_PORT) --headless=true --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --api-version=2 --accept-multiclient test  github.com/vcsfrl/random-fit/$(testPath) -- -test.run ^$(testName)$$;
+	$(COMPOSE_RUN) --build --service-ports $(SERVICE_NAME) /go/bin/dlv --listen=:$(RF_DEBUGGER_TEST_PORT) --headless=true --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --api-version=2 --accept-multiclient test  github.com/vcsfrl/random-fit/$(testPath) -- -test.run ^$(testName)$$;
 
 lint: ## Run linter (dev only).
 	$(call require_dev,lint)
-	docker compose --profile $(APP_ENV) down --remove-orphans
-	docker compose --profile $(APP_ENV) up $(SERVICE_NAME) -d
-	docker compose --profile $(APP_ENV) exec $(SERVICE_NAME) /go/bin/golangci-lint run --timeout 5m
-	docker compose --profile $(APP_ENV) down --remove-orphans
+	$(COMPOSE_RUN) $(SERVICE_NAME) /go/bin/golangci-lint run --timeout 5m
 
 run: ## Run the app. Uses binary on prod, go run on dev. One-time container.
 	$(COMPOSE_RUN) -i $(SERVICE_NAME) $(RUN_CMD)
