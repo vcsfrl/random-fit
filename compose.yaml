@@ -8,14 +8,12 @@ services:
       args:
         - username=${CONTAINER_USERNAME}
         - exec_user_id=${CONTAINER_EXEC_USER_ID}
+    init: true
     restart: "unless-stopped"
     volumes:
       - ./data:/srv/random-fit/data:shared
       - /etc/localtime:/etc/localtime:ro
     user: ${CONTAINER_EXEC_USER_ID}:${CONTAINER_EXEC_USER_ID}
-    ports:
-      - ${RF_DEBUGGER_PORT}:${RF_DEBUGGER_PORT}
-      - ${RF_DEBUG_CHART_PORT}:${RF_DEBUG_CHART_PORT}
     env_file:
       - .env
     profiles:
@@ -32,10 +30,14 @@ services:
         - exec_user_id=${CONTAINER_EXEC_USER_ID}
     container_name: random-fit_dev
     image: random-fit_dev
+    init: true
     restart: "no"
     volumes:
       - .:/srv/random-fit:shared
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - ${RF_DEBUGGER_PORT}:${RF_DEBUGGER_PORT}
+      - ${RF_DEBUG_CHART_PORT}:${RF_DEBUG_CHART_PORT}
     command:
       - sleep
       - "999999999"
