@@ -2,31 +2,31 @@
 
 ## Code Quality
 
-- [ ] **Replace panics with error returns in `internal/plan/build.go`**
+- [x] **Replace panics with error returns in `internal/plan/build.go`**
   `NewBuilderFromStarConfig()` panics on failure instead of returning an error. This causes a fatal crash in the `generate` command. Refactor to return `(*Builder, error)`.
 
-- [ ] **Propagate errors in `cmd/run.go` interactive mode**
+- [x] **Propagate errors in `cmd/run.go` interactive mode**
   `listCombinationDefinitions()` and `listPlanDefinitions()` silently swallow errors from `manager.List()` and return empty slices. At minimum, log errors via zerolog so failures are visible.
 
-- [ ] **Validate definition names against path traversal**
+- [x] **Validate definition names against path traversal**
   In `cmd/definition_combination.go` and `cmd/definition_plan.go`, the `--name` flag value is used directly in file paths without validation. Add a regex check (e.g., `^[a-zA-Z0-9_-]+$`) to prevent path traversal attacks like `../../../etc/passwd`.
 
-- [ ] **Reduce code duplication in folder creation (`cmd/definition.go`)**
+- [x] **Reduce code duplication in folder creation (`cmd/definition.go`)**
   The `init()` method repeats the same `createFolder` + error check pattern five times. Refactor to iterate over a slice of folder paths.
 
-- [ ] **Extract shared List() logic from service managers**
+- [x] **Extract shared List() logic from service managers**
   `CombinationStarDefinitionManager.List()` and `PlanDefinitionManager.List()` have nearly identical implementations. Extract the common directory-reading logic into a shared helper or base type.
 
-- [ ] **Reduce duplication between definition_combination.go and definition_plan.go**
+- [x] **Reduce duplication between definition_combination.go and definition_plan.go**
   Both files follow the same `New()` / `Edit()` / `Delete()` / `List()` structure. Consider a generic definition handler that works for both types.
 
-- [ ] **Make worker count configurable (`cmd/generate.go`)**
+- [x] **Make worker count configurable (`cmd/generate.go`)**
   `defaultWorkers = 2` is hardcoded with no way to override it via a CLI flag or config variable. Add an `--workers` flag or `RF_WORKERS` env variable.
 
-- [ ] **Move UI constants to a configuration struct (`cmd/run.go`)**
+- [x] **Move UI constants to a configuration struct (`cmd/run.go`)**
   Color codes (`"170"`, `"241"`, `"42"`, `"196"`), symbols, and layout constants are scattered as package-level constants. Group them into a configurable theme struct.
 
-- [ ] **Improve context propagation in `cmd/generate.go`**
+- [x] **Improve context propagation in `cmd/generate.go`**
   The debug server's shutdown context is created from `context.Background()` instead of inheriting from the parent context. Propagate the parent context for cleaner shutdown behavior.
 
 ## Testing

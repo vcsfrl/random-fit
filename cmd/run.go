@@ -11,16 +11,6 @@ import (
 )
 
 const (
-	colorAccent  = "170"
-	colorSubtle  = "241"
-	colorSuccess = "42"
-	colorError   = "196"
-
-	cursorSymbol  = "▸ "
-	paddingPrefix = "  "
-	inputCursor   = "█"
-	inputPrefix   = "> "
-
 	executeChoice = "Execute"
 	cancelChoice  = "Cancel"
 
@@ -46,6 +36,32 @@ const (
 	confirmChoiceCount = 2
 )
 
+// theme groups the UI styling constants used for rendering the interactive TUI.
+type theme struct {
+	colorAccent  string
+	colorSubtle  string
+	colorSuccess string
+	colorError   string
+
+	cursorSymbol  string
+	paddingPrefix string
+	inputCursor   string
+	inputPrefix   string
+}
+
+func defaultTheme() theme {
+	return theme{
+		colorAccent:   "170",
+		colorSubtle:   "241",
+		colorSuccess:  "42",
+		colorError:    "196",
+		cursorSymbol:  "▸ ",
+		paddingPrefix: "  ",
+		inputCursor:   "█",
+		inputPrefix:   "> ",
+	}
+}
+
 type runModel struct {
 	selections []string
 	choices    []string
@@ -57,12 +73,14 @@ type runModel struct {
 	quitting   bool
 	execute    bool
 	errorMsg   string
+	theme      theme
 }
 
 func newRunModel(conf *Config) runModel {
 	model := runModel{
 		conf:       conf,
 		selections: make([]string, 0),
+		theme:      defaultTheme(),
 	}
 
 	return model.refreshedStep()
@@ -187,6 +205,12 @@ func (m runModel) submitTextInput() (tea.Model, tea.Cmd) { //nolint:ireturn
 		return m, nil
 	}
 
+	if !validNamePattern.MatchString(name) {
+		m.errorMsg = ErrInvalidDefinitionName.Error()
+
+		return m, nil
+	}
+
 	m.selections = append(m.selections, name)
 	m.textInput = ""
 	m.inputMode = false
@@ -305,7 +329,11 @@ func (m runModel) definitionSelectItemStep() (string, []string, bool) {
 }
 
 func (m runModel) selectCombinationDefinitionStep() (string, []string, bool) {
-	definitions := m.listCombinationDefinitions()
+	definitions, err := m.listCombinationDefinitions()
+
+	if err != nil {
+		return fmt.Sprintf("Error loading definitions: %v. Press esc to go back.", err), nil, false
+	}
 
 	if len(definitions) == 0 {
 		return "No combination definitions found. Press esc to go back.", nil, false
@@ -315,7 +343,11 @@ func (m runModel) selectCombinationDefinitionStep() (string, []string, bool) {
 }
 
 func (m runModel) selectPlanDefinitionStep() (string, []string, bool) {
-	plans := m.listPlanDefinitions()
+	plans, err := m.listPlanDefinitions()
+
+	if err != nil {
+		return fmt.Sprintf("Error loading plans: %v. Press esc to go back.", err), nil, false
+	}
 
 	if len(plans) == 0 {
 		return "No plan definitions found. Press esc to go back.", nil, false
@@ -397,34 +429,34 @@ func (m runModel) buildConfirmTitle() string {
 	return "Execute: random-fit " + strings.Join(args, " ")
 }
 
-func (m runModel) listCombinationDefinitions() []string {
+func (m runModel) listCombinationDefinitions() ([]string, error) {
 	manager := service.NewCombinationStarDefinitionManager(m.conf.DefinitionFolder())
 
 	definitions, err := manager.List()
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("listing combination definitions: %w", err)
 	}
 
-	return definitions
+	return definitions, nil
 }
 
-func (m runModel) listPlanDefinitions() []string {
+func (m runModel) listPlanDefinitions() ([]string, error) {
 	manager := service.NewPlanDefinitionManager(m.conf.PlanFolder())
 
 	plans, err := manager.List()
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("listing plan definitions: %w", err)
 	}
 
-	return plans
+	return plans, nil
 }
 
 func (m runModel) renderWizard() string {
 	var builder strings.Builder
 
-	accentStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(colorAccent))
-	subtleStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(colorSubtle))
-	successStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(colorSuccess))
+	accentStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(m.theme.colorAccent))
+	subtleStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(m.theme.colorSubtle))
+	successStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(m.theme.colorSuccess))
 
 	builder.WriteString(accentStyle.Render("Random Fit Interactive Mode"))
 	builder.WriteString("\n\n")
@@ -439,13 +471,13 @@ func (m runModel) renderWizard() string {
 	builder.WriteString("\n\n")
 
 	if m.errorMsg != "" {
-		errStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(colorError))
+		errStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(m.theme.colorError))
 		builder.WriteString(errStyle.Render(m.errorMsg))
 		builder.WriteString("\n\n")
 	}
 
 	if m.inputMode {
-		fmt.Fprintf(&builder, "%s%s%s\n", inputPrefix, m.textInput, inputCursor)
+		fmt.Fprintf(&builder, "%s%s%s\n", m.theme.inputPrefix, m.textInput, m.theme.inputCursor)
 	} else {
 		m.renderChoices(&builder, accentStyle)
 	}
@@ -460,9 +492,9 @@ func (m runModel) renderWizard() string {
 func (m runModel) renderChoices(builder *strings.Builder, accentStyle lipgloss.Style) {
 	for index, choice := range m.choices {
 		if index == m.cursor {
-			builder.WriteString(accentStyle.Render(paddingPrefix + cursorSymbol + choice))
+			builder.WriteString(accentStyle.Render(m.theme.paddingPrefix + m.theme.cursorSymbol + choice))
 		} else {
-			builder.WriteString(paddingPrefix + paddingPrefix + choice)
+			builder.WriteString(m.theme.paddingPrefix + m.theme.paddingPrefix + choice)
 		}
 
 		builder.WriteString("\n")

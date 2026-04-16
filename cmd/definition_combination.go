@@ -35,6 +35,12 @@ func (c *CombinationDefinition) New() {
 		return
 	}
 
+	if err := c.validateName(name); err != nil {
+		c.cmd.PrintErrln("Error:", err)
+
+		return
+	}
+
 	c.cmd.Println(c.printer.Sprintf("Create combination definition:"), name)
 	err := c.definitionManager.New(name)
 
@@ -70,6 +76,12 @@ func (c *CombinationDefinition) Edit() {
 		return
 	}
 
+	if err := c.validateName(name); err != nil {
+		c.cmd.PrintErrln("Error:", err)
+
+		return
+	}
+
 	c.cmd.Println(c.printer.Sprintf("Edit combination definition:"), name)
 
 	scriptName, err := c.definitionManager.GetScript(name)
@@ -92,6 +104,12 @@ func (c *CombinationDefinition) Delete() {
 	name := c.getArg(0, "name")
 	if name == "" {
 		c.cmd.PrintErrln(c.printer.Sprintf("Name is required."))
+
+		return
+	}
+
+	if err := c.validateName(name); err != nil {
+		c.cmd.PrintErrln("Error:", err)
 
 		return
 	}

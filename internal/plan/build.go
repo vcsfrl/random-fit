@@ -21,20 +21,20 @@ type Builder struct {
 	CombinationBuilder combination.Builder
 }
 
-func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder {
+func NewBuilderFromStarConfig(combinationFile string, planFile string) (*Builder, error) {
 	combinationDefinition, err := combination.NewCombinationDefinition(combinationFile)
 	if err != nil {
-		panic(fmt.Errorf("%w: error creating combination definition: %w", ErrPlanBuild, err))
+		return nil, fmt.Errorf("%w: error creating combination definition: %w", ErrPlanBuild, err)
 	}
 
 	planDefinition, err := NewJSONDefinition(planFile)
 	if err != nil {
-		panic(fmt.Errorf("%w: error creating plan definition: %w", ErrPlanBuild, err))
+		return nil, fmt.Errorf("%w: error creating plan definition: %w", ErrPlanBuild, err)
 	}
 
 	builder, err := combination.NewStarBuilder(combinationDefinition)
 	if err != nil {
-		panic(fmt.Errorf("%w: error creating combination builder: %w", ErrPlanBuild, err))
+		return nil, fmt.Errorf("%w: error creating combination builder: %w", ErrPlanBuild, err)
 	}
 
 	return &Builder{
@@ -42,7 +42,7 @@ func NewBuilderFromStarConfig(combinationFile string, planFile string) *Builder 
 		Now:                time.Now,
 		UUIDV7:             uuid.NewV7,
 		CombinationBuilder: builder,
-	}
+	}, nil
 }
 
 func NewBuilder(definition *Definition, builder combination.Builder) *Builder {

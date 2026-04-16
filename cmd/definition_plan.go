@@ -35,6 +35,12 @@ func (p *PlanDefinition) New() {
 		return
 	}
 
+	if err := p.validateName(name); err != nil {
+		p.cmd.PrintErrln(p.printer.Sprintf("Error:"), err)
+
+		return
+	}
+
 	p.cmd.Println(p.printer.Sprintf("Creating plan definition:"), name)
 
 	err := p.definitionManager.New(name)
@@ -91,6 +97,12 @@ func (p *PlanDefinition) Edit() {
 		return
 	}
 
+	if err := p.validateName(name); err != nil {
+		p.cmd.PrintErrln(p.printer.Sprintf("Error:"), err)
+
+		return
+	}
+
 	p.cmd.Println(p.printer.Sprintf("Editing plan definition:"), name)
 	scriptName, err := p.definitionManager.GetFile(name)
 
@@ -113,6 +125,12 @@ func (p *PlanDefinition) Delete() {
 	name := p.getArg(0, "name")
 	if name == "" {
 		p.cmd.PrintErrln(p.printer.Sprintf("Name is required."))
+
+		return
+	}
+
+	if err := p.validateName(name); err != nil {
+		p.cmd.PrintErrln(p.printer.Sprintf("Error:"), err)
 
 		return
 	}
