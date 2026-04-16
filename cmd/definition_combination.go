@@ -36,7 +36,7 @@ func (c *CombinationDefinition) New() {
 	}
 
 	if err := c.validateName(name); err != nil {
-		c.cmd.PrintErrln("Error:", err)
+		c.cmd.PrintErrln(c.printer.Sprintf("Error:"), err)
 
 		return
 	}
@@ -77,7 +77,7 @@ func (c *CombinationDefinition) Edit() {
 	}
 
 	if err := c.validateName(name); err != nil {
-		c.cmd.PrintErrln("Error:", err)
+		c.cmd.PrintErrln(c.printer.Sprintf("Error:"), err)
 
 		return
 	}
@@ -109,7 +109,7 @@ func (c *CombinationDefinition) Delete() {
 	}
 
 	if err := c.validateName(name); err != nil {
-		c.cmd.PrintErrln("Error:", err)
+		c.cmd.PrintErrln(c.printer.Sprintf("Error:"), err)
 
 		return
 	}
