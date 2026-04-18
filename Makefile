@@ -60,10 +60,14 @@ test-debug: ## Debug a test (dev only).
 
 lint: ## Run linter (dev only).
 	$(call require_dev,lint)
-	$(COMPOSE_RUN) $(SERVICE_NAME) /go/bin/golangci-lint run --timeout 5m
+	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.114 golangci-lint run;
+
+lint-fix: ## Dev: Run golangci-lint with auto-fix
+	@$(call require-dev)
+	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.11.4 golangci-lint run --fix;
 
 run: ## Run the app. Uses binary on prod, go run on dev. One-time container.
-	$(COMPOSE_RUN) -i $(SERVICE_NAME) $(RUN_CMD)
+	$(COMPOSE_RUN) -i $(SERVICE_NAME) $(RUN_CMD) run
 
 down: ## Stop and remove all containers for the current APP_ENV.
 	$(COMPOSE) down --remove-orphans

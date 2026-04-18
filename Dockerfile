@@ -8,9 +8,8 @@ RUN groupadd -g $exec_user_id -o $username \
     && mkdir -p /srv/random-fit \
     && chown $username:$username /srv/random-fit -R
 USER $username:$username
-RUN go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.1.6 \
-    && go install github.com/go-delve/delve/cmd/dlv@v1.24.2 \
-    && go install golang.org/x/text/cmd/gotext@v0.25.0
+RUN go install github.com/go-delve/delve/cmd/dlv@v1.26.1 \
+    && go install golang.org/x/text/cmd/gotext@v0.36.0
 WORKDIR /srv/random-fit
 
 FROM base AS build
