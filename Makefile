@@ -2,52 +2,76 @@ envfile := .env
 include $(envfile)
 export $(shell sed 's/=.*//' $(envfile))
 
-# HELP
-.PHONY: help
+# Determine service name and run command based on APP_ENV
+ifeq ($(APP_ENV),dev)
+  SERVICE_NAME := random-fit_dev
+  RUN_CMD := go run ./main.go
+else
+  SERVICE_NAME := random-fit
+  RUN_CMD := ./bin/app
+endif
+
+COMPOSE     := docker compose --profile $(APP_ENV)
+COMPOSE_RUN := $(COMPOSE) run --rm --remove-orphans
+
+define require_dev
+	@if [ "$(APP_ENV)" != "dev" ]; then echo "Error: '$(1)' requires APP_ENV=dev (current: $(APP_ENV))"; exit 1; fi
+endef
+
+.DEFAULT_GOAL := help
+.PHONY: build clean down generate help install lint run shell test test-debug test-name
 
 help: ## Usage: make <option>
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ""
+	@echo "  APP_ENV = \033[33m$(APP_ENV)\033[0m  |  service = \033[33m$(SERVICE_NAME)\033[0m"
+	@echo ""
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m  %-28s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ""
 
-install: ## APP Build.
-	if [ ! -f .env ]; then cp -n .env.dist .env; echo "CONTAINER_EXEC_USER_ID=`id -u`" >> .env; echo "CONTAINER_USERNAME=${USER}" >> .env; fi
-	docker compose --profile $(APP_ENV) build;
+install: ## Build container image for the current APP_ENV (dev or prod).
+	@if [ ! -f .env ]; then cp -n .env.dist .env; echo "CONTAINER_EXEC_USER_ID=`id -u`" >> .env; echo "CONTAINER_USERNAME=${USER}" >> .env; fi
+	$(COMPOSE) build
 
-shell: ## APP Shell.
-	docker compose down --remove-orphans
-	docker compose up random-fit_dev -d
-	docker compose exec random-fit_dev bash
-	docker compose down --remove-orphans
+shell: ## Open a shell inside the container.
+	$(COMPOSE) down --remove-orphans
+	$(COMPOSE) up $(SERVICE_NAME) -d
+	$(COMPOSE) exec $(SERVICE_NAME) bash
+	$(COMPOSE) down --remove-orphans
 
+generate: ## Generate code (dev only).
+	$(call require_dev,generate)
+	$(COMPOSE_RUN) $(SERVICE_NAME) sh -c 'go generate github.com/vcsfrl/random-fit && go generate github.com/vcsfrl/random-fit/cmd/translations'
 
-generate: ## APP Generate code.
-	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit
-	docker compose run --remove-orphans random-fit_dev go generate github.com/vcsfrl/random-fit/cmd/translations
+build: generate ## Build the binary (dev only).
+	$(call require_dev,build)
+	$(COMPOSE_RUN) $(SERVICE_NAME) go build -o ./bin/random-fit ./main.go
 
-build: generate## APP Build.
-	docker compose run --remove-orphans random-fit_dev go build -o ./bin/random-fit ./main.go
+test: generate ## Run all tests (dev only).
+	$(call require_dev,test)
+	$(COMPOSE_RUN) $(SERVICE_NAME) go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...
 
-test: generate ## APP Test
-	docker compose run --remove-orphans random-fit_dev go test -race -cpu 24 -cover -coverprofile=data/test/coverage.out ./...;
+test-name: ## Run test by name (dev only).
+	$(call require_dev,test-name)
+	$(COMPOSE_RUN) $(SERVICE_NAME) go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$
 
-test-name: ##  Run test by name.
-	docker compose run --remove-orphans random-fit_dev go test -v -race -cpu 24 github.com/vcsfrl/random-fit/$(testPath) -run ^$(testName)$$;
+test-debug: ## Debug a test (dev only).
+	$(call require_dev,test-debug)
+	$(COMPOSE_RUN) --build --service-ports $(SERVICE_NAME) /go/bin/dlv --listen=:$(RF_DEBUGGER_TEST_PORT) --headless=true --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --api-version=2 --accept-multiclient test github.com/vcsfrl/random-fit/$(testPath) -- -test.run ^$(testName)$$
 
-test-debug:
-	docker compose run  --remove-orphans --build --rm --service-ports random-fit_dev /go/bin/dlv --listen=:$(RF_DEBUGGER_TEST_PORT) --headless=true --log=true --log-output=debugger,debuglineerr,gdbwire,lldbout,rpc --api-version=2 --accept-multiclient test  github.com/vcsfrl/random-fit/$(testPath) -- -test.run ^$(testName)$$;
+lint: ## Run linter (dev only).
+	$(call require_dev,lint)
+	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.114 golangci-lint run;
 
-lint: ## Run linter.
-	#docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.0.2 golangci-lint run
-	docker compose down --remove-orphans
-	docker compose up random-fit_dev -d
-	docker compose exec random-fit_dev /go/bin/golangci-lint run --timeout 5m
-	docker compose down --remove-orphans
+lint-fix: ## Dev: Run golangci-lint with auto-fix
+	@$(call require-dev)
+	docker run -t --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v2.11.4 golangci-lint run --fix;
 
-#build-docker-image:
-#	docker build --build-arg username=rf --build-arg exec_user_id=1000  -t vcsfrl/random-fit:v1.0.0 --target prod .
-	#docker run --rm -it --entrypoint bash vcsfrl/random-fit:v1.0.0
-	#docker tag <image hash> <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
-	#docker push <cluster ip>:32000/vcsfrl/random-fit:v1.0.0
+run: ## Run the app. Uses binary on prod, go run on dev. One-time container.
+	$(COMPOSE_RUN) -i $(SERVICE_NAME) $(RUN_CMD) run
 
-run: ## Run the app.
-	docker compose --profile $(APP_ENV) run --remove-orphans -i random-fit
-	docker compose --profile $(APP_ENV) down --remove-orphans
+down: ## Stop and remove all containers for the current APP_ENV.
+	$(COMPOSE) down --remove-orphans
+
+clean: down ## Remove build artifacts and stop containers.
+	@rm -rf ./bin/*
+	@echo "Build artifacts cleaned."

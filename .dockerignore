@@ -1,0 +1,40 @@
+# Version control
+.git
+.gitignore
+
+# IDE / editor
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+bin/
+
+# CI/CD and docs
+AGENTS.md
+README.md
+
+# Kubernetes manifests (not needed inside the container)
+k8s/
+
+# Environment files
+.env
+.env.dist
+
+# Test artifacts
+*.test
+*.out
+data/test/
+
+# Docker files (avoid recursive build context)
+Dockerfile
+compose.yaml
+.dockerignore
+
+# Go workspace files
+go.work
+go.work.sum
+
+# Generated file (rebuilt during build stage)
+internal/service/combination_definition_template.go
