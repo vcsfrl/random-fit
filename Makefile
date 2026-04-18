@@ -38,6 +38,9 @@ shell: ## Open a shell inside the container.
 	$(COMPOSE) exec $(SERVICE_NAME) bash
 	$(COMPOSE) down --remove-orphans
 
+ps: ## General: List running containers
+	$(COMPOSE) ps;
+
 generate: ## Generate code (dev only).
 	$(call require_dev,generate)
 	$(COMPOSE_RUN) $(SERVICE_NAME) sh -c 'go generate github.com/vcsfrl/random-fit && go generate github.com/vcsfrl/random-fit/cmd/translations'
