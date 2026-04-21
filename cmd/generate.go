@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/arl/statsviz"
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/plan"
@@ -9,9 +10,6 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
-	// github.com/mkevac/debugcharts attach a debug chart endpoint to the monitoring server.
-	_ "github.com/mkevac/debugcharts"
 )
 
 const defaultWorkers = 2
@@ -126,8 +124,20 @@ func (g *Generator) export(planGenerator chan *plan.PlannedCombination) bool {
 }
 
 func (g *Generator) startMonitor() {
-	g.logger.Info().Msgf("Starting debug chart server on port %s", g.conf.DebugChartPort)
-	server := &http.Server{Addr: "0.0.0.0:" + g.conf.DebugChartPort, ReadHeaderTimeout: 1 * time.Second}
+	g.logger.Info().Msgf("Starting statsviz server on port %s", g.conf.DebugChartPort)
+	mux := http.NewServeMux()
+
+	if err := statsviz.Register(mux); err != nil {
+		g.logger.Error().Err(err).Msg("Error registering statsviz handlers.")
+
+		return
+	}
+
+	server := &http.Server{
+		Addr:              "0.0.0.0:" + g.conf.DebugChartPort,
+		Handler:           mux,
+		ReadHeaderTimeout: 1 * time.Second,
+	}
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
@@ -139,12 +149,12 @@ func (g *Generator) startMonitor() {
 		<-g.cmd.Context().Done()
 
 		if err := server.Shutdown(context.Background()); err != nil {
-			g.logger.Error().Err(err).Msg("Error shutting down debug chart server.")
+			g.logger.Error().Err(err).Msg("Error shutting down statsviz server.")
 
 			return
 		}
 
-		g.logger.Info().Msg("Debug chart server shut down gracefully.")
+		g.logger.Info().Msg("Statsviz server shut down gracefully.")
 	}()
 }
 
