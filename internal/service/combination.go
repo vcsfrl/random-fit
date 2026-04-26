@@ -3,11 +3,11 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/vcsfrl/random-fit/internal/combination"
-	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/vcsfrl/random-fit/internal/combination"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 )
 
 var ErrCombinationDefinitionManager = errors.New("combination definition manager error")
@@ -34,20 +34,9 @@ func NewCombinationStarDefinitionManager(dataFolder string) *CombinationStarDefi
 }
 
 func (dm *CombinationStarDefinitionManager) List() ([]string, error) {
-	result := make([]string, 0)
-
-	// print all files from the definitions folder
-	files, err := os.ReadDir(dm.dataFolder)
+	result, err := fs.ListFileNames(dm.dataFolder)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %w", ErrCombinationDefinitionManager, err)
-	}
-
-	for _, file := range files {
-		if file.IsDir() || file.Name()[0] == '.' {
-			continue
-		}
-
-		result = append(result, strings.TrimSuffix(filepath.Base(file.Name()), filepath.Ext(file.Name())))
 	}
 
 	return result, nil

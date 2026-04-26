@@ -78,10 +78,17 @@ func (g *Generator) Combination() {
 
 	g.startMonitor()
 
-	planGenerator := plan.NewBuilderFromStarConfig(
+	planBuilder, err := plan.NewBuilderFromStarConfig(
 		combinationDefinitionScript,
 		planDefinitionScript,
-	).Generate(context.Background())
+	)
+	if err != nil {
+		g.cmd.PrintErrln("Error creating plan builder:", err)
+
+		return
+	}
+
+	planGenerator := planBuilder.Generate(context.Background())
 
 	start := time.Now()
 
@@ -148,7 +155,10 @@ func (g *Generator) startMonitor() {
 	go func() {
 		<-g.cmd.Context().Done()
 
-		if err := server.Shutdown(context.Background()); err != nil {
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second) //nolint:mnd
+		defer cancel()
+
+		if err := server.Shutdown(shutdownCtx); err != nil {
 			g.logger.Error().Err(err).Msg("Error shutting down statsviz server.")
 
 			return
@@ -179,6 +189,10 @@ func (g *Generator) init() error {
 	g.combinationDefinitionManager = service.NewCombinationStarDefinitionManager(g.conf.DefinitionFolder())
 	g.planDefinitionManager = service.NewPlanDefinitionManager(g.conf.PlanFolder())
 	g.planExporter = plan.NewExporter(g.conf.CombinationFolder(), g.conf.StorageFolder())
+
+	if workers, err := g.cmd.Flags().GetInt("workers"); err == nil && workers > 0 {
+		g.workers = workers
+	}
 
 	return nil
 }

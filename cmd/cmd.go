@@ -92,114 +92,99 @@ func generateCmd(rootCmd *cobra.Command) {
 
 	generateCombination.Flags().String("combination", "", "Combination definition name")
 	generateCombination.Flags().String("plan", "", "Plan definition name")
+	generateCombination.Flags().Int("workers", defaultWorkers, "Number of export workers")
 	generate.AddCommand(generateCombination)
 	rootCmd.AddCommand(generate)
 }
 
-//nolint:dupl
-func planDefinitionCmd(definition *cobra.Command) {
-	var plan = &cobra.Command{
-		Use:   "plan",
-		Short: "Plan Definition management",
-		Long:  `Manage plan definitions: list, new, edit, delete.`,
-		Run: func(cmd *cobra.Command, args []string) {
-			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-				planDefinition.List()
-			}
-		},
-	}
-
-	var newPlan = &cobra.Command{
-		Use:   "new",
-		Short: "New Plan Definition",
-		Run: func(cmd *cobra.Command, args []string) {
-			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-				planDefinition.New()
-			}
-		},
-	}
-
-	var editPlan = &cobra.Command{
-		Use:   "edit",
-		Short: "Edit Plan Definition",
-		Run: func(cmd *cobra.Command, args []string) {
-			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-				planDefinition.Edit()
-			}
-		},
-	}
-
-	var deletePlan = &cobra.Command{
-		Use:   "delete",
-		Short: "Delete Plan Definition",
-		Run: func(cmd *cobra.Command, args []string) {
-			if planDefinition, err := NewPlanDefinition(cmd, args, NewConfig()); err == nil {
-				planDefinition.Delete()
-			}
-		},
-	}
-
-	newPlan.Flags().String("name", "", "")
-	editPlan.Flags().String("name", "", "")
-	deletePlan.Flags().String("name", "", "")
-
-	plan.AddCommand(newPlan)
-	plan.AddCommand(editPlan)
-	plan.AddCommand(deletePlan)
-	definition.AddCommand(plan)
+// DefinitionHandler defines the common interface for definition management operations.
+type DefinitionHandler interface {
+	New()
+	Edit()
+	Delete()
+	List()
 }
 
-//nolint:dupl
-func combinationDefinitionCmd(definition *cobra.Command) {
-	var combination = &cobra.Command{
-		Use:   "combination",
-		Short: "Combination Definition management",
-		Long:  `Manage combination definitions: list, new, edit, delete.`,
+type definitionHandlerFactory func(*cobra.Command, []string, *Config) (DefinitionHandler, error)
+
+func registerDefinitionSubcommands(
+	parent *cobra.Command, use string, short string, long string, factory definitionHandlerFactory,
+) {
+	var root = &cobra.Command{
+		Use:   use,
+		Short: short,
+		Long:  long,
 		Run: func(cmd *cobra.Command, args []string) {
-			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-				combinationDefinition.List()
+			if handler, err := factory(cmd, args, NewConfig()); err == nil {
+				handler.List()
 			}
 		},
 	}
 
-	var newCombination = &cobra.Command{
+	var newCmd = &cobra.Command{
 		Use:   "new",
-		Short: "New Combination Definition",
+		Short: "New " + short,
 		Run: func(cmd *cobra.Command, args []string) {
-			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-				combinationDefinition.New()
+			if handler, err := factory(cmd, args, NewConfig()); err == nil {
+				handler.New()
 			}
 		},
 	}
 
-	var editCombination = &cobra.Command{
+	var editCmd = &cobra.Command{
 		Use:   "edit",
-		Short: "Edit Combination Definition",
+		Short: "Edit " + short,
 		Run: func(cmd *cobra.Command, args []string) {
-			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-				combinationDefinition.Edit()
+			if handler, err := factory(cmd, args, NewConfig()); err == nil {
+				handler.Edit()
 			}
 		},
 	}
 
-	var deleteCombination = &cobra.Command{
+	var deleteCmd = &cobra.Command{
 		Use:   "delete",
-		Short: "Delete Combination Definition",
+		Short: "Delete " + short,
 		Run: func(cmd *cobra.Command, args []string) {
-			if combinationDefinition, err := NewCombinationDefinition(cmd, args, NewConfig()); err == nil {
-				combinationDefinition.Delete()
+			if handler, err := factory(cmd, args, NewConfig()); err == nil {
+				handler.Delete()
 			}
 		},
 	}
 
-	newCombination.Flags().String("name", "", "")
-	editCombination.Flags().String("name", "", "")
-	deleteCombination.Flags().String("name", "", "")
+	newCmd.Flags().String("name", "", "")
+	editCmd.Flags().String("name", "", "")
+	deleteCmd.Flags().String("name", "", "")
 
-	combination.AddCommand(newCombination)
-	combination.AddCommand(editCombination)
-	combination.AddCommand(deleteCombination)
-	definition.AddCommand(combination)
+	root.AddCommand(newCmd)
+	root.AddCommand(editCmd)
+	root.AddCommand(deleteCmd)
+	parent.AddCommand(root)
+}
+
+//nolint:ireturn
+func newCombinationHandler(cmd *cobra.Command, args []string, conf *Config) (DefinitionHandler, error) {
+	return NewCombinationDefinition(cmd, args, conf)
+}
+
+//nolint:ireturn
+func newPlanHandler(cmd *cobra.Command, args []string, conf *Config) (DefinitionHandler, error) {
+	return NewPlanDefinition(cmd, args, conf)
+}
+
+func planDefinitionCmd(definition *cobra.Command) {
+	registerDefinitionSubcommands(definition, "plan",
+		"Plan Definition management",
+		"Manage plan definitions: list, new, edit, delete.",
+		newPlanHandler,
+	)
+}
+
+func combinationDefinitionCmd(definition *cobra.Command) {
+	registerDefinitionSubcommands(definition, "combination",
+		"Combination Definition management",
+		"Manage combination definitions: list, new, edit, delete.",
+		newCombinationHandler,
+	)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

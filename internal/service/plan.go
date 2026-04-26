@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
-	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"os"
 	"path/filepath"
-	"strings"
+
+	rfPlan "github.com/vcsfrl/random-fit/internal/plan"
+	"github.com/vcsfrl/random-fit/internal/platform/fs"
 )
 
 var ErrPlanDefinitionManager = errors.New("plan definition manager error")
@@ -25,19 +25,9 @@ func NewPlanDefinitionManager(folder string) *PlanDefinitionManager {
 }
 
 func (m *PlanDefinitionManager) List() ([]string, error) {
-	result := make([]string, 0)
-
-	files, err := os.ReadDir(m.dataFolder)
+	result, err := fs.ListFileNames(m.dataFolder)
 	if err != nil {
 		return nil, fmt.Errorf("%w: read data folder: %w", ErrPlanDefinitionManager, err)
-	}
-
-	for _, file := range files {
-		if file.IsDir() || file.Name()[0] == '.' {
-			continue
-		}
-
-		result = append(result, strings.TrimSuffix(filepath.Base(file.Name()), filepath.Ext(file.Name())))
 	}
 
 	return result, nil

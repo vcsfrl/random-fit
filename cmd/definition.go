@@ -3,17 +3,22 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os/exec"
+	"regexp"
+
 	"github.com/spf13/cobra"
 	"github.com/vcsfrl/random-fit/internal/platform/fs"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"os/exec"
 
 	// Initialize translations.
 	_ "github.com/vcsfrl/random-fit/cmd/translations"
 )
 
 var ErrNoEnvEditor = errors.New("EDITOR environment variable is not set")
+var ErrInvalidDefinitionName = errors.New(
+	"invalid definition name: must contain only letters, digits, hyphens, and underscores",
+)
 
 type BaseHandler struct {
 	cmd  *cobra.Command
@@ -67,6 +72,16 @@ func (b *BaseHandler) createFolder(folder string) error {
 	return nil
 }
 
+var validNamePattern = regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
+
+func (b *BaseHandler) validateName(name string) error {
+	if !validNamePattern.MatchString(name) {
+		return ErrInvalidDefinitionName
+	}
+
+	return nil
+}
+
 func (b *BaseHandler) initTranslations() {
 	var lang language.Tag
 
@@ -81,32 +96,22 @@ func (b *BaseHandler) initTranslations() {
 }
 
 func (b *BaseHandler) initFolders() error {
-	err := b.createFolder(b.conf.DefinitionFolder())
-	if err != nil {
-		b.cmd.PrintErrln(b.printer.Sprintf("Error creating definition folder:"), err)
-
-		return err
+	folders := []struct {
+		path string
+		name string
+	}{
+		{b.conf.DefinitionFolder(), "definition"},
+		{b.conf.PlanFolder(), "plan"},
+		{b.conf.CombinationFolder(), "combination"},
+		{b.conf.StorageFolder(), "storage"},
 	}
 
-	err = b.createFolder(b.conf.PlanFolder())
-	if err != nil {
-		b.cmd.PrintErrln(b.printer.Sprintf("Error creating plan folder:"), err)
+	for _, folder := range folders {
+		if err := b.createFolder(folder.path); err != nil {
+			b.cmd.PrintErrln(b.printer.Sprintf("Error creating %s folder:", folder.name), err)
 
-		return err
-	}
-
-	err = b.createFolder(b.conf.CombinationFolder())
-	if err != nil {
-		b.cmd.PrintErrln(b.printer.Sprintf("Error creating combination folder:"), err)
-
-		return err
-	}
-
-	err = b.createFolder(b.conf.StorageFolder())
-	if err != nil {
-		b.cmd.PrintErrln(b.printer.Sprintf("Error creating storage folder:"), err)
-
-		return err
+			return err
+		}
 	}
 
 	return nil
