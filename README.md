@@ -388,7 +388,7 @@ make lint
 | [validator](https://github.com/go-playground/validator) | Data validation |
 | [uuid](https://github.com/google/uuid) | UUIDv7 generation |
 | [testify](https://github.com/stretchr/testify) | Testing utilities |
-| [debugcharts](https://github.com/mkevac/debugcharts) | Runtime debug metrics |
+| [statsviz](https://github.com/arl/statsviz) | Runtime debug metrics |
 
 ## Kubernetes Deployment
 
