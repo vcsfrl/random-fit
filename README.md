@@ -10,6 +10,7 @@ A Go-based CLI tool for generating randomized training plans. It uses [Starlark]
 - [Configuration](#configuration)
 - [CLI Commands](#cli-commands)
 - [Usage Guide](#usage-guide)
+- [Examples](#examples)
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Kubernetes Deployment](#kubernetes-deployment)
@@ -282,6 +283,30 @@ random-fit definition plan
 random-fit definition plan edit --name my-plan
 random-fit definition plan delete --name my-plan
 ```
+
+## Examples
+
+The [`examples/`](examples/) directory contains three ready-to-use use cases
+that you can copy into your `data/` folders and run immediately.
+
+| Use Case | Combination definition | Plan definition | What it generates |
+|---|---|---|---|
+| **Gym Workout** | `examples/definition/gym-workout.star` | `examples/plan/gym-workout-plan.json` | 4-week programme, 3 sessions/week, 2 users — each session: 3 compound + 2 isolation exercises with random sets/reps |
+| **Lotto 6/49** | `examples/definition/lotto.star` | `examples/plan/lotto-plan.json` | 4-week picks, 5 tickets/week, 3 users — each ticket: 6 sorted main numbers (1–49) + 1 bonus number (1–10) |
+| **Meal Plan** | `examples/definition/meal-plan.star` | `examples/plan/meal-plan.json` | 4-week daily plan, 7 days/week, 2 users — each day: breakfast, lunch, dinner, snack + estimated calorie total |
+
+### Quick start with an example
+
+```bash
+# Copy a definition and its plan into the data directories
+cp examples/definition/gym-workout.star data/definition/
+cp examples/plan/gym-workout-plan.json  data/plan/
+
+# Generate — output lands in data/combination/<user>/<timestamp>/gym/
+random-fit generate combination --combination gym-workout --plan gym-workout-plan
+```
+
+See [`examples/README.md`](examples/README.md) for detailed explanations, sample output, and the full output directory structure for each use case.
 
 ## Project Structure
 

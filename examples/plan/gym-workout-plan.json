@@ -1,0 +1,9 @@
+{
+  "id": "gym-workout-plan",
+  "details": "4-Week Gym Training Program",
+  "users": ["alice", "bob"],
+  "containerName": ["_date", "gym"],
+  "recurrentGroupNamePrefix": "Week",
+  "recurrentGroups": 4,
+  "nrOfGroupCombinations": 3
+}

@@ -1,0 +1,9 @@
+{
+  "id": "meal-plan",
+  "details": "4-Week Daily Meal Plan",
+  "users": ["alice", "bob"],
+  "containerName": ["_date", "nutrition"],
+  "recurrentGroupNamePrefix": "Week",
+  "recurrentGroups": 4,
+  "nrOfGroupCombinations": 7
+}

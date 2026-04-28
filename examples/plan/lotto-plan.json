@@ -1,0 +1,9 @@
+{
+  "id": "lotto-plan",
+  "details": "Weekly Lotto Ticket Picks",
+  "users": ["alice", "bob", "carol"],
+  "containerName": ["_date", "lotto"],
+  "recurrentGroupNamePrefix": "Week",
+  "recurrentGroups": 4,
+  "nrOfGroupCombinations": 5
+}
