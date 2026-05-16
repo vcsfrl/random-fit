@@ -13,7 +13,11 @@ bin/
 
 # CI/CD and docs
 AGENTS.md
+CLAUDE.md
+GEMINI.md
 README.md
+.github/
+.cursor/
 
 # Kubernetes manifests (not needed inside the container)
 k8s/
