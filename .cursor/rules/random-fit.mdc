@@ -1,0 +1,9 @@
+---
+description: random-fit project context
+globs:
+alwaysApply: true
+---
+
+Use `AGENTS.md` at the repository root as the canonical AI context for this repository.
+
+Do not duplicate project guidance here; keep this rule as a thin entrypoint that points back to `AGENTS.md`.

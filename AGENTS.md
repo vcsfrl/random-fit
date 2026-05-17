@@ -1,6 +1,7 @@
 # AI Agent Context — random-fit
 
-This file provides context for AI coding assistants (GitHub Copilot, Cursor, Claude, etc.) working on the **random-fit** project.
+This file is the canonical AI context for the **random-fit** project.
+Tool-specific entrypoint files (`/CLAUDE.md`, `/GEMINI.md`, `/.github/copilot-instructions.md`, and `/.cursor/rules/random-fit.mdc`) should stay as thin pointers back to this file.
 
 ## Project Summary
 
